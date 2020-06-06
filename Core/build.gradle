@@ -25,19 +25,18 @@ description = 'Common API for Darwin Server modules'
 def date = LocalDate.now().toString()
 
 dependencies {
-    implementation 'org.reflections:reflections:0.9.11'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8'
-    implementation 'org.apache.commons:commons-collections4:4.1'
-    implementation 'com.j256.ormlite:ormlite-core:5.1'
-    implementation 'com.j256.ormlite:ormlite-jdbc:5.1'
-
+    compileOnly 'org.reflections:reflections:0.9.11'
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    compileOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
+    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8'
+    compileOnly 'org.apache.commons:commons-collections4:4.1'
+    compileOnly 'com.j256.ormlite:ormlite-core:5.1'
+    compileOnly 'com.j256.ormlite:ormlite-jdbc:5.1'
     compileOnly 'com.google.code.gson:gson:2.8.6'
     compileOnly 'org.yaml:snakeyaml:1.26'
     compileOnly 'com.google.guava:guava:21.0'
+    compileOnly 'org.slf4j:slf4j-api:1.7.25'
 
-    compile 'org.slf4j:slf4j-api:1.7.25'
     testCompile 'junit:junit:4.12'
 }
 

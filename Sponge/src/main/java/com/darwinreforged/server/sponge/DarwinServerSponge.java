@@ -10,7 +10,9 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.text.Text;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -30,7 +32,7 @@ public class DarwinServerSponge extends DarwinServer {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        eventBus.post(new ServerStartedEvent(null));
+        getEventBus().post(new ServerStartedEvent(null));
     }
 
     @Listener
@@ -38,7 +40,7 @@ public class DarwinServerSponge extends DarwinServer {
         setupPlatform();
 
         Sponge.getEventManager().registerListeners(this, new SpongeListener());
-        eventBus.post(new ServerInitEvent(null));
+        getEventBus().post(new ServerInitEvent(null));
     }
 
     @Override
@@ -54,5 +56,16 @@ public class DarwinServerSponge extends DarwinServer {
     @Override
     public ServerType getServerType() {
         return ServerType.SPONGE;
+    }
+
+    @Override
+    protected File getLibraryDirectory() {
+        return Sponge.getGame().getSavesDirectory().resolve("data/darwinserver/libraries").toFile();
+    }
+
+    @Override
+    protected void stopServer(String message) {
+        getLog().warn("Warning! Server shutdown requested!");
+        Sponge.getServer().shutdown(Text.of(message));
     }
 }
