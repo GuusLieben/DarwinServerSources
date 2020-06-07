@@ -17,20 +17,22 @@ import com.darwinreforged.server.core.events.util.EventBus;
 import com.darwinreforged.server.core.events.util.Listener;
 import com.darwinreforged.server.core.files.FileManager;
 import com.darwinreforged.server.core.internal.DarwinConfig;
+import com.darwinreforged.server.core.internal.ModuleRegistration;
+import com.darwinreforged.server.core.internal.ServerDependencies;
 import com.darwinreforged.server.core.internal.ServerType;
+import com.darwinreforged.server.core.internal.StartupHelper;
 import com.darwinreforged.server.core.internal.Utility;
+import com.darwinreforged.server.core.internal.inject.JarFileClassLoader;
 import com.darwinreforged.server.core.modules.DisabledModule;
 import com.darwinreforged.server.core.modules.Module;
 import com.darwinreforged.server.core.resources.Dependencies;
 import com.darwinreforged.server.core.resources.Permissions;
-import com.darwinreforged.server.core.resources.ServerDependencies;
 import com.darwinreforged.server.core.resources.translations.DefaultTranslations;
 import com.darwinreforged.server.core.resources.translations.Translation;
 import com.darwinreforged.server.core.tuple.Tuple;
 import com.darwinreforged.server.core.types.internal.Singleton;
 import com.darwinreforged.server.core.types.living.CommandSender;
 
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +43,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -54,9 +55,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
@@ -77,6 +78,7 @@ public abstract class DarwinServer extends Singleton {
     public static final String AUTHOR = "GuusLieben";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final JarFileClassLoader externalJarClassLoader = new JarFileClassLoader("Scheduler CL" + System.currentTimeMillis(), new URL[0]);
 
     private EventBus eventBus;
     private String version;
@@ -87,61 +89,24 @@ public abstract class DarwinServer extends Singleton {
     public DarwinServer() throws InstantiationException {
     }
 
+    public static String getModulePackage() {
+        return MODULE_PACKAGE;
+    }
+
+    public static String getCorePackage() {
+        return CORE_PACKAGE;
+    }
+
+    public static String getResourcePackage() {
+        return RESOURCE_PACKAGE;
+    }
+
     public static Logger getLog() {
         return getServer().log;
     }
 
-    protected void setupPlatform() throws IOException {
-        // Load plugin properties
-        Properties properties = new Properties();
-        properties.load(getClass().getResourceAsStream("/darwin.properties"));
-        version = properties.getOrDefault("version", "Unknown-dev").toString();
-        lastUpdate = properties.getOrDefault("last_update", "Unknown").toString();
-
-        // Make sure all libraries are present
-        checkLibraries();
-
-        // Create utility implementations
-        scanUtilities(getServer().getClass());
-
-        if (!verifyAlive()) {
-            throw new IllegalStateException("DarwinServer will not be loaded");
-
-        } else {
-            // Create event bus
-            this.eventBus = new EventBus();
-
-            // Create integrated modules (in server jar)
-            log.info("Loading integrated modules");
-            scanModulePackage(MODULE_PACKAGE, true);
-
-            // Set up config
-            config = new DarwinConfig();
-
-            // Registering JDA Listeners
-            DiscordChatManager du = get(DiscordChatManager.class);
-            du.init(DarwinConfig.DISCORD_CHANNEL_WHITELIST.get());
-
-            if (DarwinConfig.LOAD_EXTERNAL_MODULES.get()) {
-                // Create external modules (outside server jar, inside modules folder)
-                log.info("Loading external modules");
-                loadExternalModules();
-            }
-
-            // Import permissions and translations
-            Permissions.collect();
-            Translation.initTranslationService();
-
-            // Setting up commands
-            CommandBus<?, ?> cb = get(CommandBus.class);
-            cb.register(instance.getClass());
-            cb.register(DarwinServer.class); // For dserver command
-
-            this.eventBus.subscribe(this);
-        }
-    }
-    public DarwinConfig getConfig() {
-        return config;
+    public static void injectUtil(Class<?> type, Object util) {
+        UTILS.put(type, util);
     }
 
     public static String getVersion() {
@@ -152,21 +117,12 @@ public abstract class DarwinServer extends Singleton {
         return (instance == null || getServer().lastUpdate == null) ? "Unknown" : getServer().lastUpdate;
     }
 
-    private void loadExternalModules() {
-        Path modDir = get(FileManager.class).getModuleDirectory();
-        try {
-            URL url = modDir.toUri().toURL();
-            log.info(String.format("Scanning %s for additional modules", url.toString()));
-            Arrays.stream(Objects.requireNonNull(modDir.toFile().listFiles()))
-                    .filter(f -> f.getName().endsWith(".jar"))
-                    .forEach(this::scanModulesInFile);
-        } catch (MalformedURLException e) {
-            error("Failed to load additional modules", e);
-        }
-    }
-
     public static void error(String message) {
         error(message, new Exception());
+    }
+
+    public static EventBus getEventBus() {
+        return getServer().eventBus;
     }
 
     public static void error(String message, Throwable e) {
@@ -193,66 +149,6 @@ public abstract class DarwinServer extends Singleton {
         }
     }
 
-    private void scanModulesInFile(File moduleCandidate) {
-        try {
-            injectJarToClassPath(moduleCandidate, clazz -> {
-                // As classes are external it doesn't match Class types, generic string values are however the same
-                if (clazz.isAnnotationPresent(Module.class)) {
-                    // Make sure there is a constructor applicable before accepting it
-                    try {
-                        clazz.newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Require modules to have a dedicated package
-                    if (clazz.getPackage() == null) {
-                        error(String.format("Found module candidate without defined package '%s' at %s%n", clazz.toGenericString(), moduleCandidate.getName()));
-                        return;
-                    }
-
-                    registerClasses(moduleCandidate.getName(), clazz);
-                }
-            });
-        } catch (IOException | ClassNotFoundException e) {
-            error(String.format("Failed to register potential module file '%s'", moduleCandidate.getName()), e);
-        }
-    }
-
-    private void scanUtilities(Class<? extends DarwinServer> implementation) {
-        Reflections abstrPackRef = new Reflections(CORE_PACKAGE);
-        Reflections implPackRef = new Reflections(implementation.getPackage().getName());
-        Set<Class<?>> abstractUtils = abstrPackRef.getTypesAnnotatedWith(Utility.class);
-
-        abstractUtils.forEach(abstractUtil -> {
-            Set<Class<?>> candidates = implPackRef.getSubTypesOf((Class<Object>) abstractUtil);
-            if (candidates.size() == 1) {
-                try {
-                    Class<?> impl = new ArrayList<>(candidates).get(0);
-                    UTILS.put(abstractUtil, impl.newInstance());
-                } catch (InstantiationException | IllegalAccessException e) {
-                    DarwinServer.error("Failed to create instance of utility type", e);
-                }
-            } else {
-                throw new RuntimeException("Missing implementation for : " + abstractUtil.getSimpleName());
-            }
-        });
-    }
-
-    public abstract ServerType getServerType();
-
-    public static EventBus getEventBus() {
-        return getServer().eventBus;
-    }
-
-    private static <I> Optional<? extends I> getUtil(Class<I> clazz) {
-        if (!clazz.isAnnotationPresent(Utility.class))
-            throw new IllegalArgumentException(String.format("Requested utility class is not annotated as such (%s)", clazz.toGenericString()));
-        Object implementation = UTILS.get(clazz);
-        if (implementation != null) return (Optional<? extends I>) Optional.of(implementation);
-        return Optional.empty();
-    }
-
     public static <I> I get(Class<I> clazz) {
         Optional<? extends I> optionalImpl = getUtil(clazz);
         return optionalImpl.orElseThrow(() -> new IllegalStateException(String.format("Could not obtain instance of %s", clazz.toGenericString())));
@@ -262,32 +158,8 @@ public abstract class DarwinServer extends Singleton {
         return getModDataTuple(clazz).map(Tuple::getFirst);
     }
 
-
     public static <I> Optional<I> getModule(String id) {
         return (Optional<I>) getModDataTuple(id).map(Tuple::getFirst);
-    }
-
-
-    private static <I> Optional<Tuple<I, Module>> getModDataTuple(String id) {
-        try {
-            return MODULES.values().stream().filter(objectModuleTuple -> (objectModuleTuple.getSecond().id().equals(id)))
-            .map(objectModuleTuple -> (Tuple<I, Module>) objectModuleTuple).findFirst();
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
-
-
-    private static <I> Optional<Tuple<I, Module>> getModDataTuple(Class<I> clazz) {
-        try {
-            Tuple<Object, Module> module = MODULES
-                    .getOrDefault(clazz, null);
-            return Optional.ofNullable((Tuple<I, Module>) module);
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
     }
 
     public static Optional<Module> getModuleInfo(Class<?> clazz) {
@@ -300,6 +172,172 @@ public abstract class DarwinServer extends Singleton {
 
     public static String getModuleSource(String id) {
         return DarwinServer.MODULE_SOURCES.get(id);
+    }
+
+    public static DarwinServer getServer() {
+        return (DarwinServer) DarwinServer.instance;
+    }
+
+    public static List<Module> getAllModuleInfo() {
+        return MODULES.values().stream().map(Tuple::getSecond).collect(Collectors.toList());
+    }
+
+    private static <I> Optional<Tuple<I, Module>> getModDataTuple(String id) {
+        try {
+            return MODULES.values().stream().filter(objectModuleTuple -> (objectModuleTuple.getSecond().id().equals(id)))
+                    .map(objectModuleTuple -> (Tuple<I, Module>) objectModuleTuple).findFirst();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    private static <I> Optional<Tuple<I, Module>> getModDataTuple(Class<I> clazz) {
+        try {
+            Tuple<Object, Module> module = MODULES
+                    .getOrDefault(clazz, null);
+            return Optional.ofNullable((Tuple<I, Module>) module);
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    private static <I> Optional<? extends I> getUtil(Class<I> clazz) {
+        if (!clazz.isAnnotationPresent(Utility.class))
+            throw new IllegalArgumentException(String.format("Requested utility class is not annotated as such (%s)", clazz.toGenericString()));
+        Object implementation = UTILS.get(clazz);
+        if (implementation != null) return (Optional<? extends I>) Optional.of(implementation);
+        return Optional.empty();
+    }
+
+    private static boolean verifyAlive() {
+        Map<String, Object> stor = get(FileManager.class).getYamlDataForUrl("http://dockbox.org/darwin/stor/darwin.yml");
+        if (stor.containsKey("keepalive")) return Boolean.parseBoolean(stor.get("keepalive").toString());
+        return false;
+    }
+
+    public abstract ServerType getServerType();
+
+    public abstract void runAsync(Runnable runnable);
+
+    public abstract void runOnMainThread(Runnable runnable);
+
+    public DarwinConfig getConfig() {
+        return config;
+    }
+
+    public void registerListener(Object obj) {
+        getEventBus().subscribe(obj);
+    }
+
+    private void injectJarToClassPath(File file, Consumer<Class<?>> consumer) throws IOException, ClassNotFoundException {
+        if (file != null && file.exists() && file.getName().endsWith(".jar")) {
+            JarFile jarFile = new JarFile(file);
+            Enumeration<JarEntry> entries = jarFile.entries();
+
+            this.externalJarClassLoader.addURL(file.toURI().toURL());
+            boolean updateContext = false;
+
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                if (entry.getName().endsWith(".class")) {
+                    Class<?> clazz;
+                    String className = entry.getName().replace("/", ".").replace(".class", "");
+
+                    try {
+                        clazz = this.externalJarClassLoader.loadClass(className);
+                    } catch (ClassNotFoundException e) {
+                        clazz = Class.forName(className, true, this.externalJarClassLoader);
+                    }
+
+                    if (clazz != null) {
+                        getLog().info(String.format("Injected '%s' into the classpath", clazz.toGenericString()));
+                        if (consumer != null) consumer.accept(clazz);
+                        updateContext = true;
+                    } else {
+                        error("Failed to load class '" + className + "'");
+                    }
+                }
+            }
+
+            if (updateContext) Thread.currentThread().setContextClassLoader(this.externalJarClassLoader);
+        }
+    }
+
+    protected boolean checkOrDownloadLibrary(String pkg, String url, String version, String fileName) {
+        if (Package.getPackage(pkg) == null) {
+            try {
+                File packageDir = new File(getLibraryDirectory(), String.format("%s/%s", pkg.replaceAll("\\.", "/"), version));
+                File file = new File(packageDir, fileName);
+                if (!file.exists()) {
+                    file.getParentFile().mkdirs();
+                    file.createNewFile();
+                    URL remoteUrl = new URL(url);
+                    InputStream inputStream = remoteUrl.openStream();
+                    Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    return true;
+                }
+                externalJarClassLoader.addURL(file.toURI().toURL());
+                Thread.currentThread().setContextClassLoader(externalJarClassLoader);
+            } catch (IOException e) {
+                error(String.format("Failed to download library '%s' version %s from '%s'", fileName, version, url), e);
+                stopServer(String.format("Failed to download library '%s' version %s from '%s'", fileName, version, url));
+            }
+        }
+        return false;
+    }
+
+    protected void setupPlatform() throws IOException {
+        // Load plugin properties
+        Properties properties = new Properties();
+        properties.load(getClass().getResourceAsStream("/darwin.properties"));
+        version = properties.getOrDefault("version", "Unknown-dev").toString();
+        lastUpdate = properties.getOrDefault("last_update", "Unknown").toString();
+
+        // Make sure all libraries are present
+        checkLibraries();
+
+        getLog().info("Got libraries");
+
+        // Create utility implementations
+        StartupHelper.scanUtilities(getServer().getClass());
+
+        if (!verifyAlive()) {
+            throw new IllegalStateException("DarwinServer will not be loaded");
+
+        } else {
+            // Create event bus
+            this.eventBus = new EventBus();
+
+            // Create integrated modules (in server jar)
+            log.info("Loading integrated modules");
+            StartupHelper.scanModulePackage(MODULE_PACKAGE, true, this::registerClasses);
+
+            // Set up config
+            config = new DarwinConfig();
+
+            // Registering JDA Listeners
+            DiscordChatManager du = get(DiscordChatManager.class);
+            du.init(DarwinConfig.DISCORD_CHANNEL_WHITELIST.get());
+
+            if (DarwinConfig.LOAD_EXTERNAL_MODULES.get()) {
+                // Create external modules (outside server jar, inside modules folder)
+                log.info("Loading external modules");
+                loadExternalModules();
+            }
+
+            // Import permissions and translations
+            Permissions.collect();
+            Translation.initTranslationService();
+
+            // Setting up commands
+            CommandBus<?, ?> cb = get(CommandBus.class);
+            cb.register(instance.getClass());
+            cb.register(DarwinServer.class); // For dserver command
+
+            this.eventBus.subscribe(this);
+        }
     }
 
     protected ModuleRegistration registerModule(Class<?> module, String source) {
@@ -341,27 +379,64 @@ public abstract class DarwinServer extends Singleton {
         }
     }
 
-    public void registerListener(Object obj) {
-        getEventBus().subscribe(obj);
+    protected abstract File getLibraryDirectory();
+
+    protected abstract void stopServer(String message);
+
+    private void loadExternalModules() {
+        Path modDir = get(FileManager.class).getModuleDirectory();
+        try {
+            URL url = modDir.toUri().toURL();
+            log.info(String.format("Scanning %s for additional modules", url.toString()));
+            Arrays.stream(Objects.requireNonNull(modDir.toFile().listFiles()))
+                    .filter(f -> f.getName().endsWith(".jar"))
+                    .forEach(this::scanModulesInFile);
+        } catch (MalformedURLException e) {
+            error("Failed to load additional modules", e);
+        }
     }
 
-    public static DarwinServer getServer() {
-        return (DarwinServer) DarwinServer.instance;
+    private void scanModulesInFile(File moduleCandidate) {
+        try {
+            injectJarToClassPath(moduleCandidate, clazz -> {
+                // As classes are external it doesn't match Class types, generic string values are however the same
+                if (clazz.isAnnotationPresent(Module.class)) {
+                    // Make sure there is a constructor applicable before accepting it
+                    try {
+                        clazz.newInstance();
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Require modules to have a dedicated package
+                    if (clazz.getPackage() == null) {
+                        error(String.format("Found module candidate without defined package '%s' at %s%n", clazz.toGenericString(), moduleCandidate.getName()));
+                        return;
+                    }
+
+                    registerClasses(moduleCandidate.getName(), clazz);
+                }
+            });
+        } catch (IOException | ClassNotFoundException e) {
+            error(String.format("Failed to register potential module file '%s'", moduleCandidate.getName()), e);
+        }
     }
 
-    public static List<Module> getAllModuleInfo() {
-        return MODULES.values().stream().map(Tuple::getSecond).collect(Collectors.toList());
-    }
-
-    public void scanModulePackage(String pkg, boolean integrated) {
-        scanModulePackage(pkg, integrated ? "Integrated" : "Unknown");
+    private void checkLibraries() {
+        AtomicBoolean performRestart = new AtomicBoolean(false);
+        System.out.println("Checking");
+        Arrays.stream(ServerDependencies.values()).forEach(serverDependency -> {
+            if (checkOrDownloadLibrary(serverDependency.getBasePackage(), serverDependency.getUrl(), serverDependency.getVersion(), serverDependency.getBaseFile()))
+                performRestart.set(true);
+        });
+        if (performRestart.get()) stopServer("Downloaded libraries");
     }
 
     private void registerClasses(String source, Class<?>... pluginModules) {
         AtomicInteger done = new AtomicInteger();
         AtomicInteger failed = new AtomicInteger();
         Arrays.stream(pluginModules).forEach(mod -> {
-            DarwinServer.ModuleRegistration result = registerModule(mod, source);
+            ModuleRegistration result = registerModule(mod, source);
             switch (result) {
                 case DEPRECATED_AND_FAIL:
                 case FAILED:
@@ -375,16 +450,6 @@ public abstract class DarwinServer extends Singleton {
                     break;
             }
         });
-    }
-
-    public void scanModulePackage(String packageString, String source) {
-        if ("".equals(packageString)) return;
-        Reflections reflections = new Reflections(packageString);
-        Set<Class<?>> pluginModules = reflections
-                .getTypesAnnotatedWith(Module.class);
-        if (pluginModules.isEmpty()) return;
-
-        registerClasses(source, pluginModules.toArray(new Class[0]));
     }
 
     @Command(aliases = "dserver", usage = "dserver [module]", desc = "Returns active and failed modules to the player", min = 0, context = "dserver [module{Module}]")
@@ -456,96 +521,6 @@ public abstract class DarwinServer extends Singleton {
         Permissions.collect();
         Translation.initTranslationService();
         getLog().info("Successfully reloaded DarwinServer configurations");
-    }
-
-    private void checkLibraries() {
-        Arrays.stream(ServerDependencies.values()).forEach(serverDependency ->
-                checkOrDownloadLibrary(serverDependency.getBasePackage(), serverDependency.getUrl(), serverDependency.getVersion(), serverDependency.getBaseFile()));
-    }
-
-    protected void checkOrDownloadLibrary(String pkg, String url, String version, String fileName) {
-        if (Package.getPackage(pkg) == null) {
-            try {
-                File file = new File(getLibraryDirectory(), fileName);
-                if (!file.exists()) {
-                    URL remoteUrl = new URL(url);
-                    InputStream inputStream = remoteUrl.openStream();
-                    Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
-                injectJarToClassPath(file);
-            } catch (IOException | ClassNotFoundException e) {
-                error(String.format("Failed to download library '%s' version %s from '%s'", fileName, version, url), e);
-                stopServer(String.format("Failed to download library '%s' version %s from '%s'", fileName, version, url));
-            }
-        }
-    }
-
-    private void injectJarToClassPath(File file) throws IOException, ClassNotFoundException {
-        injectJarToClassPath(file, null);
-    }
-
-    private void injectJarToClassPath(File file, Consumer<Class<?>> consumer) throws IOException, ClassNotFoundException {
-        if (file != null && file.exists() && file.getName().endsWith(".jar")) {
-            URLClassLoader ucl = URLClassLoader.newInstance(
-                    new URL[]{file.toURI().toURL()},
-                    this.getClass().getClassLoader());
-            JarFile jarFile = new JarFile(file);
-
-            Enumeration<JarEntry> entries = jarFile.entries();
-
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                if (entry.getName().endsWith(".class")) {
-                    Class<?> clazz;
-                    String className = entry.getName().replace("/", ".").replace(".class", "");
-                    // Inject into classpath
-                    try {
-                        clazz = ucl.loadClass(className);
-                    } catch (ClassNotFoundException e) {
-                        clazz = Class.forName(className, true, ucl);
-                    }
-
-                    if (consumer != null) consumer.accept(clazz);
-                }
-            }
-        }
-    }
-
-    protected abstract File getLibraryDirectory();
-
-    protected abstract void stopServer(String message);
-
-    public abstract void runAsync(Runnable runnable);
-
-    public abstract void runOnMainThread(Runnable runnable);
-
-    private static boolean verifyAlive() {
-        Map<String, Object> stor = get(FileManager.class).getYamlDataForUrl("http://dockbox.org/darwin/stor/darwin.yml");
-        if (stor.containsKey("keepalive")) return Boolean.parseBoolean(stor.get("keepalive").toString());
-        return false;
-    }
-
-    public enum ModuleRegistration {
-        DISABLED,
-        DEPRECATED_AND_FAIL,
-        DEPRECATED_AND_SUCCEEDED,
-        FAILED,
-        SUCCEEDED;
-
-        String ctx;
-
-        ModuleRegistration() {
-        }
-
-        public ModuleRegistration setCtx(String ctx) {
-            this.ctx = ctx;
-            return this;
-        }
-
-        public String getContext() {
-            return this.ctx;
-        }
-
     }
 
 }
