@@ -39,7 +39,7 @@ subprojects { Project subProject ->
             ant.mkdir(dir: DIST_DEST_DIR)
             ant.copy(todir: DIST_DEST_DIR) {
                 fileset dir: DIRT_SRC_DIR,
-                        includes: "*.jar"
+                        includes: "*${version}-${date}*.jar"
             }
 
             delete buildDir
@@ -49,23 +49,15 @@ subprojects { Project subProject ->
     afterEvaluate {
         def buildTask = subProject.tasks.find { it.name == 'build' }
         if (buildTask) {
-            buildTask.finalizedBy(aggregatedJavadocs)
+            buildTask.finalizedBy aggregatedJavadocs
         }
-        def docTask = subProject.tasks.find { it.name == 'javadoc' }
-        if (docTask) {
-            docTask.finalizedBy(copyArtifacts)
-        }
+        aggregatedJavadocs.finalizedBy copyArtifacts
     }
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
 
     tasks.build.dependsOn tasks.shadowJar
-
-    shadowJar {
-        relocate 'com.fasterxml.jackson', 'com.darwinreforged.internal.jackson'
-        relocate 'org.apache.commons', 'com.darwinreforged.internal.apache.commons'
-    }
 }
 
 allprojects {
@@ -99,16 +91,20 @@ allprojects {
             compileOnly 'com.boydti:fawe-api:latest'
             compileOnly 'com.sk89q.worldedit:worldedit-core:6.1'
             compileOnly "com.plotsquared:plotsquared-api:3.1"
+
+            compileOnly 'com.j256.ormlite:ormlite-core:5.1'
+            compileOnly 'com.j256.ormlite:ormlite-jdbc:5.1'
+            compileOnly 'org.slf4j:slf4j-api:1.7.25'
         }
     }
 }
 
 task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
-    destinationDir = file("./docs")
+    destinationDir = file "./docs"
     title = "DarwinServer (commit #$version)"
     options.author true
     options.links 'http://docs.spring.io/spring/docs/4.3.x/javadoc-api/', 'http://docs.oracle.com/javase/8/docs/api/', 'http://docs.spring.io/spring-ws/docs/2.3.0.RELEASE/api/', 'http://docs.spring.io/spring-security/site/docs/4.0.4.RELEASE/apidocs/'
-    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption 'Xdoclint:none', '-quiet'
 
     delete "./docs"
 
