@@ -60,7 +60,7 @@ public class DarwinServerSponge extends DarwinServer {
 
     @Override
     protected File getLibraryDirectory() {
-        return Sponge.getGame().getSavesDirectory().resolve("data/darwinserver/libraries").toFile();
+        return Sponge.getGame().getSavesDirectory().resolve("libraries").toFile();
     }
 
     @Override
