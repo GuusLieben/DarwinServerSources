@@ -19,7 +19,6 @@ import com.darwinreforged.server.core.modules.Module;
 import com.darwinreforged.server.core.player.DarwinPlayer;
 import com.darwinreforged.server.core.resources.Permissions;
 import com.darwinreforged.server.core.resources.translations.DefaultTranslations;
-import com.darwinreforged.server.core.resources.translations.WikiTranslations;
 import com.darwinreforged.server.core.types.living.CommandSender;
 
 import java.io.File;

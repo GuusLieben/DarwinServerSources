@@ -1,6 +1,7 @@
-package com.darwinreforged.server.core.resources.translations;
+package com.darwinreforged.server.modules.headsevolved;
 
 import com.darwinreforged.server.core.resources.ConfigSetting;
+import com.darwinreforged.server.core.resources.translations.Translation;
 
 @ConfigSetting("headdatabase")
 public class HeadDbTranslations {

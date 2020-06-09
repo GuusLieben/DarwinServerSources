@@ -1,6 +1,7 @@
-package com.darwinreforged.server.core.resources.translations;
+package com.darwinreforged.server.modules.tickets;
 
 import com.darwinreforged.server.core.resources.ConfigSetting;
+import com.darwinreforged.server.core.resources.translations.Translation;
 
 @ConfigSetting("tickets")
 public class TicketTranslations {

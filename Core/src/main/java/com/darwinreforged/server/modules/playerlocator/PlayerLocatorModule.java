@@ -10,7 +10,6 @@ import com.darwinreforged.server.core.player.DarwinPlayer;
 import com.darwinreforged.server.core.player.PlayerManager;
 import com.darwinreforged.server.core.resources.Permissions;
 import com.darwinreforged.server.core.resources.translations.DefaultTranslations;
-import com.darwinreforged.server.core.resources.translations.PlayerLocatorTranslations;
 import com.darwinreforged.server.core.types.living.CommandSender;
 import com.darwinreforged.server.core.types.location.DarwinWorld;
 import com.intellectualcrafters.plot.object.Plot;

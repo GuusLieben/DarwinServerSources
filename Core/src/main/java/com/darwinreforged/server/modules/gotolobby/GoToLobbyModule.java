@@ -10,7 +10,6 @@ import com.darwinreforged.server.core.modules.Module;
 import com.darwinreforged.server.core.player.DarwinPlayer;
 import com.darwinreforged.server.core.player.state.GameModes;
 import com.darwinreforged.server.core.resources.Permissions;
-import com.darwinreforged.server.core.resources.translations.GoToLobbyTranslations;
 import com.darwinreforged.server.core.types.time.TimeDifference;
 import com.darwinreforged.server.core.util.CommonUtils;
 

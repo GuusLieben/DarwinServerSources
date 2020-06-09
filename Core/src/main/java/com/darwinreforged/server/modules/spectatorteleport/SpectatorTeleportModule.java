@@ -10,7 +10,6 @@ import com.darwinreforged.server.core.modules.Module;
 import com.darwinreforged.server.core.player.DarwinPlayer;
 import com.darwinreforged.server.core.player.state.GameModes;
 import com.darwinreforged.server.core.resources.Permissions;
-import com.darwinreforged.server.core.resources.translations.SpectatorTeleportTranslations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
