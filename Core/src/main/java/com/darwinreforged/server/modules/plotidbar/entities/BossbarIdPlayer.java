@@ -28,6 +28,6 @@ public class BossbarIdPlayer extends DarwinPlayer {
     }
 
     private void updatePlotIdBar() {
-        DarwinServer.get(CommonUtils.class).toggleBossbar(plotIdBar, this);
+        DarwinServer.getUtilMan().get(CommonUtils.class).toggleBossbar(plotIdBar, this);
     }
 }

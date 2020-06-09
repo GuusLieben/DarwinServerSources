@@ -50,7 +50,7 @@ public class DarwinWorld {
      @return the player count
      */
     public int getPlayerCount() {
-        return DarwinServer.get(LocationUtils.class).getPlayerCountInWorld(this);
+        return DarwinServer.getUtilMan().get(LocationUtils.class).getPlayerCountInWorld(this);
     }
 
     /**
@@ -67,6 +67,6 @@ public class DarwinWorld {
      the keep loaded
      */
     public void unloadWorld(boolean keepLoaded) {
-        DarwinServer.get(LocationUtils.class).unloadWorld(this, keepLoaded);
+        DarwinServer.getUtilMan().get(LocationUtils.class).unloadWorld(this, keepLoaded);
     }
 }

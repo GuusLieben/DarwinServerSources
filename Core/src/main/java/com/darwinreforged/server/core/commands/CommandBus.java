@@ -217,7 +217,7 @@ public abstract class CommandBus<C, A extends ArgumentTypeValue<?>> {
                 o = field.get(null);
             } else {
                 Optional<?> modOptional;
-                if (c.isAnnotationPresent(Module.class) && (modOptional = DarwinServer.getModule(c)).isPresent()) {
+                if (c.isAnnotationPresent(Module.class) && (modOptional = DarwinServer.getModMan().getModule(c)).isPresent()) {
                     o = modOptional.get();
                 } else {
                     o = c.getConstructor().newInstance();

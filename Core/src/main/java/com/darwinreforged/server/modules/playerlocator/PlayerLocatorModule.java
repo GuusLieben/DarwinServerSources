@@ -39,7 +39,7 @@ public class PlayerLocatorModule {
             if (playerCandidate.isPresent()) {
                 DarwinPlayer p = playerCandidate.get().getValue();
                 worldForPlayer(p, src);
-            } else DarwinServer.get(PlayerManager.class).getOnlinePlayers().forEach(p -> worldForPlayer(p, src));
+            } else DarwinServer.getUtilMan().get(PlayerManager.class).getOnlinePlayers().forEach(p -> worldForPlayer(p, src));
         }
     }
 

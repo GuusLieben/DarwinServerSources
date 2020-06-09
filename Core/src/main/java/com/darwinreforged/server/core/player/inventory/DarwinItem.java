@@ -34,7 +34,7 @@ public class DarwinItem<I> {
      the lore
      */
     public void setLore(String[] lore) {
-        this.itemReference = (I) DarwinServer.get(ItemUtils.class).setLore(lore, this);
+        this.itemReference = (I) DarwinServer.getUtilMan().get(ItemUtils.class).setLore(lore, this);
     }
 
     /**
@@ -44,7 +44,7 @@ public class DarwinItem<I> {
      the display name
      */
     public void setDisplayName(String displayName) {
-        this.itemReference = (I) DarwinServer.get(ItemUtils.class).setDisplayName(displayName, this);
+        this.itemReference = (I) DarwinServer.getUtilMan().get(ItemUtils.class).setDisplayName(displayName, this);
     }
 
     /**
@@ -53,7 +53,7 @@ public class DarwinItem<I> {
      @return the display name
      */
     public String getDisplayName() {
-        return DarwinServer.get(ItemUtils.class).getDisplayName(this);
+        return DarwinServer.getUtilMan().get(ItemUtils.class).getDisplayName(this);
     }
 
     /**

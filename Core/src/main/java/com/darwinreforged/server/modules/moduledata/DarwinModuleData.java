@@ -1,8 +1,8 @@
 package com.darwinreforged.server.modules.moduledata;
 
+import com.darwinreforged.server.core.DarwinServer;
 import com.darwinreforged.server.core.events.internal.server.ServerStartedEvent;
 import com.darwinreforged.server.core.events.util.Listener;
-import com.darwinreforged.server.core.DarwinServer;
 import com.darwinreforged.server.core.files.FileManager;
 import com.darwinreforged.server.core.modules.Module;
 
@@ -32,9 +32,9 @@ public class DarwinModuleData {
      */
     @Listener
     public void onServerStart(ServerStartedEvent event) {
-        File dataFile = new File(DarwinServer.get(FileManager.class).getDataDirectory(this).toFile(), "module_data.yml");
-        DarwinServer.getAllModuleInfo().forEach(this::registerPlugin);
-        DarwinServer.get(FileManager.class).writeYamlDataToFile(data, dataFile);
+        File dataFile = new File(DarwinServer.getUtilMan().get(FileManager.class).getDataDirectory(this).toFile(), "module_data.yml");
+        DarwinServer.getModMan().getAllModuleInfo().forEach(this::registerPlugin);
+        DarwinServer.getUtilMan().get(FileManager.class).writeYamlDataToFile(data, dataFile);
     }
 
     private void registerPlugin(Module module) {
@@ -48,7 +48,7 @@ public class DarwinModuleData {
         data.put("description", module.description());
         data.put("url", module.url());
         data.put("authors", module.authors());
-        data.put("source", DarwinServer.getModuleSource(module.id()));
+        data.put("source", DarwinServer.getModMan().getModuleSource(module.id()));
 
         // Write plugin data to unique file
         this.data.put(module.id(), data);

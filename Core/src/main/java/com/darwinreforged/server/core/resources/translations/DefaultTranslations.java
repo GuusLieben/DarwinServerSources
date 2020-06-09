@@ -51,7 +51,7 @@ public class DefaultTranslations {
     public static final Translation ACTIVE_MODULE_ROW = Translation.create("module_row_active", "$2 - &a[Loaded] $1{0} $3- $2{1} {2}");
     public static final Translation DARWIN_MODULE_TITLE = Translation.create("module_info_title", "$1Darwin Server Info");
     public static final Translation DARWIN_MODULE_PADDING = Translation.create("padding", "&m$2=");
-    public static final Translation DARWIN_SERVER_VERSION = Translation.create("dserver_version", "$2&lDarwin Server &r$3($1Version$3: $1{0}$3)");
+    public static final Translation DARWIN_SERVER_VERSION = Translation.create("dserver_version", "$2&lDarwin Server &r$3($1Version$3: $1{0} $3- $2Platform:{1}$3)");
     public static final Translation DARWIN_SERVER_UPDATE = Translation.create("dserver_last_update", "$2&lLast updated&r$3: $1{0}");
     public static final Translation DARWIN_SERVER_AUTHOR = Translation.create("dserver_authors", "$2&lAuthor&r$3: $1{0}");
     public static final Translation DARWIN_SERVER_MODULE_HEAD = Translation.create("dserver_modules_header", "$2&lModules&r$3:");

@@ -159,7 +159,7 @@ public class Translation {
 
     @JsonIgnore
     public static void initTranslationService() {
-        FileManager fm = DarwinServer.get(FileManager.class);
+        FileManager fm = DarwinServer.getUtilMan().get(FileManager.class);
         if (!getStorageFile(fm).exists()) {
             Reflections ref = new Reflections(Translation.class.getPackage().getName());
             Set<Class<?>> bulkTranslationTypes = ref.getTypesAnnotatedWith(ConfigSetting.class);
@@ -178,7 +178,7 @@ public class Translation {
 
     @SuppressWarnings("unchecked")
     public static void readFromFile() {
-        FileManager fm = DarwinServer.get(FileManager.class);
+        FileManager fm = DarwinServer.getUtilMan().get(FileManager.class);
         Map<String, Object> storedTranslations = fm.getYamlDataFromFile(getStorageFile(fm));
         storedTranslations.forEach((category, map) -> {
             if (!(map instanceof Map))

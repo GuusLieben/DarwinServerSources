@@ -145,7 +145,7 @@ public class SpongeCommandBus extends CommandBus<CommandContext, SpongeArgumentT
 
     private Object getValue(Object obj) {
         if (obj instanceof Player) {
-            PlayerManager pm = DarwinServer.get(PlayerManager.class);
+            PlayerManager pm = DarwinServer.getUtilMan().get(PlayerManager.class);
             DarwinPlayer dplayer = pm.getPlayer(((Player) obj).getUniqueId(), ((Player) obj).getName());
             return dplayer;
 
@@ -285,7 +285,7 @@ public class SpongeCommandBus extends CommandBus<CommandContext, SpongeArgumentT
     private CommandExecutor buildExecutor(CommandRunner runner, String command) {
         return (src, args) -> {
             CommandSender sender;
-            if (src instanceof Player) sender = DarwinServer.get(PlayerManager.class).getPlayer(((Player) src).getUniqueId(), src.getName());
+            if (src instanceof Player) sender = DarwinServer.getUtilMan().get(PlayerManager.class).getPlayer(((Player) src).getUniqueId(), src.getName());
             else if (src instanceof ConsoleSource) sender = Console.instance;
             else sender = null;
 
@@ -361,7 +361,7 @@ public class SpongeCommandBus extends CommandBus<CommandContext, SpongeArgumentT
         @Nullable
         @Override
         protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-            Object module = DarwinServer.getModuleInfo(args.next());
+            Object module = DarwinServer.getModMan().getModuleInfo(args.next());
             if (module != null && ((Optional<?>) module).isPresent()) return ((Optional<?>) module).get();
             return null;
         }
@@ -371,7 +371,7 @@ public class SpongeCommandBus extends CommandBus<CommandContext, SpongeArgumentT
                 CommandSource src,
                 CommandArgs args,
                 CommandContext context) {
-            return DarwinServer.getAllModuleInfo().stream().map(Module::id).collect(Collectors.toList());
+            return DarwinServer.getModMan().getAllModuleInfo().stream().map(Module::id).collect(Collectors.toList());
         }
     }
 

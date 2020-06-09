@@ -19,7 +19,7 @@ public class DarwinUser extends Target {
 
     @Override
     public void execute(String cmd) {
-        PlayerManager pm = DarwinServer.get(PlayerManager.class);
+        PlayerManager pm = DarwinServer.getUtilMan().get(PlayerManager.class);
         if (pm.isOnline(super.uuid)) pm.executeCmd(cmd, this);
         else throw new UnsupportedOperationException("Cannot perform command for offline user");
     }

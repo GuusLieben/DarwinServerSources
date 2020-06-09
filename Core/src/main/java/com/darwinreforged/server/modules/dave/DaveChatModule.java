@@ -56,7 +56,7 @@ public class DaveChatModule {
      */
     @Listener
     public void onServerInit(ServerInitEvent event) {
-        DarwinServer.getServer().registerListener(new DaveChatListeners());
+        DarwinServer.getEventBus().subscribe(new DaveChatListeners());
         setupConfigurations();
     }
 
@@ -144,7 +144,7 @@ public class DaveChatModule {
             Optional<DaveTrigger> candidate = configurationUtil.getTriggers().stream().filter(t -> t.getId().equals(id)).findFirst();
             boolean sent = false;
             if (candidate.isPresent()) {
-                Optional<DaveChatModule> chatModuleOptional = DarwinServer.getModule(DaveChatModule.class);
+                Optional<DaveChatModule> chatModuleOptional = DarwinServer.getModMan().getModule(DaveChatModule.class);
                 if (chatModuleOptional.isPresent()) {
                     Text botPrefix = chatModuleOptional.get().getConfigurationUtil().getPrefix();
                     String botDefaultColor = chatModuleOptional.get().getConfigurationUtil().getMessageDefaultColor().replaceAll("&", "\u00A7");

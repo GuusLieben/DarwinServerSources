@@ -98,14 +98,14 @@ public enum Permissions {
     }
 
     public static void collect() {
-        DarwinServer.getModule(DefaultModule.class).ifPresent(module -> {
+        DarwinServer.getModMan().getModule(DefaultModule.class).ifPresent(module -> {
             Map<String, Object> configMap;
-            File file = new File(DarwinServer.get(FileManager.class).getConfigDirectory(module).toFile(), "permissions.yml");
+            File file = new File(DarwinServer.getUtilMan().get(FileManager.class).getConfigDirectory(module).toFile(), "permissions.yml");
             if (!file.exists()) {
                 configMap = new HashMap<>();
                 Arrays.stream(Permissions.values()).forEach(translation -> configMap.put(translation.name().toLowerCase().replaceAll("_", "."), translation.p()));
-                DarwinServer.get(FileManager.class).writeYamlDataToFile(configMap, file);
-            } else configMap = DarwinServer.get(FileManager.class).getYamlDataFromFile(file);
+                DarwinServer.getUtilMan().get(FileManager.class).writeYamlDataToFile(configMap, file);
+            } else configMap = DarwinServer.getUtilMan().get(FileManager.class).getYamlDataFromFile(file);
 
             configMap.forEach((k, v) -> {
                 try {

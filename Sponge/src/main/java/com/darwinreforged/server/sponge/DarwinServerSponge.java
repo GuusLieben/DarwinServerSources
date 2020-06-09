@@ -37,7 +37,7 @@ public class DarwinServerSponge extends DarwinServer {
 
     @Listener
     public void onServerInit(GameInitializationEvent event) throws IOException {
-        setupPlatform();
+        setup();
 
         Sponge.getEventManager().registerListeners(this, new SpongeListener());
         getEventBus().post(new ServerInitEvent(null));

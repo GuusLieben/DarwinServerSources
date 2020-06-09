@@ -23,7 +23,7 @@ public class DarwinConfig {
     public static final BooleanFlag PERMIT_BYPASS = new BooleanFlag("permitBypassAllPermission", true);
 
     public DarwinConfig() {
-        FileManager fu = DarwinServer.get(FileManager.class);
+        FileManager fu = DarwinServer.getUtilMan().get(FileManager.class);
         Map<String, Object> config = fu.getYamlDataForConfig(DefaultModule.class);
         AtomicBoolean written = new AtomicBoolean(config.isEmpty());
         FLAGS.forEach((k, v) -> {

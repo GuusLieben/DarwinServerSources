@@ -30,7 +30,7 @@ public class Pagination {
     }
 
     public void sendTo(MessageReceiver receiver) {
-        DarwinServer.get(PlayerManager.class).sendPagination(receiver, this);
+        DarwinServer.getUtilMan().get(PlayerManager.class).sendPagination(receiver, this);
     }
 
     public Text getPadding() {

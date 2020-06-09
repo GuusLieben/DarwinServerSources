@@ -22,7 +22,7 @@ public class DaveRawUtils {
      @return the associated trigger
      */
     public static DaveTrigger getAssociatedTrigger(String message) {
-        Optional<DaveChatModule> chatModuleOptional = DarwinServer.getModule(DaveChatModule.class);
+        Optional<DaveChatModule> chatModuleOptional = DarwinServer.getModMan().getModule(DaveChatModule.class);
         if (chatModuleOptional.isPresent()) {
             for (DaveTrigger entry : chatModuleOptional.get().getConfigurationUtil().getTriggers()) {
                 for (String trigger : entry.getTrigger()) {
@@ -56,7 +56,7 @@ public class DaveRawUtils {
      */
     public static String parsePlaceHolders(String message, String unparsedResponse, String playername) {
         String parsedResponse = unparsedResponse.replaceAll("<player>", playername);
-        DiscordChatManager du = DarwinServer.get(DiscordChatManager.class);
+        DiscordChatManager du = DarwinServer.getUtilMan().get(DiscordChatManager.class);
 
 
         if (parsedResponse.contains("<mention>")) {
@@ -82,7 +82,7 @@ public class DaveRawUtils {
         }
 
         if (parsedResponse.contains("<random>")) {
-            PlayerManager pu = DarwinServer.get(PlayerManager.class);
+            PlayerManager pu = DarwinServer.getUtilMan().get(PlayerManager.class);
             int index = new Random().nextInt(pu.getOnlinePlayers().size());
             String randomPlayer = ((DarwinPlayer) pu.getOnlinePlayers().toArray()[index]).getName();
 

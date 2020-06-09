@@ -93,8 +93,8 @@ public abstract class FileManager {
      */
     public <T, I> Dao<T, I> getDataDb(Class<T> object, Object module) {
         Optional<Module> info;
-        if (module instanceof Class) info = DarwinServer.getModuleInfo((Class<?>) module);
-        else info = DarwinServer.getModuleInfo(module.getClass());
+        if (module instanceof Class) info = DarwinServer.getModMan().getModuleInfo((Class<?>) module);
+        else info = DarwinServer.getModMan().getModuleInfo(module.getClass());
 
         if (info.isPresent()) {
             String id = info.get().id();
@@ -247,8 +247,8 @@ public abstract class FileManager {
     public File getYamlConfigFile(Object module, boolean createIfNotExists) {
         Path path = getConfigDirectory(module);
         Optional<Module> info;
-        if (module instanceof Class) info = DarwinServer.getModuleInfo((Class<?>) module);
-        else info = DarwinServer.getModuleInfo(module.getClass());
+        if (module instanceof Class) info = DarwinServer.getModMan().getModuleInfo((Class<?>) module);
+        else info = DarwinServer.getModMan().getModuleInfo(module.getClass());
 
         if (info.isPresent()) {
             String moduleId = info.get().id();

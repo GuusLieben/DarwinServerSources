@@ -44,7 +44,7 @@ public class DaveChatListeners {
                 .equals("global")) {
             Console console = Console.instance;
             Executor.beforeExecution(playername, message, botPrefix, botDefaultColor, console, true);
-            DarwinServer.get(CommonUtils.class).scheduler()
+            DarwinServer.getUtilMan().get(CommonUtils.class).scheduler()
                     .execute(new Executor())
                     .delayTicks(5)
                     .submit();
@@ -52,7 +52,7 @@ public class DaveChatListeners {
     }
 
     private void beforeEach() {
-        Optional<DaveChatModule> chatModuleOptional = DarwinServer.getModule(DaveChatModule.class);
+        Optional<DaveChatModule> chatModuleOptional = DarwinServer.getModMan().getModule(DaveChatModule.class);
         if (chatModuleOptional.isPresent()) {
             botPrefix = chatModuleOptional.get().getConfigurationUtil().getPrefix();
             botDefaultColor = chatModuleOptional.get().getConfigurationUtil().getMessageDefaultColor().replaceAll("&", "\u00A7");
@@ -67,7 +67,7 @@ public class DaveChatListeners {
         if (event.isGlobalChat())
             if (!(event.getTarget() instanceof Console)) {
                 Executor.beforeExecution(playername, event.getMessage(), botPrefix, botDefaultColor, (DarwinPlayer) event.getTarget(), false);
-                DarwinServer.get(CommonUtils.class).scheduler()
+                DarwinServer.getUtilMan().get(CommonUtils.class).scheduler()
                         .execute(new Executor())
                         .delayTicks(5)
                         .submit();
@@ -113,7 +113,7 @@ public class DaveChatListeners {
             if (perm != null) {
                 if (isDiscordSource) return;
                 else {
-                    PlayerManager pm = DarwinServer.get(PlayerManager.class);
+                    PlayerManager pm = DarwinServer.getUtilMan().get(PlayerManager.class);
                     Optional<DarwinPlayer> dp = pm.getPlayer(playername);
                     if (dp.isPresent() && !dp.get().hasPermission(perm)) return;
                 }
@@ -151,9 +151,9 @@ public class DaveChatListeners {
                 message.setHoverEvent(new HoverEvent(HoverAction.SHOW_TEXT, DaveTranslations.DAVE_LINK_SUGGESTION_HOVER.f(response)));
             } else message.append(response);
 
-            PlayerManager pu = DarwinServer.get(PlayerManager.class);
+            PlayerManager pu = DarwinServer.getUtilMan().get(PlayerManager.class);
 
-            DarwinServer.getModule(DaveChatModule.class).ifPresent(dave -> {
+            DarwinServer.getModMan().getModule(DaveChatModule.class).ifPresent(dave -> {
                 // Regular chat module
                 pu.getOnlinePlayers().stream()
                         .filter(op -> !dave.getPlayerWhoMutedDave().contains(op.getUniqueId()) || important)
@@ -165,7 +165,7 @@ public class DaveChatListeners {
                 for (String regex : new String[]{"(&)([a-f])+", "(&)([0-9])+", "&l", "&n", "&o", "&k", "&m", "&r"})
                     discordMessage = discordMessage.replaceAll(regex, "");
 
-                DarwinServer.get(DiscordChatManager.class).sendToChannel(DaveTranslations.DAVE_DISCORD_FORMAT.f(discordMessage), discordChannel.getId());
+                DarwinServer.getUtilMan().get(DiscordChatManager.class).sendToChannel(DaveTranslations.DAVE_DISCORD_FORMAT.f(discordMessage), discordChannel.getId());
             });
         }
     }

@@ -44,7 +44,7 @@ public abstract class PlayerManager {
     private static void updateUtil() {
         if (man == null) {
             DarwinServer.getLog().info("Starting player caching");
-            man = DarwinServer.get(PlayerManager.class);
+            man = DarwinServer.getUtilMan().get(PlayerManager.class);
         }
     }
 

@@ -33,7 +33,7 @@ public class DaveConfigurationUtil {
      Instantiates a new Dave configuration util.
      */
     public DaveConfigurationUtil() {
-        FileManager fu = DarwinServer.get(FileManager.class);
+        FileManager fu = DarwinServer.getUtilMan().get(FileManager.class);
 
         // Load triggers
         File triggerFile = new File(fu.getDataDirectory(DaveChatModule.class).toFile(), "triggers.yml");
@@ -63,7 +63,7 @@ public class DaveConfigurationUtil {
         // Load config
         Map<String, Object> daveConfig = fu.getYamlDataForConfig(DaveChatModule.class);
         boolean updateConfig = false;
-        DiscordChatManager du = DarwinServer.get(DiscordChatManager.class);
+        DiscordChatManager du = DarwinServer.getUtilMan().get(DiscordChatManager.class);
         String channelId;
         if (daveConfig.containsKey("channel")) {
             channelId = String.valueOf(daveConfig.get("channel"));

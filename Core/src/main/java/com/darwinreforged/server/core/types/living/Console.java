@@ -48,7 +48,7 @@ public class Console extends CommandSender {
 
     @Override
     public void execute(String cmd) {
-        DarwinServer.get(PlayerManager.class).executeCmd(cmd, this);
+        DarwinServer.getUtilMan().get(PlayerManager.class).executeCmd(cmd, this);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class Console extends CommandSender {
 
     @Override
     public void sendMessage(Text text, boolean plain) {
-        PlayerManager man = DarwinServer.get(PlayerManager.class);
+        PlayerManager man = DarwinServer.getUtilMan().get(PlayerManager.class);
         if (plain) man.tellNoMarkup(this, text);
         else man.tell(this, text);
     }

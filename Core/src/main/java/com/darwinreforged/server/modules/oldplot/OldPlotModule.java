@@ -47,7 +47,7 @@ public class OldPlotModule {
 
         String playerName = optionalPlayerArg.get().getValue();
 
-        FileManager fm = DarwinServer.get(FileManager.class);
+        FileManager fm = DarwinServer.getUtilMan().get(FileManager.class);
         Path dataDir = fm.getDataDirectory(this);
         File file = new File(dataDir.toFile(), "oldplots.db");
 
@@ -110,7 +110,7 @@ public class OldPlotModule {
                 int teleportToX = oldPlotWorld.getHomeX(xArgCandidate.get().getValue());
                 int teleportToZ = oldPlotWorld.getHomeZ(zArgCandidate.get().getValue());
 
-                Optional<DarwinWorld> worldCandidate = DarwinServer.get(LocationUtils.class).getWorld(teleportToWorld);
+                Optional<DarwinWorld> worldCandidate = DarwinServer.getUtilMan().get(LocationUtils.class).getWorld(teleportToWorld);
                 if (worldCandidate.isPresent()) {
                     DarwinWorld world = worldCandidate.get();
                     Vector3i vec3i = new Vector3i(teleportToX, oldPlotWorld.getHeight(), teleportToZ);

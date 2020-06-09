@@ -14,8 +14,8 @@ public class SpongeFileManager extends FileManager {
     @Override
     public Path getDataDirectory(Object plugin) {
         Optional<Module> infoOptional;
-        if (plugin instanceof Class) infoOptional = DarwinServer.getModuleInfo((Class<?>) plugin);
-        else infoOptional = DarwinServer.getModuleInfo(plugin.getClass());
+        if (plugin instanceof Class) infoOptional = DarwinServer.getModMan().getModuleInfo((Class<?>) plugin);
+        else infoOptional = DarwinServer.getModMan().getModuleInfo(plugin.getClass());
 
         if (infoOptional.isPresent()) {
             Path darwinDataPath = infoOptional.map(moduleInfo -> Sponge.getGame().getSavesDirectory().resolve("data/" + moduleInfo.id())).get().toAbsolutePath();
@@ -33,8 +33,8 @@ public class SpongeFileManager extends FileManager {
     @Override
     public Path getConfigDirectory(Object plugin) {
         Optional<Module> infoOptional;
-        if (plugin instanceof Class) infoOptional = DarwinServer.getModuleInfo((Class<?>) plugin);
-        else infoOptional = DarwinServer.getModuleInfo(plugin.getClass());
+        if (plugin instanceof Class) infoOptional = DarwinServer.getModMan().getModuleInfo((Class<?>) plugin);
+        else infoOptional = DarwinServer.getModMan().getModuleInfo(plugin.getClass());
 
         Path darwinConfigPath = Sponge.getConfigManager().getPluginConfig(DarwinServer.getServer()).getDirectory();
 
