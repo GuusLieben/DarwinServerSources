@@ -79,7 +79,7 @@ public class ModuleManager {
         Path modDir = DarwinServer.getUtilMan().get(FileManager.class).getModuleDirectory();
         try {
             URL url = modDir.toUri().toURL();
-            DarwinServer.getLog().info(String.format("Scanning %s for additional modules", url.toString()));
+            DarwinServer.getLog().info("Scanning {} for additional modules", url.toString());
             Arrays.stream(Objects.requireNonNull(modDir.toFile().listFiles()))
                     .filter(f -> f.getName().endsWith(".jar"))
                     .forEach(this::scanModulesInFile);

@@ -177,9 +177,9 @@ public abstract class DarwinServer extends Singleton {
         DarwinServer.getLog().info("Successfully reloaded DarwinServer configurations");
     }
 
-    protected abstract File getLibraryDirectory();
+    public abstract File getLibraryDirectory();
 
-    protected abstract void stopServer(String message);
+    public abstract void stopServer(String message);
 
     public abstract ServerType getServerType();
 

@@ -69,12 +69,12 @@ public abstract class CommandBus<C, A extends ArgumentTypeValue<?>> {
             if (obj instanceof Class) clazz = (Class<?>) obj;
             else clazz = obj.getClass();
 
-            DarwinServer.getLog().info(String.format("\n\nScanning %s for commands", clazz.toGenericString()));
+            DarwinServer.getLog().info("\n\nScanning {} for commands", clazz.toGenericString());
             try {
                 if (clazz.isAnnotationPresent(Command.class)) registerClassCommand(clazz, obj);
                 else registerSingleMethodCommand(clazz, obj);
             } catch (Throwable e) {
-                DarwinServer.getLog().warn(String.format("Failed to register potential command class : %s", clazz.toGenericString()));
+                DarwinServer.getLog().warn("Failed to register potential command class : {}", clazz.toGenericString());
                 e.printStackTrace();
             }
         }
@@ -133,7 +133,7 @@ public abstract class CommandBus<C, A extends ArgumentTypeValue<?>> {
             // Printing aliases, not used for actual logic
             List<String> subcommands = new ArrayList<>();
             Arrays.stream(registration.getSubcommands()).forEach(sub -> subcommands.addAll(Arrays.asList(sub.getAliases())));
-            DarwinServer.getLog().info(String.format("Registered command : /%s %s", alias, String.join("|", subcommands)));
+            DarwinServer.getLog().info("Registered command : /{} {}", alias, String.join("|", subcommands));
         });
     }
 

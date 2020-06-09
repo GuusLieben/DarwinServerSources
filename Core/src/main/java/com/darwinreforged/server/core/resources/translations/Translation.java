@@ -140,7 +140,7 @@ public class Translation {
             }
 
             if (key != null) {
-                DarwinServer.getLog().info(String.format("Registered '%s.%s' for translation '%s'", category, key, translation));
+                DarwinServer.getLog().info("Registered '{}.{}' for translation '{}'", category, key, translation);
                 Translation t = new Translation(translation, key);
                 t.category = category;
 
@@ -182,7 +182,7 @@ public class Translation {
         Map<String, Object> storedTranslations = fm.getYamlDataFromFile(getStorageFile(fm));
         storedTranslations.forEach((category, map) -> {
             if (!(map instanceof Map))
-                DarwinServer.getLog().warn(String.format("Attempted to read non-map value from translations '%s'", category));
+                DarwinServer.getLog().warn("Attempted to read non-map value from translations '{}'", category);
             else TRANSLATION_STORAGE.put(category, (Map<String, String>) map);
         });
     }

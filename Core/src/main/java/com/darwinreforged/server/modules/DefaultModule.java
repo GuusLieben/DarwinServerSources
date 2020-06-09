@@ -12,24 +12,52 @@ import com.darwinreforged.server.core.commands.annotations.Command;
 import com.darwinreforged.server.core.commands.context.CommandArgument;
 import com.darwinreforged.server.core.commands.context.CommandContext;
 import com.darwinreforged.server.core.events.internal.server.ServerReloadEvent;
+import com.darwinreforged.server.core.events.internal.server.ServerStartedEvent;
 import com.darwinreforged.server.core.events.util.Listener;
 import com.darwinreforged.server.core.DarwinServer;
+import com.darwinreforged.server.core.files.FileManager;
 import com.darwinreforged.server.core.modules.DisabledModule;
 import com.darwinreforged.server.core.modules.Module;
 import com.darwinreforged.server.core.resources.translations.DefaultTranslations;
 import com.darwinreforged.server.core.types.living.CommandSender;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-/**
- The type Darwin server module.
- */
-@Module(id = "darwinserver", name = "Server Config Module", description = "Native module used for configurations from DarwinServer only", authors = {"GuusLieben"})
+@Module(id = "darwinserver", name = "Server Config Module", description = "Native module used for basic actions for DarwinServer", authors = {"GuusLieben"})
 public class DefaultModule {
 
+
+    private final Map<String, Map<String, Object>> data = new HashMap<>();
+
+    @Listener
+    public void onServerStart(ServerStartedEvent event) {
+        File dataFile = new File(DarwinServer.getUtilMan().get(FileManager.class).getDataDirectory(this).toFile(), "module_data.yml");
+        DarwinServer.getModMan().getAllModuleInfo().forEach(this::registerPlugin);
+        DarwinServer.getUtilMan().get(FileManager.class).writeYamlDataToFile(data, dataFile);
+    }
+
+    private void registerPlugin(Module module) {
+        // Data storage before Yaml conversion
+        Map<String, Object> data = new HashMap<>();
+
+        // Generic data
+        data.put("id", module.id());
+        data.put("name", module.name());
+        data.put("version", module.version());
+        data.put("description", module.description());
+        data.put("url", module.url());
+        data.put("authors", module.authors());
+        data.put("source", DarwinServer.getModMan().getModuleSource(module.id()));
+
+        // Write plugin data to unique file
+        this.data.put(module.id(), data);
+    }
 
     @Command(aliases = "dserver", usage = "dserver [module]", desc = "Returns active and failed modules to the player", min = 0, context = "dserver [module{Module}]")
     public void commandList(CommandSender src, CommandContext ctx) {

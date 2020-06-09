@@ -146,7 +146,7 @@ public class SpongePlayerManager extends PlayerManager {
         } else if (target instanceof Console) {
             Sponge.getCommandManager().process(Sponge.getServer().getConsole(), cmd);
         } else {
-            DarwinServer.getLog().warn(String.format("Tried executing '%s' as non-player source (%s)%n", cmd, target.getClass()));
+            DarwinServer.getLog().warn("Tried executing '{}' as non-player source ({})\n", cmd, target.getClass());
         }
     }
 

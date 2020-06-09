@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("unchecked")
 public class UtilityManager {
 
     private final Map<Class<?>, Object> UTILS = new ConcurrentHashMap<>();

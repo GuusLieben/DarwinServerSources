@@ -64,7 +64,7 @@ public class EventBus {
         if(invokers.isEmpty()) {
             return; // Doesn't contain any listener methods
         }
-        DarwinServer.getLog().info(String.format("Registered %s as event listener", object.getClass().toGenericString()));
+        DarwinServer.getLog().info("Registered {} as event listener", object.getClass().toGenericString());
         listenerToInvokers.put(object, invokers);
         for (InvokeWrapper invoker : invokers) {
             handlerRegistry.getHandler(invoker.eventType).subscribe(invoker);

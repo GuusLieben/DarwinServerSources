@@ -52,7 +52,7 @@ public class LibraryManager {
                     }
 
                     if (clazz != null) {
-                        DarwinServer.getLog().info(String.format("Injected '%s' into the classpath", clazz.toGenericString()));
+                        DarwinServer.getLog().info("Injected '{}' into the classpath", clazz.toGenericString());
                         if (consumer != null) consumer.accept(clazz);
                         updateContext = true;
                     } else {
