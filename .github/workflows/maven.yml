@@ -3,11 +3,7 @@
 
 name: Build status
 
-on:
-  push:
-    branches: [ master, selene-indev, selene-dev ]
-  pull_request:
-    branches: [ master, selene-indev, selene-dev ]
+on: [push, pull_request]
 
 jobs:
   build:
