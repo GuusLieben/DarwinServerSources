@@ -26,6 +26,7 @@ import org.dockbox.selene.commands.annotations.Command;
 import org.dockbox.selene.commands.context.CommandContext;
 import org.dockbox.selene.commands.context.CommandParameter;
 import org.dockbox.selene.server.minecraft.item.Item;
+import org.dockbox.selene.server.minecraft.item.storage.MinecraftItems;
 import org.dockbox.selene.server.minecraft.players.Player;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -42,6 +43,13 @@ public class BlockRegistryTestModule {
 
     public BlockRegistryTestModule() {
         instance = this;
+    }
+
+    @Command(aliases = "test", usage = "test", permission = SeleneInformation.GLOBAL_BYPASS)
+    public void test() {
+        MinecraftItems.getInstance().registerCustom("stone_plastered_full", () -> Item.of("conquest:stone_full_1", 0));
+        Item item = Item.of("stone_plastered_full");
+        System.out.println(item.getId());
     }
 
     @Command(aliases = "blockid", usage = "blockid <id>", permission = SeleneInformation.GLOBAL_BYPASS)
