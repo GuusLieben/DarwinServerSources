@@ -78,7 +78,7 @@ public class DataStructuresSerializersTests {
 
         Registry<Registry<String>> reg = registry.get();
         RegistryColumn<RegistryColumn<String>> result = reg.matchingColumns(TestIdentifier.BRICK)
-                .mapTo(r -> r.matchingColumns(TestIdentifier.FULLBLOCK));
+                .map(r -> r.matchingColumns(TestIdentifier.FULLBLOCK));
 
         Assertions.assertTrue(result.first().get().contains("Brick Fullblock1"));
         Assertions.assertTrue(result.first().get().contains("Brick Fullblock2"));

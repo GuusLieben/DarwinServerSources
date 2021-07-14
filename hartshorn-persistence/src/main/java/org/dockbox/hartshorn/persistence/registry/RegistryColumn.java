@@ -63,7 +63,7 @@ public class RegistryColumn<T> extends ArrayList<T> {
      *
      * @return A new RegistryColumn which contains the mapped values of the previous RegistryColumn.
      */
-    public <K> RegistryColumn<K> mapTo(Function<? super T, K> mapper) {
+    public <K> RegistryColumn<K> map(Function<? super T, K> mapper) {
         RegistryColumn<K> result = new RegistryColumn<>();
 
         for (T value : this) {
@@ -84,7 +84,7 @@ public class RegistryColumn<T> extends ArrayList<T> {
      *
      * @return A new RegistryColumn which contains all the values of the collections.
      */
-    public <K> RegistryColumn<K> mapToSingleList(Function<? super T, ? extends Collection<K>> mapper) {
+    public <K> RegistryColumn<K> flatMap(Function<? super T, ? extends Collection<K>> mapper) {
         RegistryColumn<K> result = new RegistryColumn<>();
 
         for (T value : this) {

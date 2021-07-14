@@ -22,6 +22,7 @@ import net.kyori.adventure.sound.Sound.Source;
 
 import org.dockbox.hartshorn.api.domain.Exceptional;
 import org.dockbox.hartshorn.api.domain.tuple.Tristate;
+import org.dockbox.hartshorn.api.domain.tuple.Vector3N;
 import org.dockbox.hartshorn.api.exceptions.Except;
 import org.dockbox.hartshorn.api.exceptions.NotImplementedException;
 import org.dockbox.hartshorn.api.i18n.common.Language;
@@ -267,6 +268,12 @@ public class SpongePlayer extends Player implements SpongeEntity<net.minecraft.s
             final Language language = Language.of(locale);
             return new SimpleGameSettings(language);
         }).orElse(() -> new SimpleGameSettings(Language.EN_US)).get();
+    }
+
+    @Override
+    public Vector3N rotation() {
+        return this.player().map(player -> SpongeConvert.fromSponge(player.headRotation().get()))
+                .or(Vector3N.empty());
     }
 
     private Exceptional<User> user() {

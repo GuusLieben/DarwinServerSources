@@ -18,13 +18,13 @@
 package org.dockbox.hartshorn.server.minecraft.inventory;
 
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 
 public interface PositionInventory extends Inventory {
 
     /**
      * Gets the {@link Item} in the requested position within the inventory. If the position is out of
-     * bounds, or if there is no item present, {@link MinecraftItems#air()} is returned instead.
+     * bounds, or if there is no item present, {@link ItemTypes#AIR} is returned instead.
      * Indices start at zero.
      *
      * @param row
@@ -32,7 +32,7 @@ public interface PositionInventory extends Inventory {
      * @param column
      *         The column index
      *
-     * @return The {@link Item}, or {@link MinecraftItems#air() air}.
+     * @return The {@link Item}, or {@link ItemTypes#AIR air}.
      */
     Item slot(int row, int column);
 

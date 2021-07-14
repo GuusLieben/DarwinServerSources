@@ -20,7 +20,7 @@ package org.dockbox.hartshorn.test.objects.inventory;
 import org.dockbox.hartshorn.server.minecraft.entities.ArmorStandInventory;
 import org.dockbox.hartshorn.server.minecraft.inventory.Slot;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 import org.dockbox.hartshorn.util.HartshornUtils;
 
 import java.util.Collection;
@@ -48,7 +48,7 @@ public class JUnitArmorStandInventory implements ArmorStandInventory {
 
     @Override
     public Item slot(Slot slot) {
-        return this.items.getOrDefault(slot, MinecraftItems.instance().air());
+        return this.items.getOrDefault(slot, Item.of(ItemTypes.AIR));
     }
 
     @Override

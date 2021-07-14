@@ -27,7 +27,6 @@ import org.dockbox.hartshorn.di.annotations.inject.Wired;
 import org.dockbox.hartshorn.server.minecraft.item.Enchant;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
 import org.dockbox.hartshorn.server.minecraft.item.ReferencedItem;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
 import org.dockbox.hartshorn.server.minecraft.players.Profile;
 import org.dockbox.hartshorn.sponge.game.SpongeComposite;
 import org.dockbox.hartshorn.sponge.game.SpongeProfile;
@@ -68,7 +67,7 @@ public class SpongeItem extends ReferencedItem<ItemStack> implements SpongeCompo
 
     @Override
     public boolean isAir() {
-        if (this.equals(MinecraftItems.instance().air())) return true;
+        if (this.id().equals(org.dockbox.hartshorn.server.minecraft.item.ItemTypes.AIR.id())) return true;
         else {
             return this.item()
                     .map(item -> item.isEmpty() || item.type() == ItemTypes.AIR.get())

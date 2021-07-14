@@ -18,19 +18,19 @@
 package org.dockbox.hartshorn.server.minecraft.inventory;
 
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 
 public interface SlotInventory extends Inventory {
 
     /**
      * Gets the {@link Item} in the requested slot type within the inventory. If the slot type is not
-     * supported by the inventory, or if there is no item present, {@link MinecraftItems#air()} is
+     * supported by the inventory, or if there is no item present, {@link ItemTypes#AIR} is
      * returned instead.
      *
      * @param slot
      *         The slot type
      *
-     * @return The {@link Item}, or {@link MinecraftItems#air() air}.
+     * @return The {@link Item}, or {@link ItemTypes#AIR air}.
      */
     Item slot(Slot slot);
 

@@ -22,7 +22,7 @@ import org.dockbox.hartshorn.api.domain.Exceptional;
 import org.dockbox.hartshorn.api.keys.PersistentDataHolder;
 import org.dockbox.hartshorn.server.minecraft.dimension.position.Location;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public interface Block extends PersistentDataHolder {
     }
 
     static Block empty() {
-        return Hartshorn.context().get(Block.class, MinecraftItems.instance().air());
+        return Hartshorn.context().get(Block.class, Item.of(ItemTypes.AIR));
     }
 
 }

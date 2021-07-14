@@ -31,7 +31,7 @@ public class RegistryTests {
 
         RegistryColumn<RegistryColumn<String>> result = testRegistry
                 .matchingColumns(TestIdentifier.BRICK)
-                .mapTo(r -> r.matchingColumns(TestIdentifier.FULLBLOCK));
+                .map(r -> r.matchingColumns(TestIdentifier.FULLBLOCK));
 
         Assertions.assertTrue(result.first().get().contains("Brick Fullblock1"));
         Assertions.assertTrue(result.first().get().contains("Brick Fullblock2"));
@@ -135,7 +135,7 @@ public class RegistryTests {
         testRegistry.addRegistry(secondRegistry);
         RegistryColumn<Object> result = testRegistry
                 .matchingColumns(TestIdentifier.SANDSTONE, TestIdentifier.WOOD)
-                .mapTo(r -> r.matchingColumns(TestIdentifier.STAIR).safe(0).orNull());
+                .map(r -> r.matchingColumns(TestIdentifier.STAIR).safe(0).orNull());
 
         Assertions.assertTrue(result.contains("Sandstone Stair1"));
         Assertions.assertTrue(result.contains("Sandstone Stair2"));

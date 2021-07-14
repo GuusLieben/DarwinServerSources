@@ -20,7 +20,7 @@ package org.dockbox.hartshorn.test.objects.inventory;
 import org.dockbox.hartshorn.api.domain.Exceptional;
 import org.dockbox.hartshorn.server.minecraft.inventory.Slot;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 import org.dockbox.hartshorn.server.minecraft.players.inventory.InventoryRow;
 import org.dockbox.hartshorn.server.minecraft.players.inventory.PlayerInventory;
 import org.dockbox.hartshorn.util.HartshornUtils;
@@ -44,7 +44,7 @@ public class JUnitInventory extends PlayerInventory {
 
     @Override
     public Item slot(Slot slot) {
-        return this.specialSlots.getOrDefault(slot, MinecraftItems.instance().air());
+        return this.specialSlots.getOrDefault(slot, Item.of(ItemTypes.AIR));
     }
 
     @Override

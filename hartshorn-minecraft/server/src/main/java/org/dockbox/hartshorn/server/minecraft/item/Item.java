@@ -25,7 +25,6 @@ import org.dockbox.hartshorn.api.keys.KeyHolder;
 import org.dockbox.hartshorn.api.keys.PersistentDataHolder;
 import org.dockbox.hartshorn.persistence.PersistentCapable;
 import org.dockbox.hartshorn.server.minecraft.item.persistence.PersistentItemModel;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
 import org.dockbox.hartshorn.server.minecraft.players.Profile;
 import org.jetbrains.annotations.NonNls;
 
@@ -38,14 +37,20 @@ public interface Item extends KeyHolder<Item>, PersistentDataHolder, PersistentC
      * @param id
      *         The fully qualified identifier of a block, e.g. {@code minecraft:stone}
      *
-     * @return The item instance, or {@link MinecraftItems#air()}
+     * @return The item instance, or {@link ItemTypes#AIR}
      */
     static Item of(@NonNls String id) {
-        Item item = Hartshorn.context().get(Item.class, id);
-        if (!MinecraftItems.instance().airId().equals(id) && item.isAir()) {
-            item = MinecraftItems.instance().custom(id);
-        }
-        return item;
+        // No need to filter air, can directly return it here.
+        if (ItemTypes.AIR.id().equals(id)) return Hartshorn.context().get(Item.class, id);
+
+        return Hartshorn.context().first(ItemContext.class)
+                .map(context -> context.custom(id))
+                .filter(item -> !item.isAir())
+                .or(Hartshorn.context().get(Item.class, id));
+    }
+
+    static Item of(ItemTypes itemType) {
+        return of(itemType.id());
     }
 
     boolean isAir();

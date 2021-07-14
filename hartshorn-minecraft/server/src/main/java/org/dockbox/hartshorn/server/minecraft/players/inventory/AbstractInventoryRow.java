@@ -18,7 +18,7 @@
 package org.dockbox.hartshorn.server.minecraft.players.inventory;
 
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 
 import java.util.function.Supplier;
 
@@ -29,14 +29,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public abstract class AbstractInventoryRow implements InventoryRow {
 
-    public static final Supplier<Item> AIR = () -> MinecraftItems.instance().air();
+    public static final Supplier<Item> AIR = () -> Item.of(ItemTypes.AIR);
 
     private final int rowIndex;
     private final PlayerInventory inventory;
 
     @Override
     public Item slot(int row, int column) {
-        if (row != this.rowIndex) return MinecraftItems.instance().air();
+        if (row != this.rowIndex) return Item.of(ItemTypes.AIR);
         return this.slot(column);
     }
 

@@ -41,7 +41,8 @@ import org.dockbox.hartshorn.playersettings.Setting;
 import org.dockbox.hartshorn.server.minecraft.events.chat.SendChatEvent;
 import org.dockbox.hartshorn.server.minecraft.events.server.EngineChangedState;
 import org.dockbox.hartshorn.server.minecraft.events.server.ServerState.Reload;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.Item;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 import org.dockbox.hartshorn.server.minecraft.players.Player;
 import org.dockbox.hartshorn.util.HartshornUtils;
 
@@ -57,7 +58,7 @@ public class Dave implements InjectableType {
             .owner(Dave.class)
             .converter(value -> value ? new Resource("Yes", "yes") : new Resource("No", "no"))
             .defaultValue(() -> false)
-            .display(() -> MinecraftItems.instance().bottleOEnchanting())
+            .display(() -> Item.of(ItemTypes.BOTTLE_O_ENCHANTING))
             .ok();
 
     private static final int msTick = 20;

@@ -21,7 +21,7 @@ import org.dockbox.hartshorn.api.domain.Exceptional;
 import org.dockbox.hartshorn.di.annotations.inject.Required;
 import org.dockbox.hartshorn.server.minecraft.dimension.position.BlockFace;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 
 /**
  * Represents an Item Frame. See <a href="https://minecraft.gamepedia.com/Item_Frame">Item Frame on
@@ -40,7 +40,7 @@ public interface ItemFrame extends CloneableEntity<ItemFrame> {
 
     /**
      * Sets the {@link Item} to be displayed in the item frame. If the item is equal to {@link
-     * MinecraftItems#air()} the displayed item is reset to display none.
+     * ItemTypes#AIR} the displayed item is reset to display none.
      *
      * @param stack
      *         The {@link Item} to display.

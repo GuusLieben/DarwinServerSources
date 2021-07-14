@@ -17,30 +17,21 @@
 
 package org.dockbox.hartshorn.server.minecraft;
 
-import org.dockbox.hartshorn.server.minecraft.item.storage.Minecraft116Items;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
-
 /**
  * Enum type providing the supported Minecraft versions for Hartshorn. Typically this is used when
  * defining vanilla constants, indicating in which version they were made available.
  */
 public enum MinecraftVersion {
-    MC1_16("1.16", new Minecraft116Items()),
-    INDEV("Indev", new Minecraft116Items());
+    MC1_16("1.16"),
+    INDEV("Indev");
 
     private final String readableVersionString;
-    private final MinecraftItems minecraftItems;
 
-    MinecraftVersion(String readableVersionString, MinecraftItems minecraftItems) {
+    MinecraftVersion(String readableVersionString) {
         this.readableVersionString = readableVersionString;
-        this.minecraftItems = minecraftItems;
     }
 
     public String asString() {
         return this.readableVersionString;
-    }
-
-    public MinecraftItems items() {
-        return this.minecraftItems;
     }
 }

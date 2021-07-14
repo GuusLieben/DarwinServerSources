@@ -23,9 +23,9 @@ import org.dockbox.hartshorn.api.i18n.text.Text;
 import org.dockbox.hartshorn.di.annotations.inject.Wired;
 import org.dockbox.hartshorn.server.minecraft.item.Enchant;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 import org.dockbox.hartshorn.server.minecraft.item.SimplePersistentItemModel;
 import org.dockbox.hartshorn.server.minecraft.item.persistence.PersistentItemModel;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
 import org.dockbox.hartshorn.server.minecraft.players.Profile;
 import org.dockbox.hartshorn.util.HartshornUtils;
 
@@ -68,7 +68,7 @@ public class JUnitItem implements Item, JUnitPersistentDataHolder {
 
     @Override
     public boolean isAir() {
-        return this.equals(MinecraftItems.instance().air());
+        return this.id().equals(Item.of(ItemTypes.AIR).id());
     }
 
     @Override
@@ -139,7 +139,7 @@ public class JUnitItem implements Item, JUnitPersistentDataHolder {
 
     @Override
     public boolean isHead() {
-        return MinecraftItems.instance().skeletonSkull().id().equals(this.id());
+        return Item.of(ItemTypes.SKELETON_SKULL).id().equals(this.id());
     }
 
     @Override

@@ -33,6 +33,7 @@ import org.dockbox.hartshorn.util.Reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public class HartshornApplication {
 
@@ -50,8 +51,11 @@ public class HartshornApplication {
                 configurations.put(config.phase(), instance(config.value()));
             }
 
+            final List<String> prefixes = HartshornUtils.asList(Hartshorn.PACKAGE_PREFIX);
+            if (!prefix.startsWith(Hartshorn.PACKAGE_PREFIX)) prefixes.add(prefix);
+
             injectableBootstrap.create(
-                    HartshornUtils.asList(Hartshorn.PACKAGE_PREFIX, prefix),
+                    prefixes,
                     activator,
                     HartshornUtils.emptyList(),
                     configurations,

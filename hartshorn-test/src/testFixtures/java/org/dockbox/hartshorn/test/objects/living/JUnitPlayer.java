@@ -18,6 +18,7 @@
 package org.dockbox.hartshorn.test.objects.living;
 
 import org.dockbox.hartshorn.api.Hartshorn;
+import org.dockbox.hartshorn.api.domain.tuple.Vector3N;
 import org.dockbox.hartshorn.api.exceptions.NotImplementedException;
 import org.dockbox.hartshorn.api.domain.Exceptional;
 import org.dockbox.hartshorn.api.domain.tuple.Tristate;
@@ -79,6 +80,8 @@ public class JUnitPlayer extends Player implements JUnitPersistentDataHolder {
     private boolean invulnerable = false;
     @Setter
     private boolean gravity = true;
+    @Getter @Setter
+    private Vector3N rotation;
 
     public JUnitPlayer(@NotNull UUID uniqueId, @NotNull String name) {
         super(uniqueId, name);

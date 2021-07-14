@@ -19,7 +19,7 @@ package org.dockbox.hartshorn.server.minecraft.inventory;
 
 import org.dockbox.hartshorn.server.minecraft.dimension.Block;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -58,7 +58,7 @@ public interface Inventory {
     }
 
     /**
-     * Returns all {@link Item items}, including {@link MinecraftItems#air()}.
+     * Returns all {@link Item items}, including {@link ItemTypes#AIR}.
      *
      * @return All items inside the inventory.
      */

@@ -27,7 +27,6 @@ import org.dockbox.hartshorn.di.annotations.service.Service;
 import org.dockbox.hartshorn.di.properties.InjectableType;
 import org.dockbox.hartshorn.di.properties.InjectorProperty;
 import org.dockbox.hartshorn.server.minecraft.dimension.Block;
-import org.dockbox.hartshorn.server.minecraft.dimension.BlockContext;
 import org.dockbox.hartshorn.server.minecraft.dimension.Worlds;
 import org.dockbox.hartshorn.server.minecraft.dimension.position.Location;
 import org.dockbox.hartshorn.server.minecraft.dimension.world.World;
@@ -87,15 +86,15 @@ public final class MinecraftArgumentConverters implements InjectableType {
             .withConverter(in -> Exceptional.of(Item.of(in)))
             .withSuggestionProvider(in -> Hartshorn.context()
                     .first(ItemContext.class)
-                    .map(ItemContext::ids)
+                    .map(ItemContext::items)
                     .orElse(HartshornUtils::emptyList).get())
             .build();
 
     public static final ArgumentConverter<Block> BLOCK = CommandValueConverter.builder(Block.class, "block")
             .withConverter(in -> Exceptional.of(Block.of(in)))
             .withSuggestionProvider(in -> Hartshorn.context()
-                    .first(BlockContext.class)
-                    .map(BlockContext::ids)
+                    .first(ItemContext.class)
+                    .map(ItemContext::blocks)
                     .orElse(HartshornUtils::emptyList).get())
             .build();
 

@@ -20,7 +20,7 @@ package org.dockbox.hartshorn.sponge.game.entity;
 import org.dockbox.hartshorn.server.minecraft.entities.ArmorStandInventory;
 import org.dockbox.hartshorn.server.minecraft.inventory.Slot;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 import org.dockbox.hartshorn.sponge.inventory.SpongeInventory;
 import org.dockbox.hartshorn.sponge.util.SpongeConvert;
 import org.dockbox.hartshorn.util.HartshornUtils;
@@ -74,7 +74,7 @@ public class SpongeArmorStandInventory implements SpongeInventory, ArmorStandInv
                     case OFF_HAND -> entity.itemInHand(HandTypes.OFF_HAND);
                 }))
                 .map(Item.class::cast)
-                .orElse(() -> MinecraftItems.instance().air())
+                .orElse(() -> Item.of(ItemTypes.AIR))
                 .get();
     }
 

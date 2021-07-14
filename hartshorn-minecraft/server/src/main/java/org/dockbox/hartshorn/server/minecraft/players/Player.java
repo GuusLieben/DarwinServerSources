@@ -21,6 +21,7 @@ import org.dockbox.hartshorn.api.Hartshorn;
 import org.dockbox.hartshorn.api.domain.AbstractIdentifiable;
 import org.dockbox.hartshorn.api.domain.Exceptional;
 import org.dockbox.hartshorn.api.domain.tuple.Tristate;
+import org.dockbox.hartshorn.api.domain.tuple.Vector3N;
 import org.dockbox.hartshorn.api.i18n.PermissionHolder;
 import org.dockbox.hartshorn.api.i18n.common.Language;
 import org.dockbox.hartshorn.api.i18n.permissions.Permission;
@@ -182,4 +183,6 @@ public abstract class Player extends AbstractIdentifiable implements CommandSour
     public abstract PlayerInventory inventory();
 
     public abstract GameSettings gameSettings();
+
+    public abstract Vector3N rotation();
 }

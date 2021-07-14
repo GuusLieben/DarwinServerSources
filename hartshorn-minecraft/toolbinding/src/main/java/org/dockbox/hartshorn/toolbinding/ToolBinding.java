@@ -24,11 +24,10 @@ import org.dockbox.hartshorn.api.keys.Keys;
 import org.dockbox.hartshorn.api.keys.PersistentDataKey;
 import org.dockbox.hartshorn.api.keys.RemovableKey;
 import org.dockbox.hartshorn.api.keys.TransactionResult;
-import org.dockbox.hartshorn.di.annotations.service.Service;
 import org.dockbox.hartshorn.di.annotations.inject.Wired;
+import org.dockbox.hartshorn.di.annotations.service.Service;
 import org.dockbox.hartshorn.server.minecraft.events.player.interact.PlayerInteractEvent;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
 import org.dockbox.hartshorn.server.minecraft.players.Sneaking;
 import org.dockbox.hartshorn.util.HartshornUtils;
 
@@ -59,7 +58,7 @@ public class ToolBinding {
 
     private TransactionResult tool(Item item, ItemTool tool) {
         if (item.isBlock()) return TransactionResult.fail(this.resources.blockError());
-        if (item == MinecraftItems.instance().air()) return TransactionResult.fail(this.resources.handError());
+        if (item.isAir()) return TransactionResult.fail(this.resources.handError());
         if (item.get(PERSISTENT_TOOL).present()) return TransactionResult.fail(this.resources.duplicateError());
 
         String bindingId = UUID.randomUUID().toString();
@@ -99,7 +98,7 @@ public class ToolBinding {
     @Listener
     public void on(PlayerInteractEvent event) {
         Item itemInHand = event.subject().itemInHand(event.hand());
-        if (itemInHand.equals(MinecraftItems.instance().air()) || itemInHand.isBlock()) return;
+        if (itemInHand.isAir() || itemInHand.isBlock()) return;
 
         Exceptional<String> identifier = itemInHand.get(PERSISTENT_TOOL);
         if (identifier.absent()) return;

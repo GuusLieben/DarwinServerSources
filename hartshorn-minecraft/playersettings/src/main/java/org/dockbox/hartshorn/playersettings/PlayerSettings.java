@@ -35,7 +35,7 @@ import org.dockbox.hartshorn.server.minecraft.inventory.builder.PaginatedPaneBui
 import org.dockbox.hartshorn.server.minecraft.inventory.pane.PaginatedPane;
 import org.dockbox.hartshorn.server.minecraft.inventory.pane.Pane;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.item.storage.MinecraftItems;
+import org.dockbox.hartshorn.server.minecraft.item.ItemTypes;
 import org.dockbox.hartshorn.server.minecraft.players.Player;
 import org.dockbox.hartshorn.util.HartshornUtils;
 
@@ -50,7 +50,7 @@ public class PlayerSettings {
             .owner(PlayerSettings.class)
             .converter(value -> value ? new Resource("Yes", "yes") : new Resource("No", "no"))
             .defaultValue(() -> true)
-            .display(() -> MinecraftItems.instance().inkSac())
+            .display(() -> Item.of(ItemTypes.INK_SAC))
             .action(PlayerSettings::toggleNotifications)
             .ok();
 
@@ -64,7 +64,7 @@ public class PlayerSettings {
                 return new FakeResource(language.nameLocalized());
             })
             .defaultValue(Language.EN_US::ordinal)
-            .display(() -> MinecraftItems.instance().bookAndQuill())
+            .display(() -> Item.of(ItemTypes.BOOK_AND_QUILL))
             .ok();
 
     private final List<Setting<?>> settings = HartshornUtils.emptyConcurrentList();

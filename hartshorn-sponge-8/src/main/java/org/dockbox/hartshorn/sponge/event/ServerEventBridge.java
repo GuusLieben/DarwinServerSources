@@ -19,8 +19,6 @@ package org.dockbox.hartshorn.sponge.event;
 
 import org.dockbox.hartshorn.api.Hartshorn;
 import org.dockbox.hartshorn.api.events.annotations.Posting;
-import org.dockbox.hartshorn.di.context.Context;
-import org.dockbox.hartshorn.server.minecraft.dimension.BlockContext;
 import org.dockbox.hartshorn.server.minecraft.events.server.EngineChangedState;
 import org.dockbox.hartshorn.server.minecraft.events.server.ServerState.Reload;
 import org.dockbox.hartshorn.server.minecraft.events.server.ServerState.Started;
@@ -28,6 +26,7 @@ import org.dockbox.hartshorn.server.minecraft.events.server.ServerState.Starting
 import org.dockbox.hartshorn.server.minecraft.events.server.ServerState.Stopping;
 import org.dockbox.hartshorn.server.minecraft.events.server.ServerState.Update;
 import org.dockbox.hartshorn.server.minecraft.item.ItemContext;
+import org.dockbox.hartshorn.util.HartshornUtils;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
@@ -43,7 +42,6 @@ import org.spongepowered.api.registry.RegistryTypes;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Posting(EngineChangedState.class)
 public class ServerEventBridge implements EventBridge {
@@ -55,8 +53,10 @@ public class ServerEventBridge implements EventBridge {
 
     @Listener
     public void on(StartedEngineEvent<?> event) {
-        this.collectIdContext(RegistryTypes.ITEM_TYPE, ItemContext::new);
-        this.collectIdContext(RegistryTypes.BLOCK_TYPE, BlockContext::new);
+        final List<String> items = this.collectIdContext(RegistryTypes.ITEM_TYPE);
+        final List<String> blocks = this.collectIdContext(RegistryTypes.BLOCK_TYPE);
+        Hartshorn.context().add(new ItemContext(items, blocks));
+
         new EngineChangedState<Started>() {}.post();
     }
 
@@ -76,14 +76,14 @@ public class ServerEventBridge implements EventBridge {
         new EngineChangedState<Update>() {}.post();
     }
 
-    private void collectIdContext(RegistryType<?> registryType, Function<List<String>, Context> storage) {
+    private List<String> collectIdContext(RegistryType<?> registryType) {
         final Optional<? extends Registry<?>> itemTypeRegistry = Sponge.game().registries().findRegistry(registryType);
         if (itemTypeRegistry.isPresent()) {
             final Registry<?> registry = itemTypeRegistry.get();
-            final List<String> ids = registry.streamEntries().map(RegistryEntry::key).map(ResourceKey::asString).toList();
-            Hartshorn.context().add(storage.apply(ids));
+            return registry.streamEntries().map(RegistryEntry::key).map(ResourceKey::asString).toList();
         } else {
             Hartshorn.log().warn("Could not collect IDs from registry " + registryType.location().asString());
         }
+        return HartshornUtils.emptyList();
     }
 }
