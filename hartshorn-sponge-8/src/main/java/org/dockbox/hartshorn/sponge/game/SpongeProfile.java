@@ -24,7 +24,7 @@ import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.profile.property.ProfileProperty;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class SpongeProfile implements Profile {
@@ -32,7 +32,7 @@ public class SpongeProfile implements Profile {
     private GameProfile profile;
 
     @Bound
-    public SpongeProfile(UUID uuid) {
+    public SpongeProfile(final UUID uuid) {
         this.profile = GameProfile.of(uuid);
     }
 
@@ -42,29 +42,32 @@ public class SpongeProfile implements Profile {
     }
 
     @Override
-    public SpongeProfile uniqueId(UUID uuid) {
+    public SpongeProfile uniqueId(final UUID uuid) {
         final List<ProfileProperty> properties = this.profile.properties();
         this.profile = GameProfile.of(uuid).withProperties(properties);
         return this;
     }
 
     @Override
-    public Map<String, String> properties() {
-        Map<String, String> properties = HartshornUtils.emptyMap();
-        for (ProfileProperty property : this.profile.properties())
-            properties.put(property.name(), property.value());
+    public Set<org.dockbox.hartshorn.server.minecraft.players.ProfileProperty> properties() {
+        final Set<org.dockbox.hartshorn.server.minecraft.players.ProfileProperty> properties = HartshornUtils.emptySet();
+        for (final ProfileProperty property : this.profile.properties())
+            properties.add(org.dockbox.hartshorn.server.minecraft.players.ProfileProperty.of(
+                    property.name(), property.value(), property.signature().orElse(null))
+            );
         return properties;
     }
 
     @Override
-    public void property(String key, String value) {
-        this.profile = this.profile.withProperty(ProfileProperty.of(key, value));
+    public Profile property(final org.dockbox.hartshorn.server.minecraft.players.ProfileProperty property) {
+        this.profile = this.profile.withProperty(ProfileProperty.of(property.name(), property.value(), property.signature()));
+        return this;
     }
 
     @Override
-    public SpongeProfile properties(Map<String, String> properties) {
-        final List<ProfileProperty> profileProperties = properties.entrySet().stream()
-                .map(property -> ProfileProperty.of(property.getKey(), property.getValue()))
+    public SpongeProfile properties(final Set<org.dockbox.hartshorn.server.minecraft.players.ProfileProperty> properties) {
+        final List<ProfileProperty> profileProperties = properties.stream()
+                .map(property -> ProfileProperty.of(property.name(), property.value(), property.signature()))
                 .toList();
         this.profile = this.profile.withProperties(profileProperties);
         return this;

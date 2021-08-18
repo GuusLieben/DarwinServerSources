@@ -20,9 +20,10 @@ package org.dockbox.hartshorn.test.objects;
 import org.dockbox.hartshorn.api.Hartshorn;
 import org.dockbox.hartshorn.di.annotations.inject.Bound;
 import org.dockbox.hartshorn.server.minecraft.players.Profile;
+import org.dockbox.hartshorn.server.minecraft.players.ProfileProperty;
+import org.dockbox.hartshorn.util.HartshornUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import lombok.Getter;
@@ -31,33 +32,29 @@ import lombok.Setter;
 public class JUnitProfile implements Profile {
 
     @Getter @Setter private UUID uniqueId;
-    private Map<String, String> properties;
+    @Getter private Set<ProfileProperty> properties;
 
     @Bound
-    public JUnitProfile(Profile profile) {
+    public JUnitProfile(final Profile profile) {
         this(profile.uniqueId());
-        if (profile instanceof JUnitProfile) this.properties = new HashMap<>(((JUnitProfile) profile).properties);
+        if (profile instanceof JUnitProfile) this.properties = HartshornUtils.asSet(((JUnitProfile) profile).properties);
         else Hartshorn.log().warn("Could not copy profile properties as the provided profile is not an instance of JUnitProfile");
     }
 
     @Bound
-    public JUnitProfile(UUID uniqueId) {
+    public JUnitProfile(final UUID uniqueId) {
         this.uniqueId = uniqueId;
     }
 
     @Override
-    public Map<String, String> properties() {
-        return this.properties;
+    public Profile property(final ProfileProperty property) {
+        this.properties.add(property);
+        return this;
     }
 
     @Override
-    public void property(String key, String value) {
-        this.properties.put(key, value);
-    }
-
-    @Override
-    public JUnitProfile properties(Map<String, String> properties) {
-        this.properties.putAll(properties);
+    public JUnitProfile properties(final Set<ProfileProperty> properties) {
+        this.properties.addAll(properties);
         return this;
     }
 }

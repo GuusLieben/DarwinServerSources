@@ -19,16 +19,16 @@ package org.dockbox.hartshorn.server.minecraft.players;
 
 import org.dockbox.hartshorn.api.Hartshorn;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public interface Profile {
 
-    static Profile of(UUID uuid) {
+    static Profile of(final UUID uuid) {
         return Hartshorn.context().get(Profile.class, uuid);
     }
 
-    static Profile of(Profile profile) {
+    static Profile of(final Profile profile) {
         return Hartshorn.context().get(Profile.class, profile);
     }
 
@@ -36,9 +36,9 @@ public interface Profile {
 
     Profile uniqueId(UUID uuid);
 
-    Map<String, String> properties();
+    Set<ProfileProperty> properties();
 
-    void property(String key, String value);
+    Profile property(ProfileProperty property);
 
-    Profile properties(Map<String, String> properties);
+    Profile properties(Set<ProfileProperty> properties);
 }
