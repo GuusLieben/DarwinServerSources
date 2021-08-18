@@ -72,6 +72,11 @@ dependencies {
         }
     }
 
+    includeShadow "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion"
+    includeShadow "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:$jacksonVersion"
+    includeShadow "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:$jacksonVersion"
+    includeShadow "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion"
+
     // Additional shaded dependencies, these are not available on the platform by default
     includeShadow "org.hibernate:hibernate-core:$hibernateVersion"
     includeShadow "org.apache.derby:derby:$derbyVersion"
