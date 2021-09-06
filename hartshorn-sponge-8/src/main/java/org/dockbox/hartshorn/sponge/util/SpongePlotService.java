@@ -17,72 +17,24 @@
 
 package org.dockbox.hartshorn.sponge.util;
 
-import org.dockbox.hartshorn.api.domain.Exceptional;
 import org.dockbox.hartshorn.di.annotations.inject.Binds;
-import org.dockbox.hartshorn.regions.Region;
+import org.dockbox.hartshorn.regions.DefaultRegionService;
 import org.dockbox.hartshorn.regions.RegionService;
 import org.dockbox.hartshorn.regions.flags.RegionFlag;
 import org.dockbox.hartshorn.regions.plots.Plot;
 import org.dockbox.hartshorn.regions.plots.PlotService;
-import org.dockbox.hartshorn.server.minecraft.dimension.position.Location;
-import org.dockbox.hartshorn.server.minecraft.dimension.world.World;
 import org.dockbox.hartshorn.server.minecraft.item.Item;
-import org.dockbox.hartshorn.server.minecraft.players.Player;
-import org.dockbox.hartshorn.toolbinding.ItemTool;
-import org.dockbox.hartshorn.util.HartshornUtils;
-
-import java.util.Set;
 
 /**
  * Placeholder implementation of PlotService
  */
 @Binds(RegionService.class)
 @Binds(PlotService.class)
-public class SpongePlotService implements PlotService, RegionService {
-
-    @Override
-    public <R extends Region> Exceptional<R> first(final Location location, final Class<R> type) {
-        return Exceptional.empty();
-    }
-
-    @Override
-    public <R extends Region> Exceptional<R> first(final Player player, final Class<R> type) {
-        return Exceptional.empty();
-    }
-
-    @Override
-    public <R extends Region> Exceptional<R> first(final World world, final int x, final int y, final Class<R> type) {
-        return Exceptional.empty();
-    }
-
-    @Override
-    public <R extends Region> Set<R> all(final Location location, final Class<R> type) {
-        return HartshornUtils.emptySet();
-    }
-
-    @Override
-    public <R extends Region> Set<R> all(final Player player, final Class<R> type) {
-        return HartshornUtils.emptySet();
-    }
-
-    @Override
-    public <R extends Region> Set<R> all(final World world, final int x, final int y, final Class<R> type) {
-        return HartshornUtils.emptySet();
-    }
+public class SpongePlotService extends DefaultRegionService implements PlotService {
 
     @Override
     public void register(final RegionFlag<?> flag) {
         // Nothing happens
-    }
-
-    @Override
-    public Exceptional<RegionFlag<?>> flag(final String id) {
-        return Exceptional.empty();
-    }
-
-    @Override
-    public ItemTool tool() {
-        return ItemTool.builder().build();
     }
 
     @Override
