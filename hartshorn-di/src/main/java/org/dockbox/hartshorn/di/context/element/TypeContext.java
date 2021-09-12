@@ -465,6 +465,14 @@ public class TypeContext<T> extends AnnotatedElementContext<Class<T>> {
         return Exceptional.empty();
     }
 
+    public Exceptional<MethodContext<?, T>> method(final String name, final TypeContext<?>... arguments) {
+        return this.method(name, Arrays.asList(arguments));
+    }
+
+    public Exceptional<MethodContext<?, T>> method(final String name, final Class<?>... arguments) {
+        return this.method(name, Arrays.stream(arguments).map(TypeContext::of).collect(Collectors.toList()));
+    }
+
     private void verifyMetadataAvailable() {
         if (this.isProxy()) throw new ApplicationException("Cannot collect metadata of proxied type").runtime();
     }

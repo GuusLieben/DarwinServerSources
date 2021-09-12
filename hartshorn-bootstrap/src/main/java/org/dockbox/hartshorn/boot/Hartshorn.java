@@ -53,7 +53,7 @@ public final class Hartshorn {
     /**
      * The semantic version of the current/latest release of Hartshorn
      */
-    public static final String VERSION = "4.1.3";
+    public static final String VERSION = "4.2.2";
 
     private static final Map<String, Logger> LOGGERS = HartshornUtils.emptyConcurrentMap();
 
