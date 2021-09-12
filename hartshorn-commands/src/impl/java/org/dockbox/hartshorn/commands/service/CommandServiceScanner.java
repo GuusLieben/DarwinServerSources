@@ -24,6 +24,8 @@ import org.dockbox.hartshorn.commands.annotations.Command;
 import org.dockbox.hartshorn.commands.extension.CommandExecutorExtension;
 import org.dockbox.hartshorn.di.annotations.service.Service;
 import org.dockbox.hartshorn.di.context.ApplicationContext;
+import org.dockbox.hartshorn.di.context.element.MethodContext;
+import org.dockbox.hartshorn.di.context.element.ParameterContext;
 import org.dockbox.hartshorn.di.context.element.TypeContext;
 import org.dockbox.hartshorn.di.services.ComponentContainer;
 
@@ -41,6 +43,17 @@ public class CommandServiceScanner {
 
         for (final TypeContext<? extends CommandExecutorExtension> extension : context.environment().children(CommandExecutorExtension.class)) {
             gateway.add(context.get(extension));
+        }
+    }
+
+    @PostBootstrap
+    public void verifyArguments(final ApplicationContext context) {
+        final MethodContext<?, CommandServiceScanner> preload = TypeContext.of(this).method("preload", ApplicationContext.class).get();
+        final ParameterContext<?> parameter = preload.parameters().get(0);
+        if (!parameter.name().equals("context")) {
+            context.log().warn("Parameter names are obfuscated, this will cause commands with @Parameter to be unable to inject arguments.");
+            context.log().warn("   Add -parameters to your compiler args to keep parameter names.");
+            context.log().warn("   See: https://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html for more information.");
         }
     }
 
