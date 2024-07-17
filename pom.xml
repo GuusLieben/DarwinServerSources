@@ -102,6 +102,7 @@
         <module>hartshorn-bom</module>
         <module>hartshorn-assembly/parent/pom.parent.xml</module>
         <module>hartshorn-util</module>
+        <module>hartshorn-properties</module>
         <module>hartshorn-spi</module>
         <module>hartshorn-proxy</module>
         <module>hartshorn-proxy-javassist</module>

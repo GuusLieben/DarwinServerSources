@@ -41,6 +41,7 @@ import org.dockbox.hartshorn.util.introspect.convert.support.OptionalToCollectio
 import org.dockbox.hartshorn.util.introspect.convert.support.OptionalToObjectConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.OptionalToOptionConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.PrimitiveWrapperConverter;
+import org.dockbox.hartshorn.util.introspect.convert.support.StringToArrayConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.StringToBooleanConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.StringToCharacterConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.StringToEnumConverterFactory;
@@ -280,6 +281,7 @@ public class StandardConversionService implements ConversionService, ConverterRe
      * @param registry The registry to register the converters to
      */
     public static void registerStringConverters(ConverterRegistry registry) {
+        registry.addConverter(new StringToArrayConverter());
         registry.addConverter(String.class, Character.class, new StringToCharacterConverter());
         registry.addConverter(String.class, UUID.class,new StringToUUIDConverter());
         registry.addConverter(String.class, Boolean.class, new StringToBooleanConverter());
