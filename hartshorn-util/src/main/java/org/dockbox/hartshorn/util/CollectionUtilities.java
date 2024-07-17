@@ -285,6 +285,21 @@ public final class CollectionUtilities {
      * @param <T> The type of the keys in the entries
      * @param <U> The type of the values in the entries
      */
+    public static <T, U> void iterateEntries(Collection<Entry<T, U>> iterator, BiConsumer<T, U> consumer) {
+        iterateEntries(iterator.iterator(), consumer);
+    }
+
+    /**
+     * Iterates over the given iterator of {@link java.util.Map.Entry entries} and applies the given
+     * consumer to each entry. This is no different from iterating over the entries and applying a
+     * consumer to each entry, except for the fact that this method allows a bi-consumer to be used
+     * instead.
+     *
+     * @param iterator The iterator to iterate over
+     * @param consumer The consumer to apply to each entry
+     * @param <T> The type of the keys in the entries
+     * @param <U> The type of the values in the entries
+     */
     public static <T, U> void iterateEntries(Iterator<Entry<T, U>> iterator, BiConsumer<T, U> consumer) {
         while (iterator.hasNext()) {
             Entry<T, U> entry = iterator.next();

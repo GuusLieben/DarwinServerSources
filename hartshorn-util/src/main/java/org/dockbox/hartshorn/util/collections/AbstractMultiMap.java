@@ -16,14 +16,12 @@
 
 package org.dockbox.hartshorn.util.collections;
 
-import org.dockbox.hartshorn.util.CollectionUtilities;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import org.dockbox.hartshorn.util.CollectionUtilities;
 
 /**
  * A base implementation of {@link MultiMap} that provides default implementations for most methods.
@@ -62,9 +60,7 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
     @Override
     public void putAll(MultiMap<K, V> map) {
-        for (Entry<K, Collection<V>> collection : map.entrySet()) {
-            this.putAll(collection.getKey(), collection.getValue());
-        }
+        CollectionUtilities.iterateEntries(map.entrySet(), this::putAll);
     }
 
     @Override

@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.profiles;
+package org.dockbox.hartshorn.util.stream;
 
-import org.dockbox.hartshorn.properties.PropertyRegistry;
+public interface BiComparator<K, V> {
 
-@FunctionalInterface
-public interface ProfileRegistryFactory {
-
-    ProfileRegistry create(PropertyRegistry rootRegistry);
+    int compare(K key1, V value1, K key2, V value2);
 
 }
