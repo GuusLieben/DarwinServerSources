@@ -132,7 +132,7 @@ public class DiscoveryServiceTests {
         Map<Kind, List<JavaFileObject>> generatedByKind = generatedFiles.stream().collect(Collectors.groupingBy(JavaFileObject::getKind));
         Assertions.assertEquals(1, generatedByKind.get(Kind.CLASS).size()); // HelloWorldServiceImplementation.class
 
-        return generatedByKind.get(Kind.CLASS).get(0);
+        return generatedByKind.get(Kind.CLASS).getFirst();
     }
 
     public static class ByteClassLoader extends URLClassLoader {

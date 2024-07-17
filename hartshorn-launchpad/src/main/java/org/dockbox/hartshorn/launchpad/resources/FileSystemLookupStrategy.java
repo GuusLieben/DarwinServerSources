@@ -17,6 +17,7 @@
 package org.dockbox.hartshorn.launchpad.resources;
 
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 
 import java.io.File;
 import java.net.URI;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
  * the path representation, typically this will be similar to {@code /config/{owner-id}/}.
  *
  * <p>This strategy does not require the name to be present, as it is the default strategy used in
- * {@link Resources#getResourceURIs(ApplicationContext, String, ResourceLookupStrategy...)}.
+ * {@link Resources#getResourceURIs(ApplicationEnvironment, String, ResourceLookupStrategy...)}.
  *
  * @since 0.4.7
  *
@@ -46,8 +47,8 @@ public class FileSystemLookupStrategy implements ResourceLookupStrategy {
     }
 
     @Override
-    public Set<URI> lookup(ApplicationContext context, String path) {
-        File resolved = context.environment().fileSystem().applicationPath().resolve(path).toFile();
+    public Set<URI> lookup(ApplicationEnvironment environment, String path) {
+        File resolved = environment.fileSystem().applicationPath().resolve(path).toFile();
         if (resolved.exists()) {
             return Collections.singleton(resolved.toURI());
         }
@@ -66,7 +67,7 @@ public class FileSystemLookupStrategy implements ResourceLookupStrategy {
     }
 
     @Override
-    public URI baseUrl(ApplicationContext context) {
-        return context.environment().fileSystem().applicationPath().toUri();
+    public URI baseUrl(ApplicationEnvironment environment) {
+        return environment.fileSystem().applicationPath().toUri();
     }
 }

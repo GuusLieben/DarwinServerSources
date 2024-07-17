@@ -16,9 +16,16 @@
 
 package org.dockbox.hartshorn.launchpad.resources;
 
-import org.dockbox.hartshorn.launchpad.ApplicationContext;
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
+import org.dockbox.hartshorn.util.ContextualInitializer;
+import org.dockbox.hartshorn.util.Customizer;
+import org.dockbox.hartshorn.util.Initializer;
+import org.dockbox.hartshorn.util.LazyStreamableConfigurer;
+import org.dockbox.hartshorn.util.StreamableConfigurer;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,11 +59,11 @@ public class FallbackResourceLookup implements ResourceLookup {
     private static final Pattern STRATEGY_PATTERN = Pattern.compile("(.+):(.+)");
 
     private final Map<String, ResourceLookupStrategy> strategies = new ConcurrentHashMap<>();
-    private final ApplicationContext applicationContext;
+    private final ApplicationEnvironment environment;
     private final ResourceLookupStrategy fallbackStrategy;
 
-    public FallbackResourceLookup(ApplicationContext applicationContext, ResourceLookupStrategy fallbackStrategy) {
-        this.applicationContext = applicationContext;
+    public FallbackResourceLookup(ApplicationEnvironment environment, ResourceLookupStrategy fallbackStrategy) {
+        this.environment = environment;
         this.fallbackStrategy = fallbackStrategy;
     }
 
@@ -71,7 +78,7 @@ public class FallbackResourceLookup implements ResourceLookup {
             matchedSource = matcher.group(2);
         }
 
-        return strategy.lookup(this.applicationContext, matchedSource);
+        return strategy.lookup(this.environment, matchedSource);
     }
 
     /**
@@ -105,5 +112,48 @@ public class FallbackResourceLookup implements ResourceLookup {
      */
     public Set<ResourceLookupStrategy> strategies() {
         return Set.copyOf(this.strategies.values());
+    }
+
+    public static ContextualInitializer<ApplicationEnvironment, ResourceLookup> create(Customizer<Configurer> customizer) {
+        return environment -> {
+            Configurer configurer = new Configurer();
+            customizer.configure(configurer);
+
+            ResourceLookupStrategy fallbackStrategy = configurer.fallbackStrategy.initialize(environment);
+            FallbackResourceLookup resourceLookup = new FallbackResourceLookup(environment.input(), fallbackStrategy);
+
+            List<ResourceLookupStrategy> strategies = configurer.strategies.initialize(environment);
+            strategies.forEach(resourceLookup::addLookupStrategy);
+
+            return resourceLookup;
+        };
+    }
+
+    public static class Configurer {
+
+        private final LazyStreamableConfigurer<ApplicationEnvironment, ResourceLookupStrategy> strategies = LazyStreamableConfigurer.of(
+            new FileSystemLookupStrategy(),
+            new ClassPathResourceLookupStrategy()
+        );
+
+        private ContextualInitializer<ApplicationEnvironment, ResourceLookupStrategy> fallbackStrategy = ContextualInitializer.of(FileSystemLookupStrategy::new);
+
+        public Configurer fallbackStrategy(ResourceLookupStrategy strategy) {
+            return this.fallbackStrategy(ContextualInitializer.of(strategy));
+        }
+
+        public Configurer fallbackStrategy(ContextualInitializer<ApplicationEnvironment, ResourceLookupStrategy> fallbackStrategy) {
+            this.fallbackStrategy = fallbackStrategy;
+            return this;
+        }
+
+        public Configurer strategies(Collection<ResourceLookupStrategy> strategies) {
+            return this.strategies(configuration -> configuration.addAll(strategies));
+        }
+
+        public Configurer strategies(Customizer<StreamableConfigurer<ApplicationEnvironment, ResourceLookupStrategy>> customizer) {
+            this.strategies.customizer(customizer);
+            return this;
+        }
     }
 }

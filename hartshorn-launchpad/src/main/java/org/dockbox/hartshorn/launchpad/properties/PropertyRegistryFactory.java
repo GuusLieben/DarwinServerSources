@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject;
+package org.dockbox.hartshorn.launchpad.properties;
 
-import org.dockbox.hartshorn.context.Context;
-import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
-import org.dockbox.hartshorn.inject.provider.ComponentProvider;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Set;
 
-/**
- * Represents an application that is capable of injection. In other words, an application that can
- * provide components and resolve dependencies.
- *
- * @since 0.6.0
- *
- * @author Guus Lieben
- */
-public interface InjectionCapableApplication extends Context {
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 
-    InjectorEnvironment environment();
+@FunctionalInterface
+public interface PropertyRegistryFactory {
 
-    ComponentProvider defaultProvider();
-
-    HierarchicalBinder defaultBinder();
+    PropertyRegistry createRegistry(Set<URI> sources) throws IOException;
 }

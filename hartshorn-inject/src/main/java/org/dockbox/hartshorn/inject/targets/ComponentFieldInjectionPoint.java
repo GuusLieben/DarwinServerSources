@@ -49,7 +49,7 @@ public class ComponentFieldInjectionPoint<T> implements ComponentInjectionPoint<
     @Override
     public void processObjects(PopulateComponentContext<T> context, List<Object> objectsToInject) throws ApplicationException {
         if (objectsToInject.size() == 1) {
-            Object objectToInject = objectsToInject.get(0);
+            Object objectToInject = objectsToInject.getFirst();
             T instance = context.instance();
             try {
                 if (objectToInject instanceof Collection<?> collection) {

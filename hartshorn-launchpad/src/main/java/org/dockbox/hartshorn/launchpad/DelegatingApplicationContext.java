@@ -16,44 +16,42 @@
 
 package org.dockbox.hartshorn.launchpad;
 
-import java.util.Properties;
-import java.util.Set;
-import java.util.function.BiConsumer;
-
-import org.dockbox.hartshorn.inject.DefaultFallbackCompatibleContext;
-import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
-import org.dockbox.hartshorn.inject.provider.HierarchicalComponentProviderOrchestrator;
-import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
-import org.dockbox.hartshorn.launchpad.activation.ActivatorHolder;
-import org.dockbox.hartshorn.launchpad.activation.ContextActivatorHolder;
-import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurer;
-import org.dockbox.hartshorn.inject.ExceptionHandler;
-import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorContext;
-import org.dockbox.hartshorn.inject.ApplicationPropertyHolder;
-import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
-import org.dockbox.hartshorn.launchpad.configuration.BindingConfigurerBinderPostProcessorAdapter;
-import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
-import org.dockbox.hartshorn.launchpad.lifecycle.LifecycleObserver;
-import org.dockbox.hartshorn.launchpad.lifecycle.ObservableApplicationEnvironment;
 import org.dockbox.hartshorn.inject.ComponentKey;
-import org.dockbox.hartshorn.inject.component.ComponentRegistry;
-import org.dockbox.hartshorn.inject.provider.ComponentProvider;
-import org.dockbox.hartshorn.inject.provider.HierarchicalComponentProvider;
-import org.dockbox.hartshorn.launchpad.context.ModifiableApplicationContextCarrier;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
+import org.dockbox.hartshorn.inject.DefaultFallbackCompatibleContext;
+import org.dockbox.hartshorn.inject.ExceptionHandler;
 import org.dockbox.hartshorn.inject.binding.Binder;
 import org.dockbox.hartshorn.inject.binding.BindingFunction;
 import org.dockbox.hartshorn.inject.binding.BindingHierarchy;
+import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurer;
+import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
+import org.dockbox.hartshorn.inject.component.ComponentRegistry;
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
+import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
+import org.dockbox.hartshorn.inject.provider.HierarchicalComponentProvider;
+import org.dockbox.hartshorn.inject.provider.HierarchicalComponentProviderOrchestrator;
+import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
 import org.dockbox.hartshorn.inject.scope.Scope;
+import org.dockbox.hartshorn.launchpad.activation.ActivatorHolder;
+import org.dockbox.hartshorn.launchpad.activation.ContextActivatorHolder;
+import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorContext;
+import org.dockbox.hartshorn.launchpad.configuration.BindingConfigurerBinderPostProcessorAdapter;
+import org.dockbox.hartshorn.launchpad.context.ModifiableApplicationContextCarrier;
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
+import org.dockbox.hartshorn.launchpad.lifecycle.LifecycleObserver;
+import org.dockbox.hartshorn.launchpad.lifecycle.ObservableApplicationEnvironment;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.IllegalModificationException;
 import org.dockbox.hartshorn.util.SingleElementContext;
 import org.dockbox.hartshorn.util.collections.ArrayListMultiMap;
 import org.dockbox.hartshorn.util.collections.MultiMap;
-import org.dockbox.hartshorn.util.option.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 /**
  * A {@link ApplicationContext} implementation that delegates to a {@link PostProcessingComponentProvider}. This
@@ -87,7 +85,6 @@ public abstract class DelegatingApplicationContext
 
     private static final Logger LOG = LoggerFactory.getLogger(DelegatingApplicationContext.class);
 
-    private final transient Properties environmentValues;
     private final transient ComponentProviderOrchestrator componentProvider;
     private final transient ApplicationEnvironment environment;
 
@@ -102,8 +99,6 @@ public abstract class DelegatingApplicationContext
         }
 
         this.prepareInitialization();
-
-        this.environmentValues = this.environment.rawArguments();
 
         SingleElementContext<ApplicationContext> applicationInitializerContext = initializerContext.transform(this);
         // Expose current context to allow initializers to resolve the application, even if the content of the element context
@@ -132,21 +127,6 @@ public abstract class DelegatingApplicationContext
         if (this.isRunning) {
             throw new IllegalModificationException("Application context cannot be modified after it has been started");
         }
-    }
-
-    @Override
-    public ApplicationPropertyHolder properties() {
-        return new ApplicationPropertyHolder() {
-            @Override
-            public Properties properties() {
-                return DelegatingApplicationContext.this.environmentValues;
-            }
-
-            @Override
-            public Option<String> property(String key) {
-                return Option.of(DelegatingApplicationContext.this.environmentValues.getProperty(key));
-            }
-        };
     }
 
     @Override

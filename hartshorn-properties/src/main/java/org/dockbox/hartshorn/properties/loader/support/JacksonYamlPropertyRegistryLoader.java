@@ -16,14 +16,14 @@
 
 package org.dockbox.hartshorn.properties.loader.support;
 
-import java.nio.file.Path;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import org.dockbox.hartshorn.properties.loader.StandardPropertyPathFormatter;
 import org.dockbox.hartshorn.properties.loader.path.PropertyPathFormatter;
 import org.dockbox.hartshorn.util.Customizer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import java.util.Set;
 
 public class JacksonYamlPropertyRegistryLoader extends JacksonPropertyRegistryLoader {
 
@@ -50,7 +50,7 @@ public class JacksonYamlPropertyRegistryLoader extends JacksonPropertyRegistryLo
     }
 
     @Override
-    public boolean isCompatible(Path path) {
-        return path.toString().endsWith(".yaml") || path.toString().endsWith(".yml");
+    protected Set<String> supportedExtensions() {
+        return Set.of("yaml", "yml");
     }
 }

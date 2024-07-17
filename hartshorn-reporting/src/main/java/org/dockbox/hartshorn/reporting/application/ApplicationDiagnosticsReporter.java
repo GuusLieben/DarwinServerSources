@@ -31,6 +31,7 @@ import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.lifecycle.ObservableApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.lifecycle.Observer;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.reporting.CategorizedDiagnosticsReporter;
 import org.dockbox.hartshorn.reporting.ConfigurableDiagnosticsReporter;
 import org.dockbox.hartshorn.reporting.DiagnosticsPropertyCollector;
@@ -112,8 +113,8 @@ public class ApplicationDiagnosticsReporter implements ConfigurableDiagnosticsRe
      * @param collector the collector to write to
      */
     protected void reportApplicationProperties(DiagnosticsPropertyCollector collector) {
-        Properties properties = this.applicationContext.properties().properties();
-        Reportable reporter = new PropertiesReporter(properties);
+        PropertyRegistry registry = this.applicationContext.environment().propertyRegistry();
+        Reportable reporter = new PropertiesReporter(registry);
         collector.property("properties").writeDelegate(reporter);
     }
 

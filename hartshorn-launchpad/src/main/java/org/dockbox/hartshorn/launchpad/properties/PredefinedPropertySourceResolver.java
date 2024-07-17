@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject;
+package org.dockbox.hartshorn.launchpad.properties;
 
-import org.dockbox.hartshorn.context.Context;
-import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
-import org.dockbox.hartshorn.inject.provider.ComponentProvider;
+import java.util.Set;
 
-/**
- * Represents an application that is capable of injection. In other words, an application that can
- * provide components and resolve dependencies.
- *
- * @since 0.6.0
- *
- * @author Guus Lieben
- */
-public interface InjectionCapableApplication extends Context {
+public class PredefinedPropertySourceResolver implements PropertySourceResolver {
 
-    InjectorEnvironment environment();
+    private final Set<String> sources;
 
-    ComponentProvider defaultProvider();
+    public PredefinedPropertySourceResolver(Set<String> sources) {
+        this.sources = sources;
+    }
 
-    HierarchicalBinder defaultBinder();
+    @Override
+    public Set<String> resolve() {
+        return Set.copyOf(this.sources);
+    }
 }

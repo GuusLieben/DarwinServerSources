@@ -17,6 +17,7 @@
 package org.dockbox.hartshorn.launchpad.resources;
 
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.environment.ClasspathResourceLocator;
 
 import java.io.File;
@@ -184,15 +185,15 @@ public final class Resources {
      * Returns a {@link Set} of {@link URI}s pointing to all resources with the given name. This method will request
      * each provided {@link ResourceLookupStrategy} to find the resource, and will return the union of all results.
      *
-     * @param applicationContext the {@link ApplicationContext} to use to find the resource
+     * @param environment the {@link ApplicationContext} to use to find the resource
      * @param resource the name of the resource
      * @param strategies the {@link ResourceLookupStrategy}s to use to find the resource
      * @return a {@link Set} of {@link URI}s pointing to all resources with the given name
      */
-    public static Set<URI> getResourceURIs(ApplicationContext applicationContext, String resource, ResourceLookupStrategy... strategies) {
+    public static Set<URI> getResourceURIs(ApplicationEnvironment environment, String resource, ResourceLookupStrategy... strategies) {
         Set<URI> uris = new HashSet<>();
         for (ResourceLookupStrategy strategy : strategies) {
-            uris.addAll(strategy.lookup(applicationContext, resource));
+            uris.addAll(strategy.lookup(environment, resource));
         }
         return Collections.unmodifiableSet(uris);
     }

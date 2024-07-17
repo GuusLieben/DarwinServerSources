@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject;
+package org.dockbox.hartshorn.launchpad.properties;
 
-import org.dockbox.hartshorn.context.Context;
-import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
-import org.dockbox.hartshorn.inject.provider.ComponentProvider;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * Represents an application that is capable of injection. In other words, an application that can
- * provide components and resolve dependencies.
- *
- * @since 0.6.0
- *
- * @author Guus Lieben
- */
-public interface InjectionCapableApplication extends Context {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface PropertiesSource {
 
-    InjectorEnvironment environment();
-
-    ComponentProvider defaultProvider();
-
-    HierarchicalBinder defaultBinder();
+    String[] value();
 }

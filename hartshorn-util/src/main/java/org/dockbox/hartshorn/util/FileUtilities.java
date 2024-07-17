@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject;
+package org.dockbox.hartshorn.util;
 
-import org.dockbox.hartshorn.context.Context;
-import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
-import org.dockbox.hartshorn.inject.provider.ComponentProvider;
+import java.nio.file.Path;
 
-/**
- * Represents an application that is capable of injection. In other words, an application that can
- * provide components and resolve dependencies.
- *
- * @since 0.6.0
- *
- * @author Guus Lieben
- */
-public interface InjectionCapableApplication extends Context {
+public final class FileUtilities {
 
-    InjectorEnvironment environment();
+    public static boolean hasFileExtension(Path path) {
+        return getFileExtension(path) != null;
+    }
 
-    ComponentProvider defaultProvider();
+    public static String getFileExtension(Path path) {
+        String fileName = path.getFileName().toString();
+        int index = fileName.lastIndexOf('.');
+        if (index == -1) {
+            return null;
+        }
+        return fileName.substring(index + 1);
+    }
 
-    HierarchicalBinder defaultBinder();
+    public static boolean exists(Path path) {
+        return path.toFile().exists();
+    }
 }

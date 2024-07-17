@@ -45,6 +45,7 @@ import org.dockbox.hartshorn.inject.processing.ComponentPopulatorPostProcessor;
 import org.dockbox.hartshorn.inject.processing.ComponentPostProcessor;
 import org.dockbox.hartshorn.inject.processing.ComponentPreProcessor;
 import org.dockbox.hartshorn.inject.binding.Binder;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.Initializer;
@@ -180,7 +181,7 @@ public class HartshornApplicationConfigurer {
      * @param enableBanner whether to enable or disable the banner
      * @return the current {@link HartshornApplicationConfigurer} instance
      */
-    public HartshornApplicationConfigurer enableBanner(ContextualInitializer<Properties, Boolean> enableBanner) {
+    public HartshornApplicationConfigurer enableBanner(ContextualInitializer<PropertyRegistry, Boolean> enableBanner) {
         this.environment = this.environment.compose(configuration -> configuration.enableBanner(enableBanner));
         return this;
     }
@@ -213,7 +214,7 @@ public class HartshornApplicationConfigurer {
      * @param enableBatchMode whether to enable or disable batch mode
      * @return the current {@link HartshornApplicationConfigurer} instance
      */
-    public HartshornApplicationConfigurer enableBatchMode(ContextualInitializer<Properties, Boolean> enableBatchMode) {
+    public HartshornApplicationConfigurer enableBatchMode(ContextualInitializer<PropertyRegistry, Boolean> enableBatchMode) {
         this.environment = this.environment.compose(configuration -> configuration.enableBatchMode(enableBatchMode));
         return this;
     }
@@ -265,7 +266,7 @@ public class HartshornApplicationConfigurer {
      * @param enableStrictMode whether to enable or disable strict mode
      * @return the current {@link HartshornApplicationConfigurer} instance
      */
-    public HartshornApplicationConfigurer enableStrictMode(ContextualInitializer<Properties, Boolean> enableStrictMode) {
+    public HartshornApplicationConfigurer enableStrictMode(ContextualInitializer<PropertyRegistry, Boolean> enableStrictMode) {
         this.environment = this.environment.compose(configuration -> configuration.enableStrictMode(enableStrictMode));
         return this;
     }
@@ -276,7 +277,7 @@ public class HartshornApplicationConfigurer {
      * @param showStacktraces whether to enable or disable stacktraces
      * @return the current {@link HartshornApplicationConfigurer} instance
      */
-    public HartshornApplicationConfigurer showStacktraces(ContextualInitializer<Properties, Boolean> showStacktraces) {
+    public HartshornApplicationConfigurer showStacktraces(ContextualInitializer<PropertyRegistry, Boolean> showStacktraces) {
         this.environment = this.environment.compose(configuration -> configuration.showStacktraces(showStacktraces));
         return this;
     }
