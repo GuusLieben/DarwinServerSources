@@ -54,6 +54,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dockbox.hartshorn</groupId>
+                <artifactId>hartshorn-profiles</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dockbox.hartshorn</groupId>
                 <artifactId>hartshorn-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -1,0 +1,4 @@
+hartshorn:
+  profiles:
+  - base
+  - dev

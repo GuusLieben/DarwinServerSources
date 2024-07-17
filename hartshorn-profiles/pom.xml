@@ -10,12 +10,16 @@
         <relativePath>../hartshorn-assembly/parent/pom.parent.xml</relativePath>
     </parent>
 
-    <name>Hartshorn Properties</name>
-    <description>Property file accessor for Hartshorn applications</description>
-    <artifactId>hartshorn-properties</artifactId>
+    <name>Hartshorn Profiles</name>
+    <description>Environment profile framework for Hartshorn applications</description>
+    <artifactId>hartshorn-profiles</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>org.dockbox.hartshorn</groupId>
+            <artifactId>hartshorn-properties</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.dockbox.hartshorn</groupId>
             <artifactId>hartshorn-introspect</artifactId>
@@ -24,17 +28,17 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-properties</artifactId>
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
