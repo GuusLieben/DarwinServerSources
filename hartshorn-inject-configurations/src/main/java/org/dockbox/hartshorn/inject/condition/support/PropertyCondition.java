@@ -19,7 +19,7 @@ package org.dockbox.hartshorn.inject.condition.support;
 import org.dockbox.hartshorn.inject.condition.Condition;
 import org.dockbox.hartshorn.inject.condition.ConditionContext;
 import org.dockbox.hartshorn.inject.condition.ConditionResult;
-import org.dockbox.hartshorn.properties.ConfiguredProperty;
+import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.util.option.Option;
 
 /**
@@ -40,7 +40,7 @@ public class PropertyCondition implements Condition {
     public ConditionResult matches(ConditionContext context) {
         return context.annotatedElement().annotations().get(RequiresProperty.class).map(condition -> {
             String name = condition.name();
-            Option<ConfiguredProperty> result = context.application()
+            Option<ValueProperty> result = context.application()
                     .environment()
                     .propertyRegistry()
                     .get(name);
@@ -51,7 +51,7 @@ public class PropertyCondition implements Condition {
                 return ConditionResult.notFound("property", name);
             }
 
-            ConfiguredProperty property = result.get();
+            ValueProperty property = result.get();
             Option<String> value = property.value();
             if (condition.matchIfMissing() && value.present()) {
                 return ConditionResult.found("property", name, value.get());

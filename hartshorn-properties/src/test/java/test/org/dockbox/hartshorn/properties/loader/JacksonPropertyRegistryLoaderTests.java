@@ -26,9 +26,7 @@ import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.properties.loader.support.JacksonPropertyRegistryLoader;
 import org.dockbox.hartshorn.properties.loader.support.JacksonYamlPropertyRegistryLoader;
 import org.dockbox.hartshorn.properties.loader.StandardPropertyPathFormatter;
-import org.dockbox.hartshorn.properties.parse.support.GenericConverterConfiguredPropertyParser;
-import org.dockbox.hartshorn.util.Customizer;
-import org.dockbox.hartshorn.util.introspect.convert.support.StringToArrayConverter;
+import org.dockbox.hartshorn.properties.value.StandardPropertyParsers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -85,7 +83,7 @@ public class JacksonPropertyRegistryLoaderTests {
                 .peek(value -> Assertions.assertEquals("value3", value))
                 .orElseThrow(() -> new AssertionError("Property not found"));
 
-        registry.value("sample.complex.values", new GenericConverterConfiguredPropertyParser<>(new StringToArrayConverter(), String[].class))
+        registry.value("sample.complex.values", StandardPropertyParsers.STRING_LIST)
                 .peek(values -> {
                     Assertions.assertEquals(3, values.length);
                     Assertions.assertEquals("value1", values[0]);

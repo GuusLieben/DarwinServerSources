@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.properties.loader;
+package org.dockbox.hartshorn.properties.value.support;
 
-import java.io.IOException;
-import java.nio.file.Path;
+import org.dockbox.hartshorn.util.introspect.convert.support.StringToEnumConverterFactory;
 
-import org.dockbox.hartshorn.properties.PropertyRegistry;
+public class EnumValuePropertyParser<E extends Enum<E>> extends ConverterValuePropertyParser<E> {
 
-@FunctionalInterface
-public interface PropertyRegistryLoader {
-
-    void loadRegistry(PropertyRegistry registry, Path path) throws IOException;
+    public EnumValuePropertyParser(Class<E> type) {
+        super(new StringToEnumConverterFactory().create(type));
+    }
 }

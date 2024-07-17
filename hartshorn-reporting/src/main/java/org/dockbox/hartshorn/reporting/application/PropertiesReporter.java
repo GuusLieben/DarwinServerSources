@@ -16,10 +16,8 @@
 
 package org.dockbox.hartshorn.reporting.application;
 
-import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.dockbox.hartshorn.properties.ConfiguredProperty;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.reporting.DiagnosticsPropertyCollector;
 import org.dockbox.hartshorn.reporting.Reportable;

@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.properties.loader;
+package org.dockbox.hartshorn.properties;
 
-import java.io.IOException;
-import java.nio.file.Path;
+public sealed interface Property permits ValueProperty, ListProperty, ObjectProperty {
 
-import org.dockbox.hartshorn.properties.PropertyRegistry;
-
-@FunctionalInterface
-public interface PropertyRegistryLoader {
-
-    void loadRegistry(PropertyRegistry registry, Path path) throws IOException;
+    String name();
 }

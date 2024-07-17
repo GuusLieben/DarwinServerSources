@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.properties.loader;
+package org.dockbox.hartshorn.properties.list;
 
-import java.io.IOException;
-import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 
-import org.dockbox.hartshorn.properties.PropertyRegistry;
+import org.dockbox.hartshorn.properties.ListProperty;
+import org.dockbox.hartshorn.properties.Property;
 
-@FunctionalInterface
-public interface PropertyRegistryLoader {
+public record SimpleListProperty(String name, List<Property> elements) implements ListProperty {
 
-    void loadRegistry(PropertyRegistry registry, Path path) throws IOException;
+    @Override
+    public List<Property> elements() {
+        return List.copyOf(this.elements);
+    }
+
+    @Override
+    public <T> Collection<T> parse(ListPropertyParser<T> parser) {
+        return parser.parse(this);
+    }
 }

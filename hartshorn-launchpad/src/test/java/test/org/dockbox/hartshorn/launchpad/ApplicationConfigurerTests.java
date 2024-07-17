@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,6 @@ import org.dockbox.hartshorn.launchpad.ProcessableApplicationContext;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
 import org.dockbox.hartshorn.launchpad.banner.HartshornLogoBanner;
 import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
-import org.dockbox.hartshorn.properties.ConfiguredProperty;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.TypeUtils;

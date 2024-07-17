@@ -16,9 +16,9 @@
 
 package org.dockbox.hartshorn.properties;
 
-import org.dockbox.hartshorn.properties.parse.ConfiguredPropertyParser;
-import org.dockbox.hartshorn.properties.parse.StandardPropertyParsers;
-import org.dockbox.hartshorn.properties.parse.support.EnumConfiguredPropertyParser;
+import org.dockbox.hartshorn.properties.value.ValuePropertyParser;
+import org.dockbox.hartshorn.properties.value.StandardPropertyParsers;
+import org.dockbox.hartshorn.properties.value.support.EnumValuePropertyParser;
 import org.dockbox.hartshorn.util.OptionInitializer;
 import org.dockbox.hartshorn.util.SingleElementContext;
 import org.dockbox.hartshorn.util.option.Option;
@@ -26,14 +26,14 @@ import org.dockbox.hartshorn.util.option.Option;
 public class PropertyInitializer<T> implements OptionInitializer<PropertyRegistry, T> {
 
     private final String property;
-    private final ConfiguredPropertyParser<T> parser;
+    private final ValuePropertyParser<T> parser;
 
-    public PropertyInitializer(String property, ConfiguredPropertyParser<T> parser) {
+    public PropertyInitializer(String property, ValuePropertyParser<T> parser) {
         this.property = property;
         this.parser = parser;
     }
 
-    public static <T> PropertyInitializer<T> of(String property, ConfiguredPropertyParser<T> parser) {
+    public static <T> PropertyInitializer<T> of(String property, ValuePropertyParser<T> parser) {
         return new PropertyInitializer<>(property, parser);
     }
 
@@ -74,7 +74,7 @@ public class PropertyInitializer<T> implements OptionInitializer<PropertyRegistr
     }
 
     public static <E extends Enum<E>> PropertyInitializer<E> enumProperty(String property, Class<E> type) {
-        return new PropertyInitializer<>(property, new EnumConfiguredPropertyParser<>(type));
+        return new PropertyInitializer<>(property, new EnumValuePropertyParser<>(type));
     }
 
     @Override
