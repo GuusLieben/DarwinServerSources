@@ -33,8 +33,7 @@ public class LogbackErrorConverter extends ForegroundCompositeConverterBase<ILog
 
     @Override
     protected String getForegroundColorCode(ILoggingEvent event) {
-        Level level = event.getLevel();
-        if (level.toInt() == Level.ERROR_INT) {
+        if (event.getLevel().toInt() == Level.ERROR_INT) {
             return ANSIConstants.RED_FG;
         }
         return ANSIConstants.DEFAULT_FG;

@@ -30,21 +30,6 @@ public final class Hartshorn {
      */
     public static final String PACKAGE_PREFIX = "org.dockbox.hartshorn";
 
-    /**
-     * The (human-readable) display name of Hartshorn.
-     */
-    public static final String PROJECT_NAME = "Hartshorn";
-
-    /**
-     * The simplified identifier for Hartshorn-default identifiers.
-     */
-    public static final String PROJECT_ID = "hartshorn";
-
-    /**
-     * The semantic version of the current release of Hartshorn
-     */
-    public static final HartshornVersion VERSION = HartshornVersion.V0_6_0;
-
     private Hartshorn() {}
 }
 

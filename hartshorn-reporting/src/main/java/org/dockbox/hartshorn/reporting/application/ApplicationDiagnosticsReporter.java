@@ -29,6 +29,7 @@ import org.dockbox.hartshorn.context.ContextView;
 import org.dockbox.hartshorn.context.NamedContext;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.Hartshorn;
+import org.dockbox.hartshorn.launchpad.banner.HartshornLogoBanner;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.lifecycle.ObservableApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.lifecycle.Observer;
@@ -72,7 +73,8 @@ public class ApplicationDiagnosticsReporter implements ConfigurableDiagnosticsRe
     @Override
     public void report(DiagnosticsPropertyCollector collector) {
         if (this.configuration.includeVersion()) {
-            collector.property("version").writeDelegate(Hartshorn.VERSION);
+            String implementationVersion = ApplicationContext.class.getPackage().getImplementationVersion();
+            collector.property("version").writeString(implementationVersion != null ? implementationVersion : "unknown");
         }
         if (this.configuration.includeJarLocation()) {
             reportJarLocation(collector);

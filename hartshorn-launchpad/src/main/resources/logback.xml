@@ -21,7 +21,6 @@
     <conversionRule conversionWord="lc" converterClass="org.dockbox.hartshorn.launchpad.logging.logback.LogbackLevelConverter" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <withJansi>true</withJansi>
         <!--Custom encoder to support process_id-->
         <encoder class="org.dockbox.hartshorn.launchpad.logging.logback.LogbackEncoder">
             <pattern>%d{YYYY-MM-dd'T'HH:mm:ss.SSSXXX} %white([ %-15.15t]) @ %green(%process_id) -> %cyan(%-38.38logger{36}) %lc(%-5level) - %ec(%msg) %n

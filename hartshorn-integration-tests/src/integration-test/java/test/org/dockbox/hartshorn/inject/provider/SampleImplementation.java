@@ -20,7 +20,7 @@ import org.dockbox.hartshorn.launchpad.Hartshorn;
 
 public class SampleImplementation implements SampleInterface {
 
-    public static final String NAME = Hartshorn.PROJECT_NAME;
+    public static final String NAME = "sample@#";
 
     @Override
     public String name() {

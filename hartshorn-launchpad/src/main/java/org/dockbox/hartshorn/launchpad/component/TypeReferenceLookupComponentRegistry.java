@@ -16,26 +16,31 @@
 
 package org.dockbox.hartshorn.launchpad.component;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.function.Function;
 
 import org.dockbox.hartshorn.inject.annotations.Component;
 import org.dockbox.hartshorn.inject.component.AnnotatedComponentContainer;
 import org.dockbox.hartshorn.inject.component.ComponentContainer;
 import org.dockbox.hartshorn.inject.component.ComponentRegistry;
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.environment.EnvironmentTypeResolver;
 import org.dockbox.hartshorn.util.CollectionUtilities;
 import org.dockbox.hartshorn.util.introspect.annotations.AnnotationUtilities;
 import org.dockbox.hartshorn.util.option.Option;
 
 /**
- * A {@link ComponentRegistry} that uses a {@link EnvironmentTypeResolver} to look up all types that are annotated with
- * {@link Component}. Additional containers can be added to this registry by calling {@link #addCustomContainer(ComponentContainer)}.
+ * {@link ComponentRegistry} implementation which recognizes classes annotated with {@link Component} (or compatible
+ * stereotypes) as managed components. Classes are resolved through the given {@link EnvironmentTypeResolver}, which
+ * is typically derived from the active {@link ApplicationEnvironment} through {@link
+ * ApplicationEnvironment#typeResolver()}. Additional containers can be added to this registry through {@link 
+ * #addCustomContainer(ComponentContainer)}.
  *
- * @see ComponentRegistry
- * @see EnvironmentTypeResolver#types(Class)
- * @see Component
+ * <p>Component resolution is cached, meaning this registry expects all required type resolution rules to be configured
+ * before {@link #containers()} is first called. Note that custom component containers can always be added, and will be
+ * taken into account when resolving all or specific component containers.
  *
  * @since 0.6.0
  *
@@ -43,36 +48,53 @@ import org.dockbox.hartshorn.util.option.Option;
  */
 public class TypeReferenceLookupComponentRegistry implements ComponentRegistry {
 
+    private final Set<ComponentContainer<?>> containers = new ConcurrentSkipListSet<>(ComponentContainer.COMPARE_BY_ID);
     private final EnvironmentTypeResolver typeResolver;
-    private final Set<ComponentContainer<?>> componentContainers = ConcurrentHashMap.newKeySet();
-    private final Set<ComponentContainer<?>> customContainers = ConcurrentHashMap.newKeySet();
+    private boolean environmentTypesResolved = false;
 
     public TypeReferenceLookupComponentRegistry(EnvironmentTypeResolver typeResolver) {
         this.typeResolver = typeResolver;
     }
 
+    /**
+     * Register the given container to the current registry
+     * @param container
+     */
     public void addCustomContainer(ComponentContainer<?> container) {
-        this.customContainers.add(container);
+        withContainerCache(containers -> containers.add(container));
     }
 
     @Override
     public Collection<ComponentContainer<?>> containers() {
-        if (this.componentContainers.isEmpty()) {
-            this.typeResolver.types(Component.class).stream()
-                    // Filter out component stereotypes
-                    .filter(type -> !AnnotationUtilities.isStereotypeOf(type.type(), Component.class))
-                    .map(AnnotatedComponentContainer::new)
-                    .forEach(this.componentContainers::add);
-        }
-        return CollectionUtilities.merge(this.componentContainers, this.customContainers);
+        return List.copyOf(this.withContainerCache(Function.identity()));
     }
 
     @Override
     public Option<ComponentContainer<?>> container(Class<?> type) {
-        return Option.of(this.containers()
-                .stream()
-                .filter(container -> container.type().is(type))
-                .findFirst()
-        );
+        return withContainerCache(containers -> {
+            List<ComponentContainer<?>> compatibleContainers = containers.stream()
+                    .filter(container -> container.type().is(type))
+                    .toList();
+            if (compatibleContainers.size() > 1) {
+                throw new IllegalStateException("Multiple compatible containers found for " + type);
+            }
+            return Option.of(compatibleContainers.isEmpty() ? null : compatibleContainers.getFirst());
+        });
+    }
+
+    private <T> T withContainerCache(Function<Set<ComponentContainer<?>>, T> operator) {
+        initializeCacheIfEmpty();
+        return operator.apply(this.containers);
+    }
+
+    private void initializeCacheIfEmpty() {
+        if (!environmentTypesResolved) {
+            environmentTypesResolved = true;
+            this.typeResolver.types(Component.class).stream()
+                    // Filter out component stereotypes
+                    .filter(type -> !AnnotationUtilities.isStereotypeOf(type.type(), Component.class))
+                    .map(AnnotatedComponentContainer::new)
+                    .forEach(this.containers::add);
+        }
     }
 }
