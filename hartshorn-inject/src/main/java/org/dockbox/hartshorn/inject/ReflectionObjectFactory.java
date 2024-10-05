@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject.provider;
+package org.dockbox.hartshorn.inject;
 
-import org.dockbox.hartshorn.inject.component.ComponentRegistry;
-import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
+import java.lang.reflect.InvocationTargetException;
 
-/**
- * TODO: #1060 Add documentation
- *
- * @since 0.5.0
- *
- * @author Guus Lieben
- */
-public interface ComponentProviderOrchestrator extends PostProcessingComponentProvider {
+import org.dockbox.hartshorn.util.ApplicationRuntimeException;
 
-    ComponentRegistry componentRegistry();
+public class ReflectionObjectFactory implements ObjectFactory {
 
-    HierarchicalBinderProcessorRegistry binderProcessorRegistry();
-
-    HierarchicalComponentProvider applicationProvider();
-
+    @Override
+    public <T> T create(Class<T> type) {
+        try {
+            return type.getConstructor().newInstance();
+        }
+        catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+              NoSuchMethodException | SecurityException e) {
+            throw new ApplicationRuntimeException(e);
+        }
+    }
 }

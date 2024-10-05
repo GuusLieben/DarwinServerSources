@@ -34,7 +34,7 @@ import org.dockbox.hartshorn.launchpad.lifecycle.LifecycleObserverPreProcessor;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ServiceActivator(processors = {
+@ServiceActivator(componentPreProcessors = {
         LifecycleObserverPreProcessor.class,
 })
 public @interface UseLifecycleObservers {

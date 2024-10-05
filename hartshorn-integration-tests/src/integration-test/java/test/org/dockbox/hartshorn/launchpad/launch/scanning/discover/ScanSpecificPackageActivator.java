@@ -27,7 +27,7 @@ import test.org.dockbox.hartshorn.launchpad.launch.scanning.service.DemoServiceP
 
 @ServiceActivator(
         scanPackages = "test.org.dockbox.hartshorn.launchpad.launch.scanning.service",
-        processors = DemoServicePreProcessor.class
+        componentPreProcessors = DemoServicePreProcessor.class
 )
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

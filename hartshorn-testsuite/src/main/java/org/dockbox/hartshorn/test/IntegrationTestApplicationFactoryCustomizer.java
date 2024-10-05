@@ -18,16 +18,16 @@ package org.dockbox.hartshorn.test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.dockbox.hartshorn.inject.ObjectFactory;
+import org.dockbox.hartshorn.inject.ReflectionObjectFactory;
 import org.dockbox.hartshorn.inject.processing.ComponentPostProcessor;
 import org.dockbox.hartshorn.inject.processing.ComponentPreProcessor;
-import org.dockbox.hartshorn.inject.processing.ComponentProcessor;
 import org.dockbox.hartshorn.launchpad.SimpleApplicationContext;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
 import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
@@ -35,7 +35,6 @@ import org.dockbox.hartshorn.launchpad.launch.StandardApplicationContextFactory;
 import org.dockbox.hartshorn.test.annotations.TestBinding;
 import org.dockbox.hartshorn.test.annotations.TestComponents;
 import org.dockbox.hartshorn.test.junit.HartshornIntegrationTest;
-import org.dockbox.hartshorn.util.ApplicationRuntimeException;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.option.Option;
 
@@ -49,6 +48,8 @@ public record IntegrationTestApplicationFactoryCustomizer(
         Class<?> testClass,
         List<AnnotatedElement> testComponentSources
 ) implements Customizer<StandardApplicationContextFactory.Configurer> {
+
+    private static final ObjectFactory OBJECT_FACTORY = new ReflectionObjectFactory();
 
     @Override
     public void configure(StandardApplicationContextFactory.Configurer constructor) {
@@ -115,12 +116,18 @@ public record IntegrationTestApplicationFactoryCustomizer(
     }
 
     private void registerProcessors(StandardApplicationContextFactory.Configurer constructor, HartshornIntegrationTest testDecorator) {
-        List<Class<? extends ComponentProcessor>> processors = List.of(testDecorator.processors());
-        List<ComponentPreProcessor> preProcessors = this.filterProcessors(ComponentPreProcessor.class, processors);
-        List<ComponentPostProcessor> postProcessors = this.filterProcessors(ComponentPostProcessor.class, processors);
-
+        // Deprecated approach, retained for backwards compatibility
+        @Deprecated(since = "0.7.0", forRemoval = true)
+        List<Class<?>> processors = List.of(testDecorator.processors());
+        List<ComponentPreProcessor> preProcessors = this.filterAndInstantiate(ComponentPreProcessor.class, processors);
         constructor.componentPreProcessors(config -> config.addAll(preProcessors));
+        List<ComponentPostProcessor> postProcessors = this.filterAndInstantiate(ComponentPostProcessor.class, processors);
         constructor.componentPostProcessors(config -> config.addAll(postProcessors));
+
+        // New approach (dedicated attributes for each processor type)
+        constructor.componentPreProcessors(config -> config.addAll(this.instantiateAll(List.of(testDecorator.componentPreProcessors()))));
+        constructor.componentPostProcessors(config -> config.addAll(this.instantiateAll(List.of(testDecorator.componentPostProcessors()))));
+        constructor.binderPostProcessors(config -> config.addAll(this.instantiateAll(List.of(testDecorator.binderPostProcessors()))));
     }
 
     private static void registerStandaloneComponents(StandardApplicationContextFactory.Configurer constructor, AnnotatedElement element) {
@@ -130,19 +137,22 @@ public record IntegrationTestApplicationFactoryCustomizer(
         }
     }
 
-    private <T extends ComponentProcessor> List<T> filterProcessors(Class<T> type, List<Class<? extends ComponentProcessor>> processors) {
+    @Deprecated(since = "0.7.0", forRemoval = true)
+    private <T> List<T> filterAndInstantiate(Class<T> type, List<Class<?>> processors) {
         List<T> result = new ArrayList<>();
-        for(Class<? extends ComponentProcessor> processor : processors) {
+        for(Class<?> processor : processors) {
             if(type.isAssignableFrom(processor)) {
-                try {
-                    ComponentProcessor instance = processor.getConstructor().newInstance();
-                    result.add(type.cast(instance));
-                }
-                catch(IllegalAccessException | InvocationTargetException | SecurityException | NoSuchMethodException |
-                      InstantiationException | IllegalArgumentException e) {
-                    throw new ApplicationRuntimeException(e);
-                }
+                Object instance = OBJECT_FACTORY.create(type);
+                result.add(type.cast(instance));
             }
+        }
+        return result;
+    }
+
+    private <T> List<T> instantiateAll(List<Class<? extends T>> types) {
+        List<T> result = new ArrayList<>();
+        for(Class<? extends T> type : types) {
+            result.add(OBJECT_FACTORY.create(type));
         }
         return result;
     }

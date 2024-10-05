@@ -19,6 +19,10 @@ package org.dockbox.hartshorn.util.collections;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.NavigableMap;
+import java.util.NavigableSet;
+import java.util.SequencedSet;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -60,5 +64,10 @@ public class ConcurrentSetTreeMultiMap<K extends Comparable<K>, V> extends Navig
     @Override
     protected NavigableMap<K, Collection<V>> createEmptyMap() {
         return new ConcurrentSkipListMap<>();
+    }
+
+    @Override
+    public SequencedSet<K> keySet() {
+        return (SequencedSet<K>) super.keySet();
     }
 }

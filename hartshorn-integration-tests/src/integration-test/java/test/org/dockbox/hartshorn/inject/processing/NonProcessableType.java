@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject.processing;
+package test.org.dockbox.hartshorn.inject.processing;
 
-/**
- * An interface which defines the methods for processing components in an ordered manner.
- *
- * @since 0.4.7
- *
- * @author Guus Lieben
- */
-@FunctionalInterface
-public interface OrderedComponentProcessor {
+import org.dockbox.hartshorn.inject.annotations.Component;
 
-    /**
-     * Returns the phase of when the component should be processed. Lower numbers are processed first.
-     *
-     * @return The phase of when the component should be processed.
-     */
-    int priority();
+@Component(permitProcessing = false, permitProxying = false)
+public class NonProcessableType {
+    private String nonNullIfProcessed;
+
+    public String nonNullIfProcessed() {
+        return this.nonNullIfProcessed;
+    }
 }

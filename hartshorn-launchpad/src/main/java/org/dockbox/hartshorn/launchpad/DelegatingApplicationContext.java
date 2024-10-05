@@ -21,18 +21,18 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.dockbox.hartshorn.inject.DefaultFallbackCompatibleContext;
+import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
 import org.dockbox.hartshorn.inject.provider.HierarchicalComponentProviderOrchestrator;
 import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
 import org.dockbox.hartshorn.launchpad.activation.ActivatorHolder;
 import org.dockbox.hartshorn.launchpad.activation.ContextActivatorHolder;
-import org.dockbox.hartshorn.launchpad.configuration.ContextualApplicationBindingsConfiguration;
 import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurer;
 import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurerContext;
-import org.dockbox.hartshorn.launchpad.configuration.ApplicationBindingsConfiguration;
 import org.dockbox.hartshorn.inject.ExceptionHandler;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorContext;
 import org.dockbox.hartshorn.inject.ApplicationPropertyHolder;
 import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
+import org.dockbox.hartshorn.launchpad.configuration.BindingConfigurerBinderPostProcessor;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.lifecycle.LifecycleObserver;
 import org.dockbox.hartshorn.launchpad.lifecycle.ObservableApplicationEnvironment;
@@ -69,17 +69,14 @@ import org.slf4j.LoggerFactory;
  * {@link LifecycleObserver#onExit(ApplicationContext)}. This allows for the {@link ApplicationContext} to be closed
  * in a predictable manner.
  *
- * <p>Bindings are configured using a {@link ContextualApplicationBindingsConfiguration}. This configuration is used to
- * bind all components that are provided by- and delegated to the {@link ApplicationContext}- and
- * {@link ApplicationEnvironment} instances. Additional bindings can be added by providing a
- * {@link DefaultBindingConfigurer} to the {@link DelegatingApplicationContext.Configurer}.
+ * <p>Additional default bindings may be configured using a {@link DefaultBindingConfigurer}. This configuration will
+ * be activated only for the global {@link HierarchicalBinder}, and not for any scoped binders.
  *
  * @see ApplicationContext
  * @see ComponentRegistry
  * @see ComponentProvider
  * @see ApplicationEnvironment
  * @see DelegatingApplicationContext.Configurer
- * @see ContextualApplicationBindingsConfiguration
  *
  * @since 0.4.11
  *
@@ -92,7 +89,7 @@ public abstract class DelegatingApplicationContext
     private static final Logger LOG = LoggerFactory.getLogger(DelegatingApplicationContext.class);
 
     private final transient Properties environmentValues;
-    private final transient PostProcessingComponentProvider componentProvider;
+    private final transient ComponentProviderOrchestrator componentProvider;
     private final transient ApplicationEnvironment environment;
 
     private boolean isClosed = false;
@@ -116,13 +113,11 @@ public abstract class DelegatingApplicationContext
 
         this.componentProvider = configurer.componentProvider.initialize(applicationInitializerContext.transform(this.environment().componentRegistry()));
 
-        ApplicationBindingsConfiguration configuration = new ContextualApplicationBindingsConfiguration();
-
         DefaultBindingConfigurer bindingConfigurer = configurer.defaultBindings.initialize(applicationInitializerContext);
         for (DefaultBindingConfigurerContext configurerContext : initializerContext.contexts(DefaultBindingConfigurerContext.class)) {
             bindingConfigurer = bindingConfigurer.compose(configurerContext.configurer());
         }
-        configuration.configureBindings(this, bindingConfigurer, this);
+        this.componentProvider.binderProcessorRegistry().register(new BindingConfigurerBinderPostProcessor(bindingConfigurer));
     }
 
     /**
@@ -281,7 +276,7 @@ public abstract class DelegatingApplicationContext
      */
     public static class Configurer {
 
-        private ContextualInitializer<ComponentRegistry, ? extends PostProcessingComponentProvider> componentProvider = HierarchicalComponentProviderOrchestrator.create(Customizer.useDefaults());
+        private ContextualInitializer<ComponentRegistry, ? extends ComponentProviderOrchestrator> componentProvider = HierarchicalComponentProviderOrchestrator.create(Customizer.useDefaults());
         private ContextualInitializer<ApplicationContext, ? extends DefaultBindingConfigurer> defaultBindings = ContextualInitializer.of(DefaultBindingConfigurer::empty);
 
         /**
@@ -291,7 +286,7 @@ public abstract class DelegatingApplicationContext
          * @param componentProvider the {@link PostProcessingComponentProvider} to use
          * @return the current instance
          */
-        public Configurer componentProvider(PostProcessingComponentProvider componentProvider) {
+        public Configurer componentProvider(ComponentProviderOrchestrator componentProvider) {
             return this.componentProvider(ContextualInitializer.of(componentProvider));
         }
 
@@ -302,7 +297,7 @@ public abstract class DelegatingApplicationContext
          * @param componentProvider the {@link PostProcessingComponentProvider} to use
          * @return the current instance
          */
-        public Configurer componentProvider(ContextualInitializer<ComponentRegistry, ? extends PostProcessingComponentProvider> componentProvider) {
+        public Configurer componentProvider(ContextualInitializer<ComponentRegistry, ? extends ComponentProviderOrchestrator> componentProvider) {
             this.componentProvider = componentProvider;
             return this;
         }

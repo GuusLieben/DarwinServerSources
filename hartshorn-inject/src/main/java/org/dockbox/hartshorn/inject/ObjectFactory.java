@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject.provider;
+package org.dockbox.hartshorn.inject;
 
-import org.dockbox.hartshorn.inject.component.ComponentRegistry;
-import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
+@FunctionalInterface
+public interface ObjectFactory {
 
-/**
- * TODO: #1060 Add documentation
- *
- * @since 0.5.0
- *
- * @author Guus Lieben
- */
-public interface ComponentProviderOrchestrator extends PostProcessingComponentProvider {
-
-    ComponentRegistry componentRegistry();
-
-    HierarchicalBinderProcessorRegistry binderProcessorRegistry();
-
-    HierarchicalComponentProvider applicationProvider();
-
+    <T> T create(Class<T> type);
 }

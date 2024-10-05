@@ -65,5 +65,4 @@ public class ConcurrentHashSingletonCache implements SingletonCache {
     public <T> boolean contains(ComponentKey<T> key) {
         return this.cache.containsKey(key);
     }
-
 }

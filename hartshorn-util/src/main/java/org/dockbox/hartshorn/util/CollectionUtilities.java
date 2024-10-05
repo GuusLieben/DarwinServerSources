@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.NavigableSet;
 import java.util.SequencedCollection;
+import java.util.SequencedSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.function.BiConsumer;
@@ -34,6 +34,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -241,7 +244,7 @@ public final class CollectionUtilities {
     /**
      * Returns a new set containing all elements of the given set. The returned set is a new set
      * and does not modify the original set. The advantage of this compared to {@link Set#copyOf(Collection)}
-     * is that the order of the elements is preserved if the given set is a {@link NavigableSet}.
+     * is that the order of the elements is preserved if the given set is a {@link SequencedSet}.
      *
      * @param set The set to copy
      * @param <T> The type of the elements in the set
@@ -249,8 +252,8 @@ public final class CollectionUtilities {
      * @return The new set containing all elements
      */
     public static <T> Set<T> copyOf(Set<T> set) {
-        if (set instanceof NavigableSet<T> navigableSet) {
-            return Collections.unmodifiableNavigableSet(navigableSet);
+        if (set instanceof SequencedSet<T> sequencedSet) {
+            return Collections.unmodifiableSequencedSet(sequencedSet);
         }
         else {
             return Set.copyOf(set);
@@ -288,5 +291,15 @@ public final class CollectionUtilities {
             Entry<T, U> entry = iterator.next();
             consumer.accept(entry.getKey(), entry.getValue());
         }
+    }
+
+    public static <T, R> Stream<R> flatMapCollection(Collection<T> collection, Function<T, Collection<R>> function) {
+        return collection.stream()
+                .flatMap(value -> function.apply(value).stream());
+    }
+
+    public static <T, R> Stream<R> flatMapArray(Collection<T> collection, Function<T, R[]> function) {
+        return collection.stream()
+                .flatMap(value -> Stream.of(function.apply(value)));
     }
 }

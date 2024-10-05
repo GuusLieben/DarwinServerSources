@@ -23,6 +23,10 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessorRegistry;
 import org.dockbox.hartshorn.inject.processing.ContainerAwareComponentPopulatorPostProcessor;
+import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
+import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
+import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
+import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.Hartshorn;
 import org.dockbox.hartshorn.launchpad.ProcessableApplicationContext;
@@ -138,15 +142,27 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
      */
     private void registerComponentProcessors(ApplicationContext applicationContext, Set<Annotation> activators) {
         SingleElementContext<@Nullable ApplicationContext> context = SimpleSingleElementContext.create(applicationContext);
-        this.componentProcessorRegistrar.withAdditionalProcessors(this.configurer.componentPreProcessors.initialize(context));
-        this.componentProcessorRegistrar.withAdditionalProcessors(this.configurer.componentPostProcessors.initialize(context));
+        this.componentProcessorRegistrar.withAdditionalComponentProcessors(this.configurer.componentPreProcessors.initialize(context));
+        this.componentProcessorRegistrar.withAdditionalComponentProcessors(this.configurer.componentPostProcessors.initialize(context));
+        this.componentProcessorRegistrar.withAdditionalBinderProcessors(this.configurer.binderPostProcessors.initialize(context));
 
-        if (applicationContext instanceof ProcessableApplicationContext processableApplicationContext) {
-            ComponentProcessorRegistry registry = processableApplicationContext.defaultProvider().processorRegistry();
+        if (applicationContext.defaultProvider() instanceof PostProcessingComponentProvider processingComponentProvider) {
+            ComponentProcessorRegistry registry = processingComponentProvider.processorRegistry();
             this.componentProcessorRegistrar.registerComponentProcessors(registry, applicationContext.environment().introspector(), activators);
         }
         else {
-            this.buildContext.logger().warn("Application context is not processable, component processors will not be registered");
+            this.buildContext.logger().warn("Default component provider is not processable, component processors will not be registered");
+        }
+
+        if (applicationContext.defaultProvider() instanceof ComponentProviderOrchestrator orchestrator) {
+            HierarchicalBinderProcessorRegistry registry = orchestrator.binderProcessorRegistry();
+            this.componentProcessorRegistrar.registerBinderProcessors(registry, applicationContext.environment().introspector(), activators);
+            // Global binder is already initialized (albeit unused until this point), so need to ensure that it is processed
+            // TODO #1113: Inspect if we can move this to the initialization of the global binder
+            registry.process(applicationContext, applicationContext.defaultBinder());
+        }
+        else {
+            this.buildContext.logger().warn("Default component provider is not orchestrating binders, binder processors will not be registered");
         }
     }
 
@@ -288,6 +304,7 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
         );
 
         private final LazyStreamableConfigurer<ApplicationContext, ComponentPreProcessor> componentPreProcessors = LazyStreamableConfigurer.empty();
+        private final LazyStreamableConfigurer<ApplicationContext, HierarchicalBinderPostProcessor> binderPostProcessors = LazyStreamableConfigurer.empty();
         private final LazyStreamableConfigurer<ApplicationContext, ComponentPostProcessor> componentPostProcessors = LazyStreamableConfigurer.of(collection -> {
             collection.add(ContextualInitializer.defer(() -> ContainerAwareComponentPopulatorPostProcessor.create(Customizer.useDefaults())));
         });
@@ -307,6 +324,18 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
          */
         public Configurer activators(Customizer<StreamableConfigurer<ApplicationBootstrapContext, Annotation>> customizer) {
             this.activators.customizer(customizer);
+            return this;
+        }
+
+        /**
+         * Configures the binder post-processors that are used to process binders when they are registered. By default, this
+         * contains no post-processors.
+         *
+         * @param customizer The customizer that is used to configure the binder post-processors
+         * @return The current configurator instance
+         */
+        public Configurer binderPostProcessors(Customizer<StreamableConfigurer<ApplicationContext, HierarchicalBinderPostProcessor>> customizer) {
+            this.binderPostProcessors.customizer(customizer);
             return this;
         }
 

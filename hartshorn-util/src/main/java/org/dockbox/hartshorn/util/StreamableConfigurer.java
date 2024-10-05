@@ -18,6 +18,7 @@ package org.dockbox.hartshorn.util;
 
 import org.dockbox.hartshorn.context.DefaultContext;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
@@ -151,6 +152,13 @@ public class StreamableConfigurer<I, T> extends DefaultContext implements Config
      */
     @SafeVarargs
     public final StreamableConfigurer<I, T> addAll(T... objects) {
+        for (T object : objects) {
+            this.add(object);
+        }
+        return this;
+    }
+
+    public StreamableConfigurer<I, T> addAll(Collection<T> objects) {
         for (T object : objects) {
             this.add(object);
         }
