@@ -4,10 +4,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <!--
-        Note that Assembly is not a deployable unit, but does depend on some common
-        build configurations defined in staging.
-        -->
         <groupId>org.dockbox.hartshorn</groupId>
         <artifactId>hartshorn-platform-build</artifactId>
         <version>${revision}</version>
