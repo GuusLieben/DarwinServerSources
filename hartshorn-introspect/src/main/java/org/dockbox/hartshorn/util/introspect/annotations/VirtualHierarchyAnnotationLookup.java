@@ -22,12 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.SequencedSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -130,10 +125,13 @@ public class VirtualHierarchyAnnotationLookup implements AnnotationLookup {
         }
 
         InvocationHandler adapter = new AnnotationAdapterProxy<>(actual, targetAnnotationClass, hierarchy, this);
+        HashSet<Class<?>> parentInterfaces = new HashSet<>(hierarchy);
+        parentInterfaces.add(AnnotationAdapter.class);
+
         Class<?>[] interfaces = { targetAnnotationClass, AnnotationAdapter.class };
         Object proxy = Proxy.newProxyInstance(
                 VirtualHierarchyAnnotationLookup.class.getClassLoader(),
-                interfaces,
+                parentInterfaces.toArray(Class[]::new),
                 adapter);
 
         return targetAnnotationClass.cast(proxy);

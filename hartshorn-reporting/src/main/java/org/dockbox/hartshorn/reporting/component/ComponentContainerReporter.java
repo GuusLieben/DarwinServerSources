@@ -27,6 +27,7 @@ import org.dockbox.hartshorn.inject.targets.ComponentInjectionPointsResolver;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.reporting.DiagnosticsPropertyCollector;
 import org.dockbox.hartshorn.reporting.Reportable;
+import org.dockbox.hartshorn.reporting.support.AnnotationReporter;
 
 /**
  * A reportable that reports the contents of a {@link ComponentContainer} instance. This includes the following information:
@@ -84,7 +85,7 @@ class ComponentContainerReporter implements Reportable {
             Reportable[] reporters = this.container.type().annotations().all(RequiresCondition.class)
                     .stream()
                     .map(requiresCondition -> (Reportable) conditionCollector -> {
-                        conditionCollector.property("type").writeString(requiresCondition.annotationType().getCanonicalName());
+                        conditionCollector.property("definition").writeDelegate(new AnnotationReporter<>(requiresCondition));
                         conditionCollector.property("condition").writeString(requiresCondition.condition().getCanonicalName());
                         conditionCollector.property("failOnNoMatch").writeBoolean(requiresCondition.failOnNoMatch());
                     }).toArray(Reportable[]::new);
