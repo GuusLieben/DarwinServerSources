@@ -19,10 +19,7 @@ package org.dockbox.hartshorn.util.introspect.reflect;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.AnnotatedElement;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -66,7 +63,7 @@ public class ReflectionElementAnnotationsIntrospector implements ElementAnnotati
 
     @Override
     public Set<Annotation> all() {
-        return Set.copyOf(this.annotationCache().values());
+        return Set.copyOf(new HashSet<>(this.annotationCache().values()));
     }
 
     @Override

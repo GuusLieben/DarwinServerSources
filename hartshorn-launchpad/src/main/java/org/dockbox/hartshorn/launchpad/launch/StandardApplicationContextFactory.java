@@ -31,7 +31,6 @@ import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
 import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
 import org.dockbox.hartshorn.inject.scope.ScopeKey;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
-import org.dockbox.hartshorn.launchpad.Hartshorn;
 import org.dockbox.hartshorn.launchpad.ProcessableApplicationContext;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorCollector;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorContext;
@@ -397,7 +396,7 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
 
         /**
          * Configures the packages that should be scanned by the application. By default, this contains no packages outside the
-         * main class package and the default {@link Hartshorn#PACKAGE_PREFIX Hartshorn package prefix}.
+         * main class package and values provided by {@link ServiceActivator#scanPackages() service activators}.
          *
          * @param customizer The customizer that is used to configure the packages that should be scanned
          * @return The current configurator instance

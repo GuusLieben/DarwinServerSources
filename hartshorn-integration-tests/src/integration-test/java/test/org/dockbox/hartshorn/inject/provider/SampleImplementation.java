@@ -16,8 +16,6 @@
 
 package test.org.dockbox.hartshorn.inject.provider;
 
-import org.dockbox.hartshorn.launchpad.Hartshorn;
-
 public class SampleImplementation implements SampleInterface {
 
     public static final String NAME = "sample@#";

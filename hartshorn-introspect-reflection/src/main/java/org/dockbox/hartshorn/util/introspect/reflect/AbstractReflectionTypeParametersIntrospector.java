@@ -34,7 +34,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * TODO: #1059 Add documentation
+ * A base implementation of {@link TypeParametersIntrospector} that uses reflection to introspect the type parameters of
+ * a given {@link TypeView}. This implementation is shared between {@link Class classes} and {@link
+ * java.lang.reflect.ParameterizedType parameterized types}, with only the {@link #allInput()} method being implemented
+ * differently.
  *
  * @since 0.5.0
  *
@@ -55,10 +58,21 @@ public abstract class AbstractReflectionTypeParametersIntrospector implements Ty
         this.introspector = introspector;
     }
 
+    /**
+     * Returns the type that is being introspected.
+     *
+     * @return the type that is being introspected
+     */
     protected TypeView<?> type() {
         return this.type;
     }
 
+    /**
+     * Returns the introspector that is used to introspect the type, and can be used
+     * to introspect any other types that are encountered during introspection.
+     *
+     * @return the introspector that is used to introspect the type
+     */
     protected Introspector introspector() {
         return this.introspector;
     }

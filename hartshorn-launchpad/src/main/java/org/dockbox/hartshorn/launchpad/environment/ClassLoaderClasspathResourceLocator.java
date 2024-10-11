@@ -16,7 +16,7 @@
 
 package org.dockbox.hartshorn.launchpad.environment;
 
-import org.dockbox.hartshorn.launchpad.Hartshorn;
+import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.util.option.Option;
 import org.dockbox.hartshorn.launchpad.resources.Resources;
 
@@ -86,7 +86,7 @@ public class ClassLoaderClasspathResourceLocator implements ClasspathResourceLoc
     @Override
     public URI classpathUri() {
         try {
-            URL resource = Hartshorn.class.getClassLoader().getResource("");
+            URL resource = ApplicationContext.class.getClassLoader().getResource("");
             if (resource == null) {
                 return null;
             }

@@ -16,7 +16,6 @@
 
 package org.dockbox.hartshorn.launchpad.resources;
 
-import org.dockbox.hartshorn.launchpad.Hartshorn;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.environment.ClasspathResourceLocator;
 
@@ -209,7 +208,7 @@ public final class Resources {
         try {
             return Thread.currentThread().getContextClassLoader();
         } catch (SecurityException e) {
-            return Hartshorn.class.getClassLoader();
+            return ApplicationContext.class.getClassLoader();
         }
     }
 }

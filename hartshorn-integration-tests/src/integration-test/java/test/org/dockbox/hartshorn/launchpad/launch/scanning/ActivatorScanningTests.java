@@ -52,7 +52,7 @@ public class ActivatorScanningTests {
     void testBindingsFromActivatorPrefixArePresent(@Inject DiscoverableComponent component) {
         Assertions.assertNotNull(component);
         Assertions.assertEquals("Demo", component.message());
-        Assertions.assertTrue(component instanceof ConcreteDiscoverableComponent);
+        Assertions.assertInstanceOf(ConcreteDiscoverableComponent.class, component);
     }
 
     @Test
