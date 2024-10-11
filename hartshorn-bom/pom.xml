@@ -5,9 +5,9 @@
 
     <parent>
         <groupId>org.dockbox.hartshorn</groupId>
-        <artifactId>hartshorn</artifactId>
+        <artifactId>hartshorn-staging</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../hartshorn-assembly/pom.staging.xml</relativePath>
     </parent>
 
     <name>Hartshorn common BOM</name>
@@ -19,9 +19,9 @@
 
     <properties>
         <!-- Versions in alphabetical order -->
+        <assertj.version>3.25.3</assertj.version>
         <compile-testing.version>0.21.0</compile-testing.version>
         <checker.version>3.45.0</checker.version>
-        <errorprone.version>${plugin.errorprone.version}</errorprone.version>
         <hamcrest.version>3.0</hamcrest.version>
         <jackson.version>2.17.2</jackson.version>
         <jakarta.annotations.version>3.0.0</jakarta.annotations.version>
@@ -157,6 +157,12 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
                 <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
