@@ -23,10 +23,10 @@ import java.util.WeakHashMap;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.dockbox.hartshorn.inject.ContextKey;
-import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurerContext;
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessorRegistry;
+import org.dockbox.hartshorn.inject.processing.CompositeHierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
 import org.dockbox.hartshorn.inject.processing.MultiMapComponentProcessorRegistry;
@@ -68,8 +68,21 @@ public class HierarchicalComponentProviderOrchestrator
     private final transient ComponentRegistry registry;
     private final transient ComponentPostConstructor postConstructor;
 
-    private final ComponentProcessorRegistry componentProcessorRegistry = new MultiMapComponentProcessorRegistry();
-    private final HierarchicalBinderProcessorRegistry binderProcessorRegistry = new MultiMapHierarchicalBinderProcessorRegistry();
+    private final ComponentProcessorRegistry componentProcessorRegistry;
+    private final HierarchicalBinderProcessorRegistry binderProcessorRegistry;
+
+    protected HierarchicalComponentProviderOrchestrator(InjectionCapableApplication application, ComponentRegistry registry, ComponentPostConstructor postConstructor) {
+        this.registry = registry;
+        this.application = application;
+        this.postConstructor = postConstructor;
+
+        this.applicationScope = ScopeAdapter.of(this);
+        this.componentProcessorRegistry = new MultiMapComponentProcessorRegistry();
+        this.binderProcessorRegistry = new MultiMapHierarchicalBinderProcessorRegistry();
+
+        // Eagerly initialize the application provider
+        this.getOrCreateProvider(this.applicationScope);
+    }
 
     private HierarchicalBinderAwareComponentProvider getOrCreateProvider(Scope scope) {
         if (scope == null) {
@@ -78,16 +91,6 @@ public class HierarchicalComponentProviderOrchestrator
         synchronized (this.scopedProviders) {
             return this.scopedProviders.computeIfAbsent(scope, this::createComponentProvider);
         }
-    }
-
-    protected HierarchicalComponentProviderOrchestrator(InjectionCapableApplication application, ComponentRegistry registry, ComponentPostConstructor postConstructor) {
-        this.registry = registry;
-        this.application = application;
-        this.postConstructor = postConstructor;
-
-        // Eagerly initialize the application provider
-        this.applicationScope = ScopeAdapter.of(this);
-        this.getOrCreateProvider(this.applicationScope);
     }
 
     @NonNull
@@ -109,7 +112,8 @@ public class HierarchicalComponentProviderOrchestrator
             }
         }
 
-        this.binderProcessorRegistry.process(this.application, provider.binder());
+        HierarchicalBinderPostProcessor binderPostProcessor = new CompositeHierarchicalBinderPostProcessor(this.binderProcessorRegistry()::processors);
+        binderPostProcessor.process(this.application, provider.scope(), provider.binder());
         return provider;
     }
 
@@ -200,8 +204,7 @@ public class HierarchicalComponentProviderOrchestrator
 
             ComponentRegistry registry = context.input();
             ComponentPostConstructor postConstructor = configurer.componentPostConstructor.initialize(SimpleSingleElementContext.create(application));
-            HierarchicalComponentProviderOrchestrator componentProvider = new HierarchicalComponentProviderOrchestrator(application, registry, postConstructor);
-            return componentProvider;
+            return new HierarchicalComponentProviderOrchestrator(application, registry, postConstructor);
         };
     }
 

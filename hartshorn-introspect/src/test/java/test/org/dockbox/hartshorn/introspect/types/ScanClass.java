@@ -19,7 +19,7 @@ package test.org.dockbox.hartshorn.introspect.types;
 @SuppressWarnings("EmptyClass")
 public class ScanClass {
 
-    @SuppressWarnings("InnerClassMayBeStatic")
+    @SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
     public class NonStaticInnerClass {
     }
 

@@ -22,11 +22,13 @@ import java.util.List;
 import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessorRegistry;
+import org.dockbox.hartshorn.inject.processing.CompositeHierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.ContainerAwareComponentPopulatorPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
 import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
 import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
+import org.dockbox.hartshorn.inject.scope.Scope;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.Hartshorn;
 import org.dockbox.hartshorn.launchpad.ProcessableApplicationContext;
@@ -159,7 +161,9 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
             this.componentProcessorRegistrar.registerBinderProcessors(registry, applicationContext.environment().introspector(), activators);
             // Global binder is already initialized (albeit unused until this point), so need to ensure that it is processed
             // TODO #1113: Inspect if we can move this to the initialization of the global binder
-            registry.process(applicationContext, applicationContext.defaultBinder());
+            Scope applicationScope = applicationContext.scope();
+            HierarchicalBinderPostProcessor processor = new CompositeHierarchicalBinderPostProcessor(registry::processors);
+            processor.process(applicationContext, applicationScope, applicationContext.defaultBinder());
         }
         else {
             this.buildContext.logger().warn("Default component provider is not orchestrating binders, binder processors will not be registered");

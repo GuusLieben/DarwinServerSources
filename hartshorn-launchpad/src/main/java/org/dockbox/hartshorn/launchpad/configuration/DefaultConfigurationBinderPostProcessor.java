@@ -45,7 +45,7 @@ import org.dockbox.hartshorn.util.introspect.annotations.AnnotationLookup;
 public class DefaultConfigurationBinderPostProcessor implements HierarchicalBinderPostProcessor {
 
     @Override
-    public void process(InjectionCapableApplication application, HierarchicalBinder binder) {
+    public void process(InjectionCapableApplication application, Scope scope, HierarchicalBinder binder) {
         // Application environment
         binder.bind(InjectorEnvironment.class).singleton(application.environment());
         if (application.environment() instanceof ApplicationEnvironment applicationEnvironment) {

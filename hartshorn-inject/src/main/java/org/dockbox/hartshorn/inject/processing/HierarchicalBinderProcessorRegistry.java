@@ -16,30 +16,18 @@
 
 package org.dockbox.hartshorn.inject.processing;
 
-import org.dockbox.hartshorn.inject.scope.ScopeKey;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 import org.dockbox.hartshorn.util.option.Option;
 
-public interface HierarchicalBinderProcessorRegistry extends HierarchicalBinderPostProcessor{
+public interface HierarchicalBinderProcessorRegistry {
 
     void register(HierarchicalBinderPostProcessor processor);
 
-    void register(ScopeKey scope, HierarchicalBinderPostProcessor processor);
-
     void unregister(HierarchicalBinderPostProcessor processor);
-
-    void unregister(ScopeKey scope, HierarchicalBinderPostProcessor processor);
 
     boolean isRegistered(Class<? extends HierarchicalBinderPostProcessor> componentProcessor);
 
-    boolean isRegistered(ScopeKey scope, Class<? extends HierarchicalBinderPostProcessor> componentProcessor);
-
     <T extends HierarchicalBinderPostProcessor> Option<T> lookup(Class<T> componentProcessor);
 
-    <T extends HierarchicalBinderPostProcessor> Option<T> lookup(ScopeKey scope, Class<T> componentProcessor);
-
     MultiMap<Integer, HierarchicalBinderPostProcessor> processors();
-
-    MultiMap<Integer, HierarchicalBinderPostProcessor> processors(ScopeKey scope);
-
 }

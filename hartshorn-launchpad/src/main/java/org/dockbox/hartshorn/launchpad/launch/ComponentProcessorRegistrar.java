@@ -229,7 +229,11 @@ public class ComponentProcessorRegistrar {
      * registered, they will be added to the set of pre-processors.
      *
      * @param introspector the introspector to use for constructor lookup
+     * @param rootType the root type of the pre-processors
      * @param processorTypes the types of pre-processors to instantiate
+     *
+     * @param <T> the type of the pre-processor
+     *
      * @return a set of pre-processors
      */
     @NonNull

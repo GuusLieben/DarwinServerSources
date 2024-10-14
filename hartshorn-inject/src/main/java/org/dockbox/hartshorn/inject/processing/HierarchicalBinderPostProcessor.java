@@ -18,6 +18,7 @@ package org.dockbox.hartshorn.inject.processing;
 
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
+import org.dockbox.hartshorn.inject.scope.Scope;
 
 /**
  * A post processor for hierarchical binders. This can be used to add additional functionality to a binder, or to modify
@@ -33,7 +34,7 @@ import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
  */
 public interface HierarchicalBinderPostProcessor {
 
-    void process(InjectionCapableApplication application, HierarchicalBinder binder);
+    void process(InjectionCapableApplication application, Scope scope, HierarchicalBinder binder);
 
     int priority();
 }

@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.launchpad.configuration;
+package org.dockbox.hartshorn.inject.processing;
 
+import java.util.function.Supplier;
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
-import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurer;
 import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
-import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
-import org.dockbox.hartshorn.inject.processing.ProcessingPriority;
 import org.dockbox.hartshorn.inject.scope.Scope;
+import org.dockbox.hartshorn.util.collections.MultiMap;
 
-public record BindingConfigurerBinderPostProcessor(
-        DefaultBindingConfigurer configurer
-) implements HierarchicalBinderPostProcessor {
+public class CompositeHierarchicalBinderPostProcessor implements HierarchicalBinderPostProcessor {
+
+    private final Supplier<MultiMap<Integer, HierarchicalBinderPostProcessor>> postProcessors;
+
+    public CompositeHierarchicalBinderPostProcessor(Supplier<MultiMap<Integer, HierarchicalBinderPostProcessor>> postProcessors) {
+        this.postProcessors = postProcessors;
+    }
 
     @Override
     public void process(InjectionCapableApplication application, Scope scope, HierarchicalBinder binder) {
-        this.configurer.configure(binder);
+        MultiMap<Integer, HierarchicalBinderPostProcessor> processors = this.postProcessors.get();
+        for (Integer priority : processors.keySet()) {
+            for(HierarchicalBinderPostProcessor processor : processors.get(priority)) {
+                processor.process(application, scope, binder);
+            }
+        }
     }
 
     @Override
     public int priority() {
-        return ProcessingPriority.HIGH_PRECEDENCE;
+        return ProcessingPriority.NORMAL_PRECEDENCE;
     }
 }
