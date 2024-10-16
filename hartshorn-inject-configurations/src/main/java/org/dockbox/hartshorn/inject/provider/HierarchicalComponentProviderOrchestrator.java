@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.dockbox.hartshorn.inject.ContextKey;
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
@@ -79,18 +80,6 @@ public class HierarchicalComponentProviderOrchestrator
         this.applicationScope = ScopeAdapter.of(this);
         this.componentProcessorRegistry = new MultiMapComponentProcessorRegistry();
         this.binderProcessorRegistry = new MultiMapHierarchicalBinderProcessorRegistry();
-
-        // Eagerly initialize the application provider
-        this.getOrCreateProvider(this.applicationScope);
-    }
-
-    private HierarchicalBinderAwareComponentProvider getOrCreateProvider(Scope scope) {
-        if (scope == null) {
-            scope = this.applicationScope;
-        }
-        synchronized (this.scopedProviders) {
-            return this.scopedProviders.computeIfAbsent(scope, this::createComponentProvider);
-        }
     }
 
     @NonNull
@@ -112,21 +101,31 @@ public class HierarchicalComponentProviderOrchestrator
             }
         }
 
+        // Cache provider before processing, in case of recursive calls
+        this.scopedProviders.put(scope, provider);
+
         HierarchicalBinderPostProcessor binderPostProcessor = new CompositeHierarchicalBinderPostProcessor(this.binderProcessorRegistry()::processors);
         binderPostProcessor.process(this.application, provider.scope(), provider.binder());
         return provider;
     }
 
-    private HierarchicalComponentProvider getOrDefaultProvider(Scope scope) {
+    private HierarchicalBinderAwareComponentProvider getOrDefaultProvider(Scope scope) {
+        return this.tryGetProvider(scope, s -> this.getOrCreateProvider(this.applicationScope));
+    }
+
+    private HierarchicalBinderAwareComponentProvider getOrCreateProvider(Scope scope) {
+        return this.tryGetProvider(scope, this::createComponentProvider);
+    }
+
+    private HierarchicalBinderAwareComponentProvider tryGetProvider(Scope scope, Function<Scope, HierarchicalBinderAwareComponentProvider> fallbackValue) {
         if (scope == null) {
             scope = this.applicationScope;
         }
         synchronized (this.scopedProviders) {
-            HierarchicalComponentProvider provider = this.scopedProviders.get(scope);
-            if (provider == null) {
-                return this.scopedProviders.get(this.applicationScope);
+            if (this.scopedProviders.containsKey(scope)) {
+                return this.scopedProviders.get(scope);
             }
-            return provider;
+            return fallbackValue.apply(scope);
         }
     }
 
@@ -192,6 +191,11 @@ public class HierarchicalComponentProviderOrchestrator
     @Override
     public HierarchicalComponentProvider applicationProvider() {
         return this.getOrCreateProvider(this.applicationScope);
+    }
+
+    @Override
+    public boolean containsScope(Scope scopeKey) {
+        return this.scopedProviders.containsKey(scopeKey);
     }
 
     public static ContextualInitializer<ComponentRegistry, ComponentProviderOrchestrator> create(Customizer<Configurer> customizer) {

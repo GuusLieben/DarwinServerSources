@@ -16,7 +16,6 @@
 
 package org.dockbox.hartshorn.launchpad.launch;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -80,21 +79,16 @@ public class ComponentProcessorRegistrar {
 
 
     /**
-     * Registers component processors to the application context. This method will collect all activators from the given
-     * set of annotations, and then collect all processors from the activators. The processors will then be registered
-     * to the application context.
+     * Registers component processors to the application context. All processors declared on the given {@link ServiceActivator}s
+     * will be registered to the application context.
      *
      * @param registry the application context
      * @param introspector the introspector to use for constructor lookup
-     * @param activators the set of annotations to collect activators from
+     * @param activators the set of {@link ServiceActivator}s
      */
-    public void registerComponentProcessors(ComponentProcessorRegistry registry, Introspector introspector, Set<Annotation> activators) {
-        Set<ServiceActivator> serviceActivatorAnnotations = activators.stream()
-            .flatMap(activator -> this.activatorCollector.collectDeclarationsOnActivator(activator).stream())
-            .collect(Collectors.toSet());
-
-        Set<Class<? extends ComponentPreProcessor>> preProcessorTypes = this.resolveComponentPreProcessorTypes(serviceActivatorAnnotations);
-        Set<Class<? extends ComponentPostProcessor>> postProcessorTypes = this.resolveComponentPostProcessorTypes(serviceActivatorAnnotations);
+    public void registerComponentProcessors(ComponentProcessorRegistry registry, Introspector introspector, Set<ServiceActivator> activators) {
+        Set<Class<? extends ComponentPreProcessor>> preProcessorTypes = this.resolveComponentPreProcessorTypes(activators);
+        Set<Class<? extends ComponentPostProcessor>> postProcessorTypes = this.resolveComponentPostProcessorTypes(activators);
 
         if (this.buildContext.logger().isDebugEnabled()) {
             int totalProcessors = preProcessorTypes.size() + postProcessorTypes.size();
@@ -106,20 +100,15 @@ public class ComponentProcessorRegistrar {
     }
 
     /**
-     * Registers binder processors to the application context. This method will collect all activators from the given
-     * set of annotations, and then collect all processors from the activators. The processors will then be registered
-     * to the application context.
+     * Registers binder processors to the application context. All processors declared on the given {@link ServiceActivator}s
+     * will be registered to the application context.
      *
      * @param registry the registry to register the binder processors to
      * @param introspector the introspector to use for constructor lookup
-     * @param activators the set of annotations to collect activators from
+     * @param activators the set of {@link ServiceActivator}s
      */
-    public void registerBinderProcessors(HierarchicalBinderProcessorRegistry registry, Introspector introspector, Set<Annotation> activators) {
-        Set<ServiceActivator> serviceActivatorAnnotations = activators.stream()
-            .flatMap(activator -> this.activatorCollector.collectDeclarationsOnActivator(activator).stream())
-            .collect(Collectors.toSet());
-
-        Set<Class<? extends HierarchicalBinderPostProcessor>> binderPostProcessorTypes = this.resolveBinderPostProcessorTypes(serviceActivatorAnnotations);
+    public void registerBinderProcessors(HierarchicalBinderProcessorRegistry registry, Introspector introspector, Set<ServiceActivator> activators) {
+        Set<Class<? extends HierarchicalBinderPostProcessor>> binderPostProcessorTypes = this.resolveBinderPostProcessorTypes(activators);
 
         if (this.buildContext.logger().isDebugEnabled()) {
             this.buildContext.logger().debug("Registering {} binder processors to application context", binderPostProcessorTypes.size());

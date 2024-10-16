@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject.provider;
+package org.dockbox.hartshorn.inject;
 
 import org.dockbox.hartshorn.inject.component.ComponentRegistry;
-import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
-import org.dockbox.hartshorn.inject.scope.Scope;
 
-/**
- * TODO: #1060 Add documentation
- *
- * @since 0.5.0
- *
- * @author Guus Lieben
- */
-public interface ComponentProviderOrchestrator extends PostProcessingComponentProvider {
+public interface ManagedComponentEnvironment extends InjectorEnvironment {
 
+    /**
+     * @return the {@link ComponentRegistry} that is used by this {@link ManagedComponentEnvironment} to locate components
+     */
     ComponentRegistry componentRegistry();
-
-    HierarchicalBinderProcessorRegistry binderProcessorRegistry();
-
-    HierarchicalComponentProvider applicationProvider();
-
-    boolean containsScope(Scope scope);
 }

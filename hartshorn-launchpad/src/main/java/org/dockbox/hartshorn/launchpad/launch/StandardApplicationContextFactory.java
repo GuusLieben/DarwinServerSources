@@ -20,15 +20,14 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessorRegistry;
-import org.dockbox.hartshorn.inject.processing.CompositeHierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.ContainerAwareComponentPopulatorPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
 import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
 import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
-import org.dockbox.hartshorn.inject.scope.Scope;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.Hartshorn;
 import org.dockbox.hartshorn.launchpad.ProcessableApplicationContext;
@@ -148,22 +147,24 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
         this.componentProcessorRegistrar.withAdditionalComponentProcessors(this.configurer.componentPostProcessors.initialize(context));
         this.componentProcessorRegistrar.withAdditionalBinderProcessors(this.configurer.binderPostProcessors.initialize(context));
 
+        Set<ServiceActivator> serviceActivators = activators.stream()
+            .flatMap(activator -> this.activatorCollector.collectDeclarationsOnActivator(activator).stream())
+            .collect(Collectors.toSet());
+
         if (applicationContext.defaultProvider() instanceof PostProcessingComponentProvider processingComponentProvider) {
             ComponentProcessorRegistry registry = processingComponentProvider.processorRegistry();
-            this.componentProcessorRegistrar.registerComponentProcessors(registry, applicationContext.environment().introspector(), activators);
+            this.componentProcessorRegistrar.registerComponentProcessors(registry, applicationContext.environment().introspector(), serviceActivators);
         }
         else {
             this.buildContext.logger().warn("Default component provider is not processable, component processors will not be registered");
         }
 
         if (applicationContext.defaultProvider() instanceof ComponentProviderOrchestrator orchestrator) {
+            if (orchestrator.containsScope(applicationContext.scope())) {
+                throw new IllegalStateException("Application context scope is already present in the component provider orchestrator, cannot process after release");
+            }
             HierarchicalBinderProcessorRegistry registry = orchestrator.binderProcessorRegistry();
-            this.componentProcessorRegistrar.registerBinderProcessors(registry, applicationContext.environment().introspector(), activators);
-            // Global binder is already initialized (albeit unused until this point), so need to ensure that it is processed
-            // TODO #1113: Inspect if we can move this to the initialization of the global binder
-            Scope applicationScope = applicationContext.scope();
-            HierarchicalBinderPostProcessor processor = new CompositeHierarchicalBinderPostProcessor(registry::processors);
-            processor.process(applicationContext, applicationScope, applicationContext.defaultBinder());
+            this.componentProcessorRegistrar.registerBinderProcessors(registry, applicationContext.environment().introspector(), serviceActivators);
         }
         else {
             this.buildContext.logger().warn("Default component provider is not orchestrating binders, binder processors will not be registered");

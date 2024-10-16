@@ -159,7 +159,7 @@ public abstract class DelegatingApplicationContext
     }
 
     @Override
-    public PostProcessingComponentProvider defaultProvider() {
+    public ComponentProviderOrchestrator defaultProvider() {
         return this.componentProvider;
     }
 

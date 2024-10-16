@@ -17,6 +17,7 @@
 package org.dockbox.hartshorn.launchpad.activation;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,9 +57,15 @@ public class ServiceActivatorCollector {
     }
 
     public Set<ServiceActivator> collectDeclarationsOnActivator(Annotation annotation) {
-        return Stream.of(annotation.annotationType().getAnnotations())
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        Set<ServiceActivator> activators = new HashSet<>();
+        if (annotationType.isAnnotationPresent(ServiceActivator.class)) {
+            activators.add(annotationType.getAnnotation(ServiceActivator.class));
+        }
+        Arrays.stream(annotationType.getAnnotations())
                 .filter(ann -> ann.annotationType().isAnnotationPresent(ServiceActivator.class))
                 .map(ann -> ann.annotationType().getAnnotation(ServiceActivator.class))
-                .collect(Collectors.toSet());
+                .forEach(activators::add);
+        return activators;
     }
 }
