@@ -64,8 +64,8 @@ public class HierarchyCache {
         this.binder = binder;
     }
 
-    public void put(BindingHierarchy<?> hierarchy) {
-        this.hierarchies.put(hierarchy.key().view(), hierarchy);
+    public <T> void put(BindingHierarchy<T> hierarchy) {
+        put(hierarchy.key().view(), hierarchy);
     }
 
     public <T> void put(ComponentKeyView<T> view, BindingHierarchy<T> updated) {
@@ -95,7 +95,13 @@ public class HierarchyCache {
             // the application context. This is useful for components that are not explicitly scoped,
             // but are still accessed through a scope.
             if(useGlobalIfAbsent && this.globalBinder != this.binder) {
-                return this.globalBinder.hierarchy(key);
+                ComponentKey<T> unscopedKey = key.mutable()
+                        // Need to drop the scope, otherwise we risk the global binder being an orchestrator
+                        // which delegates based on the scope of the key, which would defeat the point of
+                        // attempting a top-level lookup.
+                        .scope(null)
+                        .build();
+                return this.globalBinder.hierarchy(unscopedKey);
             }
             return new NativePrunableBindingHierarchy<>(key);
         });

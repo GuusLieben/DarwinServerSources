@@ -17,12 +17,12 @@
 package test.org.dockbox.hartshorn.inject.binding.defaults;
 
 import org.dockbox.hartshorn.inject.annotations.Inject;
+import org.dockbox.hartshorn.inject.component.ComponentContainer;
+import org.dockbox.hartshorn.inject.component.ComponentRegistry;
 import org.dockbox.hartshorn.test.junit.HartshornIntegrationTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-
-import test.org.dockbox.hartshorn.launchpad.context.ApplicationContextTests;
 
 @HartshornIntegrationTest(includeBasePackages = false)
 public class DefaultBindingsTests {
@@ -30,13 +30,18 @@ public class DefaultBindingsTests {
     @Inject
     private Logger loggerField;
 
+    @Inject
+    private ComponentRegistry componentRegistry;
+
     @Test
     void loggerCanBeInjected(@Inject Logger loggerParameter) {
         Assertions.assertNotNull(loggerParameter);
         // Name should match the consuming class' name, and not the name of the configuration that uses it
-        Assertions.assertEquals(loggerParameter.getName(), ApplicationContextTests.class.getName());
+        ComponentContainer<?> container = componentRegistry.container(this.getClass()).orElseGet(Assertions::fail);
+        String expectedName = container.name();
+        Assertions.assertEquals(expectedName, loggerParameter.getName());
 
         Assertions.assertNotNull(this.loggerField);
-        Assertions.assertEquals(this.loggerField.getName(), ApplicationContextTests.class.getName());
+        Assertions.assertEquals(expectedName, this.loggerField.getName());
     }
 }
