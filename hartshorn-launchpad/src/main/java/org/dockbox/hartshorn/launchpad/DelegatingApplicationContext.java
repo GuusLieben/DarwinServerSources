@@ -27,7 +27,6 @@ import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
 import org.dockbox.hartshorn.launchpad.activation.ActivatorHolder;
 import org.dockbox.hartshorn.launchpad.activation.ContextActivatorHolder;
 import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurer;
-import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurerContext;
 import org.dockbox.hartshorn.inject.ExceptionHandler;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorContext;
 import org.dockbox.hartshorn.inject.ApplicationPropertyHolder;
@@ -114,9 +113,6 @@ public abstract class DelegatingApplicationContext
         this.componentProvider = configurer.componentProvider.initialize(applicationInitializerContext.transform(this.environment().componentRegistry()));
 
         DefaultBindingConfigurer bindingConfigurer = configurer.defaultBindings.initialize(applicationInitializerContext);
-        for (DefaultBindingConfigurerContext configurerContext : initializerContext.contexts(DefaultBindingConfigurerContext.class)) {
-            bindingConfigurer = bindingConfigurer.compose(configurerContext.configurer());
-        }
         this.componentProvider.binderProcessorRegistry().register(new BindingConfigurerBinderPostProcessor(bindingConfigurer));
     }
 

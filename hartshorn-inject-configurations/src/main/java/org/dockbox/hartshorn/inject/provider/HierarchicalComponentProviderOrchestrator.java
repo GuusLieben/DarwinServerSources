@@ -47,7 +47,6 @@ import org.dockbox.hartshorn.inject.processing.construction.AnnotatedMethodCompo
 import org.dockbox.hartshorn.inject.scope.Scope;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
-import org.dockbox.hartshorn.util.SimpleSingleElementContext;
 import org.dockbox.hartshorn.util.collections.HashSetMultiMap;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 
@@ -60,7 +59,7 @@ import org.dockbox.hartshorn.util.collections.MultiMap;
  */
 public class HierarchicalComponentProviderOrchestrator
         extends DefaultFallbackCompatibleContext
-        implements HierarchicalComponentProvider, ComponentProviderOrchestrator, HierarchicalBinder {
+        implements HierarchicalComponentProvider, ComponentRegistryAwareProviderOrchestrator, HierarchicalBinder {
 
     private final Map<Scope, HierarchicalBinderAwareComponentProvider> scopedProviders = Collections.synchronizedMap(new WeakHashMap<>());
     private final Scope applicationScope;
@@ -207,7 +206,7 @@ public class HierarchicalComponentProviderOrchestrator
             customizer.configure(configurer);
 
             ComponentRegistry registry = context.input();
-            ComponentPostConstructor postConstructor = configurer.componentPostConstructor.initialize(SimpleSingleElementContext.create(application));
+            ComponentPostConstructor postConstructor = configurer.componentPostConstructor.initialize(context.transform(application));
             return new HierarchicalComponentProviderOrchestrator(application, registry, postConstructor);
         };
     }

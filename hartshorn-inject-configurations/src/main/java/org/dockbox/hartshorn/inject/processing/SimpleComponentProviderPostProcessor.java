@@ -26,8 +26,8 @@ import org.dockbox.hartshorn.inject.annotations.Component;
 import org.dockbox.hartshorn.inject.collection.ComponentCollection;
 import org.dockbox.hartshorn.inject.collection.ContainerAwareComponentCollection;
 import org.dockbox.hartshorn.inject.component.ComponentContainer;
+import org.dockbox.hartshorn.inject.provider.ComponentRegistryAwareComponentProvider;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
-import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
 import org.dockbox.hartshorn.proxy.ProxyFactory;
 import org.dockbox.hartshorn.proxy.lookup.StateAwareProxyFactory;
 import org.dockbox.hartshorn.util.ApplicationException;
@@ -45,13 +45,13 @@ import org.dockbox.hartshorn.util.option.Option;
  */
 public class SimpleComponentProviderPostProcessor implements ComponentProviderPostProcessor {
 
-    private final ComponentProviderOrchestrator owner;
+    private final ComponentRegistryAwareComponentProvider owner;
     private final ComponentPostProcessor processor;
     private final InjectionCapableApplication application;
     private final ComponentStoreCallback componentStoreCallback;
 
     public SimpleComponentProviderPostProcessor(
-            ComponentProviderOrchestrator owner,
+            ComponentRegistryAwareComponentProvider owner,
             ComponentPostProcessor processor,
             InjectionCapableApplication application,
             ComponentStoreCallback componentStoreCallback

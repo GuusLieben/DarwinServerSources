@@ -16,24 +16,5 @@
 
 package org.dockbox.hartshorn.inject.provider;
 
-import org.dockbox.hartshorn.inject.component.ComponentRegistry;
-import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
-import org.dockbox.hartshorn.inject.scope.Scope;
-
-/**
- * TODO: #1060 Add documentation
- *
- * @since 0.5.0
- *
- * @author Guus Lieben
- */
-public interface ComponentProviderOrchestrator extends PostProcessingComponentProvider {
-
-    ComponentRegistry componentRegistry();
-
-    HierarchicalBinderProcessorRegistry binderProcessorRegistry();
-
-    HierarchicalComponentProvider applicationProvider();
-
-    boolean containsScope(Scope scope);
+public interface ComponentRegistryAwareProviderOrchestrator extends ComponentRegistryAwareComponentProvider, ComponentProviderOrchestrator {
 }

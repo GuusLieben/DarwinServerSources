@@ -21,13 +21,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurer;
+import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurerContext;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessorRegistry;
 import org.dockbox.hartshorn.inject.processing.ContainerAwareComponentPopulatorPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
 import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
 import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
+import org.dockbox.hartshorn.inject.scope.ScopeKey;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.Hartshorn;
 import org.dockbox.hartshorn.launchpad.ProcessableApplicationContext;
@@ -35,6 +37,8 @@ import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorCollector;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorContext;
 import org.dockbox.hartshorn.launchpad.annotations.UseLaunchpad;
 import org.dockbox.hartshorn.launchpad.annotations.UseLifecycleObservers;
+import org.dockbox.hartshorn.launchpad.configuration.BindingConfigurerBinderPostProcessor;
+import org.dockbox.hartshorn.launchpad.configuration.ScopeFilteredDelegateBinderPostProcessor;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.lifecycle.LifecycleObserver;
@@ -49,7 +53,6 @@ import org.dockbox.hartshorn.util.CollectionUtilities;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.LazyStreamableConfigurer;
-import org.dockbox.hartshorn.util.SimpleSingleElementContext;
 import org.dockbox.hartshorn.util.SingleElementContext;
 import org.dockbox.hartshorn.util.StreamableConfigurer;
 import org.dockbox.hartshorn.util.TypeUtils;
@@ -111,7 +114,7 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
 
         this.componentProcessorRegistrar = new ComponentProcessorRegistrar(this.activatorCollector, this.buildContext);
 
-        this.configure(applicationContext, bootstrapContext);
+        this.configure(applicationContext, bootstrapInitializerContext);
         if (applicationContext instanceof ProcessableApplicationContext activatingApplicationContext) {
             activatingApplicationContext.loadContext();
         }
@@ -127,10 +130,10 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
      * @param applicationContext The application context to configure
      * @param bootstrapContext The bootstrap context that is used to create the application context
      */
-    private void configure(ApplicationContext applicationContext, ApplicationBootstrapContext bootstrapContext) {
-        bootstrapContext.firstContext(ServiceActivatorContext.class)
+    private void configure(ApplicationContext applicationContext, SingleElementContext<ApplicationBootstrapContext> bootstrapContext) {
+        bootstrapContext.input().firstContext(ServiceActivatorContext.class)
                 .peek(activatorContext -> {
-                    this.registerComponentProcessors(applicationContext, activatorContext.activators());
+                    this.registerComponentProcessors(activatorContext.activators(), bootstrapContext.transform(applicationContext));
                 });
     }
 
@@ -138,11 +141,11 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
      * Registers all component processors that are present in the application configuration. This includes processors that are
      * configured by the application itself, and processors that are present on the main class of the application.
      *
-     * @param applicationContext The application context to register the processors to
+     * @param context The initializer context containing the application context to register the processors to
      * @param activators The set of service activators that are present in the application configuration
      */
-    private void registerComponentProcessors(ApplicationContext applicationContext, Set<Annotation> activators) {
-        SingleElementContext<@Nullable ApplicationContext> context = SimpleSingleElementContext.create(applicationContext);
+    private void registerComponentProcessors(Set<Annotation> activators, SingleElementContext<ApplicationContext> context) {
+        ApplicationContext applicationContext = context.input();
         this.componentProcessorRegistrar.withAdditionalComponentProcessors(this.configurer.componentPreProcessors.initialize(context));
         this.componentProcessorRegistrar.withAdditionalComponentProcessors(this.configurer.componentPostProcessors.initialize(context));
         this.componentProcessorRegistrar.withAdditionalBinderProcessors(this.configurer.binderPostProcessors.initialize(context));
@@ -165,6 +168,15 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
             }
             HierarchicalBinderProcessorRegistry registry = orchestrator.binderProcessorRegistry();
             this.componentProcessorRegistrar.registerBinderProcessors(registry, applicationContext.environment().introspector(), serviceActivators);
+
+            DefaultBindingConfigurer configurer = DefaultBindingConfigurer.empty();
+            for (DefaultBindingConfigurerContext configurerContext : initializerContext.contexts(DefaultBindingConfigurerContext.class)) {
+                configurer = configurer.compose(configurerContext.configurer());
+            }
+            BindingConfigurerBinderPostProcessor processor = new BindingConfigurerBinderPostProcessor(configurer);
+            ScopeKey scopeKey = applicationContext.scope().installableScopeType();
+            // Only apply to global scope to prevent duplicating bindings across inheriting scopes
+            registry.register(ScopeFilteredDelegateBinderPostProcessor.create(processor, scopeKey));
         }
         else {
             this.buildContext.logger().warn("Default component provider is not orchestrating binders, binder processors will not be registered");

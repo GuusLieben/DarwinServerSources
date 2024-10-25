@@ -18,6 +18,7 @@ package org.dockbox.hartshorn.inject.graph.resolve;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -39,7 +40,7 @@ import org.dockbox.hartshorn.inject.graph.strategy.BindingStrategyRegistry;
 import org.dockbox.hartshorn.inject.graph.strategy.MethodAwareBindingStrategyContext;
 import org.dockbox.hartshorn.inject.graph.strategy.MethodInstanceBindingStrategy;
 import org.dockbox.hartshorn.inject.graph.strategy.SimpleBindingStrategyRegistry;
-import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator;
+import org.dockbox.hartshorn.inject.provider.ComponentRegistryAwareComponentProvider;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.LazyStreamableConfigurer;
@@ -128,14 +129,8 @@ public class BindsMethodDependencyResolver extends AbstractContainerDependencyRe
                 binder.bind(ConditionMatcher.class).singleton(conditionMatcher);
             });
 
-            final ComponentRegistry componentRegistry;
-            if (application.environment() instanceof ManagedComponentEnvironment environment) {
-                componentRegistry = environment.componentRegistry();
-            }
-            else if (application.defaultProvider() instanceof ComponentProviderOrchestrator orchestrator) {
-                 componentRegistry = orchestrator.componentRegistry();
-            }
-            else {
+            ComponentRegistry componentRegistry = configurer.registryLookup.apply(application);
+            if (componentRegistry == null) {
                 throw new ComponentConfigurationException("Could not resolve component registry from current application");
             }
             return new BindsMethodDependencyResolver(conditionMatcher, componentRegistry, registry);
@@ -155,6 +150,7 @@ public class BindsMethodDependencyResolver extends AbstractContainerDependencyRe
             MethodInstanceBindingStrategy.create(Customizer.useDefaults())
         );
         private ContextualInitializer<InjectionCapableApplication, ConditionMatcher> conditionMatcher = context -> new ConditionMatcher(context.input());
+        private Function<InjectionCapableApplication, ComponentRegistry> registryLookup = new ComponentRegistryLookup();
 
         public Configurer conditionMatcher(ConditionMatcher conditionMatcher) {
             return this.conditionMatcher(ContextualInitializer.of(conditionMatcher));
@@ -168,6 +164,25 @@ public class BindsMethodDependencyResolver extends AbstractContainerDependencyRe
         public Configurer bindingStrategies(Customizer<StreamableConfigurer<InjectionCapableApplication, BindingStrategy>> customizer) {
             this.bindingStrategies.customizer(customizer);
             return this;
+        }
+
+        public Configurer registryLookup(Function<InjectionCapableApplication, ComponentRegistry> registryLookup) {
+            this.registryLookup = registryLookup;
+            return this;
+        }
+
+        public static class ComponentRegistryLookup implements Function<InjectionCapableApplication, ComponentRegistry> {
+
+            @Override
+            public ComponentRegistry apply(InjectionCapableApplication application) {
+                if (application.environment() instanceof ManagedComponentEnvironment environment) {
+                    return environment.componentRegistry();
+                } else if (application.defaultProvider() instanceof ComponentRegistryAwareComponentProvider orchestrator) {
+                    return orchestrator.componentRegistry();
+                } else {
+                    return null;
+                }
+            }
         }
     }
 }
