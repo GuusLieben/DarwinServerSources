@@ -29,7 +29,7 @@ import org.dockbox.hartshorn.util.collections.HashSetMultiMap;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 import org.dockbox.hartshorn.util.option.Option;
 
-public class ScopeAwareHierarchicalBinder implements HierarchicalBinder, ContainedHierarchyLookup {
+public class ScopeAwareHierarchicalBinder implements HierarchicalBinder, NestedHierarchyLookup {
 
     private final InjectionCapableApplication application;
     private final SingletonCache singletonCache;

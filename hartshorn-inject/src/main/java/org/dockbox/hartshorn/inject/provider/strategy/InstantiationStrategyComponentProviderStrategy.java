@@ -16,10 +16,11 @@
 
 package org.dockbox.hartshorn.inject.provider.strategy;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
 import org.dockbox.hartshorn.inject.binding.BindingHierarchy;
-import org.dockbox.hartshorn.inject.binding.ContainedHierarchyLookup;
+import org.dockbox.hartshorn.inject.binding.NestedHierarchyLookup;
 import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
 import org.dockbox.hartshorn.inject.binding.HierarchyLookup;
 import org.dockbox.hartshorn.inject.provider.BinderAwareComponentProvider;
@@ -28,7 +29,6 @@ import org.dockbox.hartshorn.inject.provider.InstantiationStrategy;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
 import org.dockbox.hartshorn.util.ApplicationException;
 import org.dockbox.hartshorn.util.option.Option;
-import org.jetbrains.annotations.Nullable;
 
 public class InstantiationStrategyComponentProviderStrategy implements ComponentProviderStrategy {
 
@@ -79,7 +79,7 @@ public class InstantiationStrategyComponentProviderStrategy implements Component
     }
 
     private <T> BindingHierarchy<T> hierarchy(HierarchyLookup lookup, ComponentKey<T> key, boolean useGlobalIfAbsent) {
-        if (lookup instanceof ContainedHierarchyLookup containedLookup) {
+        if (lookup instanceof NestedHierarchyLookup containedLookup) {
             return containedLookup.hierarchy(key, useGlobalIfAbsent);
         }
         return lookup.hierarchy(key);
