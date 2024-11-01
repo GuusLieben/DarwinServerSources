@@ -27,9 +27,26 @@ import org.dockbox.hartshorn.inject.provider.BinderAwareComponentProvider;
 import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.provider.InstantiationStrategy;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
+import org.dockbox.hartshorn.inject.provider.selection.ProviderSelectionStrategy;
 import org.dockbox.hartshorn.util.ApplicationException;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A {@link ComponentProviderStrategy} that attempts to provide a component using an {@link InstantiationStrategy instantiation
+ * strategy} defined in the appropriate {@link BindingHierarchy} matching the given {@link ComponentKey}. If no hierarchy is
+ * found, or no suitable {@link InstantiationStrategy} is found, the chain is continued.
+ *
+ * <p>The {@link InstantiationStrategy} is selected from the {@link BindingHierarchy} using the {@link ProviderSelectionStrategy}
+ * defined in the {@link ComponentKey#strategy() component key's selection strategy}.
+ *
+ * @see InstantiationStrategy
+ * @see BindingHierarchy
+ * @see ProviderSelectionStrategy
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class InstantiationStrategyComponentProviderStrategy implements ComponentProviderStrategy {
 
     @Override

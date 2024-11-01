@@ -24,6 +24,16 @@ import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
 import org.dockbox.hartshorn.util.ApplicationException;
 
+/**
+ * A top-level interface for a chain of {@link ComponentProviderStrategy} instances. This chain is typically passed to
+ * the {@link ComponentProviderStrategy}, which can then use it delegate to the next strategy in the chain.
+ *
+ * @param <T> the type of the component to resolve
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface ComponentProviderStrategyChain<T> {
 
     ComponentProvider componentProvider();

@@ -20,11 +20,23 @@ import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
 import org.dockbox.hartshorn.inject.ComponentResolutionException;
 import org.dockbox.hartshorn.inject.provider.ComponentObjectContainer;
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
 import org.dockbox.hartshorn.inject.provider.SingletonCacheComponentProvider;
 import org.dockbox.hartshorn.inject.provider.singleton.SingletonCache;
 import org.dockbox.hartshorn.util.ApplicationException;
 
+/**
+ * A {@link ComponentProviderStrategy} which attempts to use the {@link SingletonCache} of the {@link ComponentProvider}
+ * if the provider is a {@link SingletonCacheComponentProvider}. It is assumed that all singletons stored in the {@link
+ * SingletonCache} have already been processed, and do not require further enhancement.
+ *
+ * @see SingletonCacheComponentProvider#singletonCache()
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class SingletonCacheComponentProviderStrategy implements ComponentProviderStrategy {
 
     @Override

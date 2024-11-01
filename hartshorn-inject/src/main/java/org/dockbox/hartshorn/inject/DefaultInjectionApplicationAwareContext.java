@@ -18,6 +18,13 @@ package org.dockbox.hartshorn.inject;
 
 import org.dockbox.hartshorn.context.DefaultContext;
 
+/**
+ * A default implementation of {@link InjectionApplicationAwareContext} which provides access to the application.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public abstract class DefaultInjectionApplicationAwareContext extends DefaultContext implements InjectionApplicationAwareContext{
 
     private final InjectionCapableApplication application;

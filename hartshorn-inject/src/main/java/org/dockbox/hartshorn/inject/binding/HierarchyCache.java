@@ -88,7 +88,7 @@ public class HierarchyCache {
 
     @NonNull
     private <T> BindingHierarchy<?> computeHierarchy(ComponentKey<T> key, boolean useGlobalIfAbsent) {
-        BindingHierarchy<?> hierarchy = this.tryCreateHierarchy(key, useGlobalIfAbsent);
+        BindingHierarchy<?> hierarchy = this.tryCreateHierarchy(key);
 
         return Objects.requireNonNullElseGet(hierarchy, () -> {
             // If we don't have an explicit hierarchy on the key, we can try to use the hierarchy of
@@ -102,7 +102,7 @@ public class HierarchyCache {
     }
 
     @Nullable
-    private <T> BindingHierarchy<?> tryCreateHierarchy(ComponentKey<T> key, boolean permitFallbackResolution) {
+    private <T> BindingHierarchy<?> tryCreateHierarchy(ComponentKey<T> key) {
         final BindingHierarchy<?> hierarchy;
         // Collection components can always be created, as they may contain 0-N elements.
         if (this.isCollectionComponentKey(key)) {

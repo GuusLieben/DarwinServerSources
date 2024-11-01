@@ -27,6 +27,23 @@ import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
 import org.dockbox.hartshorn.util.ApplicationException;
 
+/**
+ * Basic implementation of a {@link ComponentProviderStrategyChain} that uses a list of {@link ComponentProviderStrategy
+ * strategies} to resolve components.
+ *
+ * <p>This chain tracks the current index of the strategy being used, and will continue to the next strategy in the
+ * list until the end of the list is reached. Each strategy is provided with a new chain, which allows each strategy
+ * to delegate to the next strategy in the list. While this means that the chain is effectively immutable, it is not
+ * recommended to re-use a chain for multiple requests.
+ *
+ * @param <T> the type of the component to resolve
+ *
+ * @see ComponentProviderStrategy
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class SimpleComponentProviderStrategyChain<T> implements ComponentProviderStrategyChain<T> {
 
     private final InjectionCapableApplication application;

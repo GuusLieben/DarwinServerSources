@@ -20,6 +20,7 @@ import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
 import org.dockbox.hartshorn.inject.ComponentResolutionException;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessor;
+import org.dockbox.hartshorn.inject.processing.ComponentProcessorRegistry;
 import org.dockbox.hartshorn.inject.provider.ComponentObjectContainer;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
 import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider;
@@ -27,6 +28,17 @@ import org.dockbox.hartshorn.util.ApplicationException;
 import org.dockbox.hartshorn.util.TypeUtils;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A {@link ComponentProviderStrategy} which attempts to provide a {@link ComponentProcessor} instance from the {@link
+ * ComponentProcessorRegistry} of the {@link PostProcessingComponentProvider} if the requested component is a {@link
+ * ComponentProcessor}.
+ *
+ * @see PostProcessingComponentProvider#processorRegistry()
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ComponentProcessorComponentProviderStrategy implements ComponentProviderStrategy {
 
     @Override

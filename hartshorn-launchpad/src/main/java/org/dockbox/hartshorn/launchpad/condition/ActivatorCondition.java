@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
 import org.dockbox.hartshorn.inject.condition.Condition;
 import org.dockbox.hartshorn.inject.condition.ConditionContext;
 import org.dockbox.hartshorn.inject.condition.ConditionResult;
-import org.dockbox.hartshorn.launchpad.ConfigurableInjectionCapableApplication;
+import org.dockbox.hartshorn.launchpad.ConfigurableActivationInjectionCapableApplication;
 import org.dockbox.hartshorn.launchpad.activation.ActivatorHolder;
 
 /**
@@ -38,7 +38,7 @@ public class ActivatorCondition implements Condition {
 
     @Override
     public ConditionResult matches(ConditionContext context) {
-        if (!(context.application() instanceof ConfigurableInjectionCapableApplication configurableInjectionCapableApplication)) {
+        if (!(context.application() instanceof ConfigurableActivationInjectionCapableApplication configurableInjectionCapableApplication)) {
             return ConditionResult.notMatched("Application is not compatible with activators");
         }
         return context.annotatedElement().annotations().get(RequiresActivator.class).map(condition -> {
