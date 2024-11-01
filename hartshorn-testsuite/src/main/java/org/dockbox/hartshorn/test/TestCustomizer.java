@@ -22,11 +22,25 @@ import org.dockbox.hartshorn.launchpad.SimpleApplicationContext;
 import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
 import org.dockbox.hartshorn.util.Customizer;
 
+/**
+ * A utility class to provide customizers for the various components of the test suite. These customizers are consumed
+ * by the {@link IntegrationTestApplicationFactoryCustomizer} to apply customizations to the application factory.
+ *
+ * @param <T> the type of the customizer
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public final class TestCustomizer<T> {
 
+    @Deprecated(forRemoval = true, since = "0.7.0")
     public static final TestCustomizer<StandardApplicationBuilder.Configurer> BUILDER = new TestCustomizer<>();
+
     public static final TestCustomizer<ContextualApplicationEnvironment.Configurer> ENVIRONMENT = new TestCustomizer<>();
+    @Deprecated(forRemoval = true, since = "0.7.0")
     public static final TestCustomizer<StandardApplicationContextFactory.Configurer> CONSTRUCTOR = new TestCustomizer<>();
+    @Deprecated(forRemoval = true, since = "0.7.0")
     public static final TestCustomizer<SimpleApplicationContext.Configurer> APPLICATION_CONTEXT = new TestCustomizer<>();
 
     private Customizer<T> customizer = Customizer.useDefaults();

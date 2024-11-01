@@ -28,17 +28,11 @@ import org.dockbox.hartshorn.util.option.Option;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@HartshornIntegrationTest(includeBasePackages = false)
+@HartshornIntegrationTest(
+    includeBasePackages = false,
+    processors = SimpleContextConfiguringComponentProcessor.class
+)
 public class ContextConfiguringComponentProcessorTests {
-
-    @CustomizeTests
-    public static void customize() {
-        TestCustomizer.CONSTRUCTOR.compose(constructor -> {
-            constructor.componentPostProcessors(processors -> {
-                processors.add(new SimpleContextConfiguringComponentProcessor());
-            });
-        });
-    }
 
     @Test
     @TestComponents(components = EmptyComponent.class)

@@ -19,7 +19,15 @@ package org.dockbox.hartshorn.test.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.dockbox.hartshorn.test.TestCustomizer;
 
+/**
+ * Marks a method within a test class as capable of customizing the test environment, typically through
+ * the {@link TestCustomizer} utility class.
+ *
+ * <p>For example, a test class may have a method annotated with {@code @CustomizeTests} that sets up a
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(java.lang.annotation.ElementType.METHOD)
 public @interface CustomizeTests {
