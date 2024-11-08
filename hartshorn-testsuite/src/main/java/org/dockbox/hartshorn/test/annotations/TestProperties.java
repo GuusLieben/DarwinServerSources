@@ -22,9 +22,27 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Arguments to be passed to the application context when running the test. Each argument is equivalent
+ * to a single argument passed to the JVM when starting the application.
+ *
+ * <p>For example, to pass an application property, use {@code
+ * @TestProperties({"--hartshorn.banner.enabled=false"})
+ * }
+ *
+ * @since 0.4.12
+ *
+ * @author Guus Lieben
+ */
 @Inherited
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestProperties {
+
+    /**
+     * The properties to pass to the application context when running the test.
+     *
+     * @return The properties to pass to the application context when running the test
+     */
     String[] value();
 }

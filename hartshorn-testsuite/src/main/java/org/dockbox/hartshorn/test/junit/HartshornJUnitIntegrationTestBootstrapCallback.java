@@ -26,6 +26,17 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+/**
+ * A callback that initializes the Hartshorn application context before a test lifecycle has been started. This callback
+ * is responsible for creating the application context and registering it in the extension context. The application
+ * context is created by a {@link HartshornIntegrationTestInitializer}.
+ *
+ * @see HartshornIntegrationTestInitializer
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class HartshornJUnitIntegrationTestBootstrapCallback implements
         BeforeAllCallback,
         BeforeEachCallback {

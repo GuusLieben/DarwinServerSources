@@ -22,6 +22,13 @@ import org.dockbox.hartshorn.util.TypeUtils;
 import org.dockbox.hartshorn.util.option.Option;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+/**
+ * A callback that clears the caches of Mockito after the test has been executed.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ClearMockitoCachesCallback implements HartshornCleanupCallback {
 
     @Override

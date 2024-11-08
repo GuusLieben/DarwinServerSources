@@ -39,6 +39,12 @@ import org.dockbox.hartshorn.util.ApplicationRuntimeException;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * Customizer for the {@link StandardApplicationContextFactory} that configures the application context for integration tests.
+ *
+ * @param testClass the test class
+ * @param testComponentSources the component sources to use for the test
+ */
 public record IntegrationTestApplicationFactoryCustomizer(
         Class<?> testClass,
         List<AnnotatedElement> testComponentSources
