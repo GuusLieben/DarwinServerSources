@@ -87,6 +87,8 @@ public record SimpleTokenType(
     /**
      * A builder for simple token types.
      *
+     * @param <S> the type of the builder
+     *
      * @see SimpleTokenType
      *
      * @since 0.6.0

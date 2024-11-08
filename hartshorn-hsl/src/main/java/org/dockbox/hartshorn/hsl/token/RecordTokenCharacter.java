@@ -16,6 +16,12 @@
 
 package org.dockbox.hartshorn.hsl.token;
 
+/**
+ * Simple immutable implementation of {@link SimpleTokenCharacter}.
+ *
+ * @param character The character
+ * @param isStandaloneCharacter Whether the character is a standalone character
+ */
 public record RecordTokenCharacter(
         char character,
         boolean isStandaloneCharacter
