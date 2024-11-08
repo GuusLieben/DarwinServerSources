@@ -73,7 +73,7 @@ public class EnvironmentTypeCollector {
      */
     public <T> Collection<TypeView<? extends T>> types(Predicate<TypeView<?>> predicate) {
         try {
-            Set<TypeReference> references = collectorContext.collector().collect();
+            Set<TypeReference> references = this.collectorContext.collector().collect();
             Collection<Class<?>> classes = this.loadClasses(references);
             return classes.stream()
                     .map(this.environment.introspector()::introspect)
