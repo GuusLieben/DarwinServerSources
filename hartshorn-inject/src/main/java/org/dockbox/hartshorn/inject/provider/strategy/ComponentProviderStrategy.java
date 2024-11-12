@@ -22,6 +22,14 @@ import org.dockbox.hartshorn.inject.ComponentResolutionException;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
 import org.dockbox.hartshorn.util.ApplicationException;
 
+/**
+ * Strategy for providing components. This is a chain of responsibility pattern, where each strategy can delegate to the
+ * next strategy in the {@link ComponentProviderStrategyChain} if it cannot provide the requested component.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface ComponentProviderStrategy {
 
     <T> ObjectContainer<T> get(

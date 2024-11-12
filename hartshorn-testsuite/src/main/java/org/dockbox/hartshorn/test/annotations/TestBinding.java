@@ -19,8 +19,31 @@ package org.dockbox.hartshorn.test.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * Defines a static binding for usage within the annotated test method or class. The binding will be
+ * a prototype binding.
+ *
+ * @since 0.5.0
+ *
+ * @author Guus Lieben
+ *
+ * @deprecated Use configuration classes instead
+ */
+@Deprecated(since = "0.7.0", forRemoval = true)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestBinding {
+
+    /**
+     * The source type of the binding. E.g. the interface or abstract class that is being bound.
+     *
+     * @return The source type of the binding
+     */
     Class<?> type();
+
+    /**
+     * The implementation type of the binding. E.g. the concrete class that is being bound to the source type.
+     *
+     * @return The implementation type of the binding
+     */
     Class<?> implementation();
 }

@@ -20,6 +20,13 @@ import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.scope.Scope;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 
+/**
+ * A resolver that can look up binding hierarchies for a given key.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface HierarchyLookup {
 
     /**

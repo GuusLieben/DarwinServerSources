@@ -16,6 +16,7 @@
 
 package org.dockbox.hartshorn.test.junit;
 
+import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.test.junit.cleanup.ClearMockitoCachesCallback;
 import org.dockbox.hartshorn.test.junit.cleanup.HartshornCleanupCallback;
 import org.dockbox.hartshorn.util.option.Option;
@@ -24,6 +25,20 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+/**
+ * A callback that cleans up resources after a test lifecycle has been completed. On its own this callback only
+ * closes the {@link ApplicationContext}. The callback can be extended to add additional cleanup logic by registering
+ * additional {@link HartshornCleanupCallback} instances to the extension context through {@link
+ * HartshornJUnitNamespace#registerCleanupCallback(HartshornCleanupCallback, ExtensionContext)}.
+ *
+ * @see HartshornCleanupCallback
+ * @see HartshornJUnitNamespace
+ * @see ClearMockitoCachesCallback
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class HartshornJUnitCleanupCallback implements BeforeTestExecutionCallback, AfterAllCallback, AfterEachCallback {
 
     @Override

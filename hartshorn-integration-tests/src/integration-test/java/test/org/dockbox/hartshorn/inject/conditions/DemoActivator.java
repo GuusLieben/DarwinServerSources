@@ -16,8 +16,11 @@
 
 package test.org.dockbox.hartshorn.inject.conditions;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
 
+@Retention(RetentionPolicy.RUNTIME)
 @ServiceActivator
 public @interface DemoActivator {
 }

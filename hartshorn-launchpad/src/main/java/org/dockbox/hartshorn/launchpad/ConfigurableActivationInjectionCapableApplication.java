@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject.binding;
+package org.dockbox.hartshorn.launchpad;
 
-import org.dockbox.hartshorn.inject.ComponentKey;
+import org.dockbox.hartshorn.inject.InjectionCapableApplication;
+import org.dockbox.hartshorn.launchpad.activation.ActivatorHolder;
 
-public interface ContainedHierarchyLookup extends HierarchyLookup {
+/**
+ * An {@link InjectionCapableApplication} of which the enabled functionality can be configured and expanded upon
+ * using {@link ActivatorHolder}s.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public interface ConfigurableActivationInjectionCapableApplication extends InjectionCapableApplication {
 
-    <T> BindingHierarchy<T> hierarchy(ComponentKey<T> key, boolean useGlobalIfAbsent);
+    ActivatorHolder activators();
 }

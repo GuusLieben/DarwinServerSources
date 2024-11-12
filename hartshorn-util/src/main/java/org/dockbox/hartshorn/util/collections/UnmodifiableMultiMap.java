@@ -24,6 +24,17 @@ import java.util.function.BiConsumer;
 
 import org.dockbox.hartshorn.util.CollectionUtilities;
 
+/**
+ * An unmodifiable {@link MultiMap} implementation that wraps another {@link MultiMap} and prevents
+ * any modifications.
+ *
+ * @param <K> the type of the keys
+ * @param <V> the type of the values
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class UnmodifiableMultiMap<K, V> implements MultiMap<K, V> {
 
     private final MultiMap<K, V> map;

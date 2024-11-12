@@ -29,7 +29,16 @@ import org.dockbox.hartshorn.util.collections.HashSetMultiMap;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 import org.dockbox.hartshorn.util.option.Option;
 
-public class ScopeAwareHierarchicalBinder implements HierarchicalBinder, ContainedHierarchyLookup {
+/**
+ * A {@link HierarchicalBinder} that is aware of the scope it is bound to. This binder will only allow
+ * bindings to be added to the scope it is bound to, and will not allow bindings to be added to a different
+ * scope.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public class ScopeAwareHierarchicalBinder implements HierarchicalBinder, NestedHierarchyLookup {
 
     private final InjectionCapableApplication application;
     private final SingletonCache singletonCache;

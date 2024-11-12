@@ -22,6 +22,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Collects {@link ServiceActivator} annotations from a given class and its superclasses.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ServiceActivatorCollector {
 
     public Set<Annotation> serviceActivators(

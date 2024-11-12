@@ -26,6 +26,14 @@ import org.dockbox.hartshorn.util.collections.MultiMap;
 import org.dockbox.hartshorn.util.collections.UnmodifiableMultiMap;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * Default implementation of the {@link ComponentProcessorRegistry} interface. This implementation uses {@link MultiMap}s
+ * to store the registered processors.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class MultiMapComponentProcessorRegistry implements ComponentProcessorRegistry {
 
     private final MultiMap<Integer, ComponentPostProcessor> postProcessors = new ConcurrentSetTreeMultiMap<>();

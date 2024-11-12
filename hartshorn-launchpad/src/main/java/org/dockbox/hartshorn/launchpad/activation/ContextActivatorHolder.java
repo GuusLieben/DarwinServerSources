@@ -22,6 +22,13 @@ import java.util.function.Supplier;
 
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A lazy {@link ActivatorHolder} that provides activators from a {@link ServiceActivatorContext} when needed.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ContextActivatorHolder implements ActivatorHolder {
 
     private final Supplier<Option<ServiceActivatorContext>> contextProvider;

@@ -19,7 +19,7 @@ package org.dockbox.hartshorn.inject.provider;
 import java.util.List;
 
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
-import org.dockbox.hartshorn.inject.binding.ContainedHierarchyLookup;
+import org.dockbox.hartshorn.inject.binding.NestedHierarchyLookup;
 import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
 import org.dockbox.hartshorn.inject.binding.ScopeAwareHierarchicalBinder;
 import org.dockbox.hartshorn.inject.processing.ComponentProviderPostProcessor;
@@ -64,7 +64,7 @@ import org.dockbox.hartshorn.util.collections.MultiMap;
  * @author Guus Lieben
  */
 public class HierarchyAwareComponentProvider extends StrategyChainComponentProvider
-        implements HierarchicalBinderAwareComponentProvider, SingletonCacheComponentProvider, ContainedHierarchyLookup {
+        implements HierarchicalBinderAwareComponentProvider, SingletonCacheComponentProvider, NestedHierarchyLookup {
 
     private final ComponentProviderPostProcessor processor;
     private final HierarchicalBinder binder;
@@ -162,7 +162,7 @@ public class HierarchyAwareComponentProvider extends StrategyChainComponentProvi
 
     @Override
     public <T> BindingHierarchy<T> hierarchy(ComponentKey<T> key, boolean useGlobalIfAbsent) {
-        if (this.binder instanceof ContainedHierarchyLookup containedHierarchicalBinder) {
+        if (this.binder instanceof NestedHierarchyLookup containedHierarchicalBinder) {
             return containedHierarchicalBinder.hierarchy(key, useGlobalIfAbsent);
         }
         return this.binder.hierarchy(key);

@@ -17,8 +17,17 @@
 package org.dockbox.hartshorn.test;
 
 import org.dockbox.hartshorn.launchpad.launch.ApplicationBuilder;
+import org.dockbox.hartshorn.test.annotations.CustomizeTests;
 import org.dockbox.hartshorn.util.ApplicationRuntimeException;
 
+/**
+ * Thrown when a method annotated with {@link CustomizeTests} is not a valid factory customizer. A valid factory customizer
+ * is expected to be a <i>static</i> method that <i>accepts no arguments</i> and <i>returns void</i>.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class InvalidFactoryModifierException extends ApplicationRuntimeException {
     public InvalidFactoryModifierException(String what, Class<?> actual) {
         super("Invalid " + what + " for @HartshornFactory modifier, expected " + ApplicationBuilder.class.getSimpleName() + " but got " + actual.getSimpleName());

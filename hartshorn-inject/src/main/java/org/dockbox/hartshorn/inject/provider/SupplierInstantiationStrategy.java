@@ -30,6 +30,7 @@ import org.dockbox.hartshorn.util.option.Option;
  * {@link Supplier} is unable to provide an instance, an empty {@link Option} will be returned
  * without throwing an exception.
  *
+ * @param supplier The {@link Supplier} that is able to provide instances.
  * @param <C> The type to be provided.
  *
  * @see InstantiationStrategy

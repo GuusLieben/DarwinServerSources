@@ -18,12 +18,24 @@ package org.dockbox.hartshorn.inject.processing;
 
 import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
+import org.dockbox.hartshorn.inject.annotations.OnInitialized;
 import org.dockbox.hartshorn.inject.graph.support.ComponentInitializationException;
 import org.dockbox.hartshorn.inject.processing.construction.ComponentPostConstructor;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
 import org.dockbox.hartshorn.inject.scope.Scope;
 import org.dockbox.hartshorn.util.ApplicationException;
 
+/**
+ * A {@link ComponentProviderPostProcessor} that performs post-construction on components, after they have been processed
+ * by a delegate {@link ComponentProviderPostProcessor}. Post-construction is performed by a {@link ComponentPostConstructor},
+ * which typically invokes all {@link OnInitialized} methods on the component, though specific implementations may vary.
+ *
+ * @see ComponentPostConstructor
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class PostConstructingComponentPostProcessor implements ComponentProviderPostProcessor{
 
     private final ComponentPostConstructor postConstructor;

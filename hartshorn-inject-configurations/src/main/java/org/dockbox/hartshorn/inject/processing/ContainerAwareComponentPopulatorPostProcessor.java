@@ -24,6 +24,14 @@ import org.dockbox.hartshorn.inject.populate.ComponentPopulator;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
 
+/**
+ * A {@link ComponentPopulatorPostProcessor} that is aware of {@link ComponentContainer} instances and their proxying
+ * capabilities. This post-processor will only permit proxying if the {@link ComponentContainer} permits it.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ContainerAwareComponentPopulatorPostProcessor extends ComponentPopulatorPostProcessor {
 
     @SuppressWarnings("rawtypes")

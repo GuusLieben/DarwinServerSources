@@ -18,9 +18,22 @@ package org.dockbox.hartshorn.inject.processing;
 
 import java.util.Set;
 
+import org.dockbox.hartshorn.inject.InjectionCapableApplication;
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A registry for {@link ComponentProcessor} instances. This registry is used to store and manage all processors that are
+ * registered within a given environment (typically a {@link ComponentProvider} or {@link InjectionCapableApplication}).
+ *
+ * <p>Note that the registry itself is not responsible for the actual processing of components. It is merely a storage
+ * mechanism for processors.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface ComponentProcessorRegistry {
 
     void register(ComponentProcessor processor);

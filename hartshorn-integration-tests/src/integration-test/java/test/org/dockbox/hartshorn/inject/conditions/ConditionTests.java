@@ -16,7 +16,6 @@
 
 package test.org.dockbox.hartshorn.inject.conditions;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
@@ -32,12 +31,9 @@ import org.dockbox.hartshorn.launchpad.condition.RequiresActivator;
 import org.dockbox.hartshorn.inject.condition.support.RequiresClass;
 import org.dockbox.hartshorn.inject.condition.RequiresCondition;
 import org.dockbox.hartshorn.inject.binding.BindingHierarchy;
-import org.dockbox.hartshorn.test.TestCustomizer;
-import org.dockbox.hartshorn.test.annotations.CustomizeTests;
 import org.dockbox.hartshorn.test.annotations.TestComponents;
 import org.dockbox.hartshorn.test.annotations.TestProperties;
 import org.dockbox.hartshorn.test.junit.HartshornIntegrationTest;
-import org.dockbox.hartshorn.util.TypeUtils;
 import org.dockbox.hartshorn.util.introspect.view.MethodView;
 import org.dockbox.hartshorn.util.introspect.view.TypeView;
 import org.junit.jupiter.api.Assertions;
@@ -56,26 +52,11 @@ import org.dockbox.hartshorn.inject.annotations.Inject;
         "--property.d=d",
         "--property.e=otherValue"
 })
+@DemoActivator
 public class ConditionTests {
 
     @Inject
     private ApplicationContext applicationContext;
-
-    @CustomizeTests
-    public static void factory() {
-        TestCustomizer.BUILDER.compose(builder -> {
-            builder.arguments(List.of(
-                    "--property.c=o",
-                    "--property.d=d",
-                    "--property.e=otherValue"
-            ));
-        });
-        TestCustomizer.CONSTRUCTOR.compose(constructor -> {
-            constructor.activators(activators -> {
-                activators.add(TypeUtils.annotation(DemoActivator.class));
-            });
-        });
-    }
 
     public static Stream<Arguments> properties() {
         return Stream.of(

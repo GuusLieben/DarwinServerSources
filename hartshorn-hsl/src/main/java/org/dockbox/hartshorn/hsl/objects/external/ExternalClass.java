@@ -44,6 +44,7 @@ import org.dockbox.hartshorn.util.introspect.view.TypeView;
  * runtime.run("var instance = MyClass();");
  * }</pre>
  *
+ * @param type The type represented by this reference.
  * @param <T> The type of the class.
  *
  * @since 0.4.12

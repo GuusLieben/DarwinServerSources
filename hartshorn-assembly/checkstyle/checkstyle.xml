@@ -4,14 +4,6 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
-    <module name="BeforeExecutionExclusionFileFilter">
-        <!--
-        'when' not supported before Checkstyle 10.18.0, current release is 10.17.0. Simply suppressing the error
-        doesn't work, as this causes failure while parsing the file, and not just when inspecting it.
-        TODO: Remove when Checkstyle 10.18.0 is released
-        -->
-        <property name="fileNamePattern" value="InstantiationStrategyComponentProviderStrategy\.java$"/>
-    </module>
     <module name="TreeWalker">
         <!-- Import rules -->
         <module name="AvoidStarImport">
@@ -40,18 +32,17 @@
 
         <!-- Javadoc type rules -->
         <module name="MissingJavadocType">
-            <property name="excludeScope" value="private"/>
+            <property name="scope" value="protected"/>
         </module>
         <module name="JavadocType">
-            <property name="excludeScope" value="private"/>
             <property name="allowMissingParamTags" value="false"/>
-            <property name="allowUnknownTags" value="false"/>
+            <property name="allowUnknownTags" value="true"/>
         </module>
 
         <!-- Javadoc method rules -->
         <!--
         <module name="MissingJavadocMethod">
-            <property name="excludeScope" value="private"/>
+            <property name="scope" value="protected"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>
             <property name="tokens" value="METHOD_DEF,ANNOTATION_FIELD_DEF"/>
         </module>

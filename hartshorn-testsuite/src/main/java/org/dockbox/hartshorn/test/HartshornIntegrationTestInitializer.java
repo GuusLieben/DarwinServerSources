@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import java.util.SequencedCollection;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.dockbox.hartshorn.inject.populate.ComponentPopulator;
 import org.dockbox.hartshorn.inject.populate.StrategyComponentPopulator;
@@ -33,16 +34,40 @@ import org.dockbox.hartshorn.launchpad.launch.StandardApplicationContextFactory;
 import org.dockbox.hartshorn.test.annotations.CustomizeTests;
 import org.dockbox.hartshorn.test.annotations.TestProperties;
 import org.dockbox.hartshorn.test.junit.HartshornIntegrationTest;
+import org.dockbox.hartshorn.test.junit.HartshornJUnitIntegrationTestBootstrapCallback;
 import org.dockbox.hartshorn.util.ApplicationException;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.SimpleSingleElementContext;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * Initializes the test environment for integration tests. This class is responsible for invoking any
+ * custom test environment modifiers, preparing the application factory and creating the application context,
+ * and performing additional injection on the test instance if necessary.
+ *
+ * @see HartshornJUnitIntegrationTestBootstrapCallback
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class HartshornIntegrationTestInitializer {
 
+    /**
+     * Creates a new application context for the given test class, test instance and component sources.
+     *
+     * @param testClass the test class
+     * @param testInstance the test instance, may be {@code null} for class lifecycle tests
+     * @param testComponentSources the component sources to use for the test
+     * @return the created application context
+     * @throws ApplicationException when the application context could not be created
+     */
     @NonNull
-    public ApplicationContext createTestApplicationContext(Class<?> testClass, Object testInstance,
-            AnnotatedElement[] testComponentSources) throws ApplicationException {
+    public ApplicationContext createTestApplicationContext(
+        Class<?> testClass,
+        Object testInstance,
+        AnnotatedElement[] testComponentSources
+    ) throws ApplicationException {
         if (testClass == null) {
             throw new IllegalArgumentException("Test class cannot be null");
         }
@@ -115,7 +140,7 @@ public class HartshornIntegrationTestInitializer {
 
     private static void doCheckFactoryModifierValid(Method factoryModifier) {
         if (!Modifier.isStatic(factoryModifier.getModifiers())) {
-            throw new IllegalStateException("Expected " + factoryModifier.getName() + " to be static.");
+            throw new InvalidFactoryModifierException("Expected " + factoryModifier.getName() + " to be static.");
         }
 
         if (!factoryModifier.getReturnType().equals(Void.TYPE)) {
@@ -125,7 +150,7 @@ public class HartshornIntegrationTestInitializer {
 
     private static void customizeBuilderWithTestSources(
             Class<?> testClass,
-            List<AnnotatedElement> testComponentSources,
+            SequencedCollection<AnnotatedElement> testComponentSources,
             StandardApplicationBuilder.Configurer builder
     ) {
 

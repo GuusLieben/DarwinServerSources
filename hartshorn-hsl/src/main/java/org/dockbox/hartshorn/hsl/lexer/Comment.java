@@ -20,30 +20,12 @@ package org.dockbox.hartshorn.hsl.lexer;
  * Represents a single comment in a script. A comment is a piece of non-code
  * which can be located anywhere in a script.
  *
+ * @param line The first line the comment was found on. If a comment spans multiple lines,
+ *             this number represents the first of these lines.
+ * @param text The untrimmed text content of the comment, excluding any comment tokens.
+ *
  * @since 0.4.12
  *
  * @author Guus Lieben
  */
-public record Comment(int line, String text) {
-
-    /**
-     * The first line the comment was found on. If a comment spans multiple lines,
-     * this number represents the first of these lines.
-     *
-     * @return The first line number.
-     */
-    @Override
-    public int line() {
-        return this.line;
-    }
-
-    /**
-     * The untrimmed text content of the comment, excluding any comment tokens.
-     *
-     * @return The comment content.
-     */
-    @Override
-    public String text() {
-        return this.text;
-    }
-}
+public record Comment(int line, String text) { }

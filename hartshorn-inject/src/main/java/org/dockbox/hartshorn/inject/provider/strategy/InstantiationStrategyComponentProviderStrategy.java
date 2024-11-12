@@ -16,20 +16,37 @@
 
 package org.dockbox.hartshorn.inject.provider.strategy;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
 import org.dockbox.hartshorn.inject.binding.BindingHierarchy;
-import org.dockbox.hartshorn.inject.binding.ContainedHierarchyLookup;
+import org.dockbox.hartshorn.inject.binding.NestedHierarchyLookup;
 import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
 import org.dockbox.hartshorn.inject.binding.HierarchyLookup;
 import org.dockbox.hartshorn.inject.provider.BinderAwareComponentProvider;
 import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.provider.InstantiationStrategy;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
+import org.dockbox.hartshorn.inject.provider.selection.ProviderSelectionStrategy;
 import org.dockbox.hartshorn.util.ApplicationException;
 import org.dockbox.hartshorn.util.option.Option;
-import org.jetbrains.annotations.Nullable;
 
+/**
+ * A {@link ComponentProviderStrategy} that attempts to provide a component using an {@link InstantiationStrategy instantiation
+ * strategy} defined in the appropriate {@link BindingHierarchy} matching the given {@link ComponentKey}. If no hierarchy is
+ * found, or no suitable {@link InstantiationStrategy} is found, the chain is continued.
+ *
+ * <p>The {@link InstantiationStrategy} is selected from the {@link BindingHierarchy} using the {@link ProviderSelectionStrategy}
+ * defined in the {@link ComponentKey#strategy() component key's selection strategy}.
+ *
+ * @see InstantiationStrategy
+ * @see BindingHierarchy
+ * @see ProviderSelectionStrategy
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class InstantiationStrategyComponentProviderStrategy implements ComponentProviderStrategy {
 
     @Override
@@ -79,7 +96,7 @@ public class InstantiationStrategyComponentProviderStrategy implements Component
     }
 
     private <T> BindingHierarchy<T> hierarchy(HierarchyLookup lookup, ComponentKey<T> key, boolean useGlobalIfAbsent) {
-        if (lookup instanceof ContainedHierarchyLookup containedLookup) {
+        if (lookup instanceof NestedHierarchyLookup containedLookup) {
             return containedLookup.hierarchy(key, useGlobalIfAbsent);
         }
         return lookup.hierarchy(key);

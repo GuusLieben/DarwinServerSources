@@ -313,6 +313,13 @@ public class DependencyGraphBuilder {
         return nodes;
     }
 
+    /**
+     * A record to store a priority-based component key. This may be used for sorting purposes, and should typically only
+     * be used in the context of a map-like structure, where this record represents a key.
+     *
+     * @param priority the priority
+     * @param componentKey the component key
+     */
     protected record PriorityComponentKey(int priority, ComponentKey<?> componentKey) {
     }
 }

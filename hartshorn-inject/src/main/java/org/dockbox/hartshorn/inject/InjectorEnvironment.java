@@ -21,6 +21,14 @@ import org.dockbox.hartshorn.inject.targets.ComponentInjectionPointsResolver;
 import org.dockbox.hartshorn.proxy.ProxyOrchestrator;
 import org.dockbox.hartshorn.util.introspect.Introspector;
 
+/**
+ * Represents the environment in which the {@link InjectionCapableApplication} is operating. This environment provides access
+ * to the various components that are used by the application to perform its operations.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface InjectorEnvironment {
 
     /**

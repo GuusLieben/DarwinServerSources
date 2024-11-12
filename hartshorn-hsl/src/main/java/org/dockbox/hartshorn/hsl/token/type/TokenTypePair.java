@@ -19,6 +19,9 @@ package org.dockbox.hartshorn.hsl.token.type;
 /**
  * Represents a pair of token types that are used to denote the start and end of a block of code.
  *
+ * @param open the token type that denotes the start of a block
+ * @param close the token type that denotes the end of a block
+ *
  * @since 0.6.0
  *
  * @author Guus Lieben

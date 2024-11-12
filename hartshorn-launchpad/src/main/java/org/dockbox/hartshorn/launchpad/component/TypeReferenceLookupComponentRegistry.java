@@ -30,7 +30,12 @@ import org.dockbox.hartshorn.util.introspect.annotations.AnnotationUtilities;
 import org.dockbox.hartshorn.util.option.Option;
 
 /**
- * TODO: #1060 Add documentation
+ * A {@link ComponentRegistry} that uses a {@link EnvironmentTypeResolver} to look up all types that are annotated with
+ * {@link Component}. Additional containers can be added to this registry by calling {@link #addCustomContainer(ComponentContainer)}.
+ *
+ * @see ComponentRegistry
+ * @see EnvironmentTypeResolver#types(Class)
+ * @see Component
  *
  * @since 0.6.0
  *

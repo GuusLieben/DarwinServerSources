@@ -20,6 +20,18 @@ import java.util.function.Consumer;
 
 import org.dockbox.hartshorn.hsl.runtime.Phase;
 
+/**
+ * A {@link CodeCustomizer} that delegates to a given {@link Consumer} when called. This is primarily
+ * used to simplify the creation of customizers that have a known {@link Phase}, so configurers only
+ * need to provide the {@link Consumer}.
+ *
+ * @param phase the phase in which this customizer should be called
+ * @param consumer the consumer that should be called when this customizer is called
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public record ConsumerCodeCustomizer(
         Phase phase,
         Consumer<ScriptContext> consumer

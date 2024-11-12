@@ -19,6 +19,7 @@ package org.dockbox.hartshorn.inject.provider.strategy;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.util.SequencedCollection;
 import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
 import org.dockbox.hartshorn.inject.ComponentResolutionException;
@@ -27,17 +28,26 @@ import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.provider.ObjectContainer;
 import org.dockbox.hartshorn.util.ApplicationException;
 
+/**
+ * A {@link ComponentProvider} that uses a chain of {@link ComponentProviderStrategy strategies} to resolve components.
+ * Each component request is assigned a unique {@link ComponentProviderStrategyChain} that is used to resolve the
+ * component. The provider itself does not make any guarantees about the nullability of the resolved component.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public abstract class StrategyChainComponentProvider implements ComponentProvider {
 
     private final InjectionCapableApplication application;
-    private final List<ComponentProviderStrategy> strategies;
+    private final SequencedCollection<ComponentProviderStrategy> strategies;
 
     public StrategyChainComponentProvider(InjectionCapableApplication application) {
         this.application = application;
         this.strategies = new LinkedList<>();
     }
 
-    protected void strategies(List<ComponentProviderStrategy> strategies) {
+    protected void strategies(SequencedCollection<ComponentProviderStrategy> strategies) {
         this.strategies.clear();
         this.strategies.addAll(strategies);
     }

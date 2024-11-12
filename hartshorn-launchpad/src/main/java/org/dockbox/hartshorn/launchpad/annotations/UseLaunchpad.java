@@ -22,7 +22,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
+import org.dockbox.hartshorn.launchpad.launch.ApplicationContextFactory;
+import org.dockbox.hartshorn.launchpad.launch.StandardApplicationContextFactory;
 
+/**
+ * Default service activator for Launchpad-based applications, enabling lifecycle observers and component proxying. When using
+ * the built-in {@link ApplicationContextFactory} ({@link StandardApplicationContextFactory}), this activator is automatically
+ * registered and used to activate services.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ServiceActivator

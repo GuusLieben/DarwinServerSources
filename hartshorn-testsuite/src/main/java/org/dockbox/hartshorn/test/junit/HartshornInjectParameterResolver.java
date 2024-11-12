@@ -34,6 +34,17 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
+/**
+ * A parameter resolver for JUnit 5 that resolves parameters annotated with {@link Inject}, and optionally
+ * {@code jakarta.inject.Inject} or {@code javax.inject.Inject} if they are present on the classpath.
+ *
+ * <p>Annotated parameters are resolved in the same manner as they would be in an executable element (methods
+ * and constructors) that is managed by the IoC container.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class HartshornInjectParameterResolver implements ParameterResolver {
 
     private static final Option<Class<? extends Annotation>> JAVAX_INJECT = TypeUtils.forName("javax.inject.Inject", Annotation.class);

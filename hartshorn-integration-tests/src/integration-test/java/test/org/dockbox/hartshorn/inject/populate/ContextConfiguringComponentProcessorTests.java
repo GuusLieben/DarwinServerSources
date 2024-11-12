@@ -20,25 +20,17 @@ import org.dockbox.hartshorn.inject.annotations.Inject;
 import org.dockbox.hartshorn.inject.ContextKey;
 import org.dockbox.hartshorn.proxy.Proxy;
 import org.dockbox.hartshorn.proxy.ProxyOrchestrator;
-import org.dockbox.hartshorn.test.TestCustomizer;
-import org.dockbox.hartshorn.test.annotations.CustomizeTests;
 import org.dockbox.hartshorn.test.annotations.TestComponents;
 import org.dockbox.hartshorn.test.junit.HartshornIntegrationTest;
 import org.dockbox.hartshorn.util.option.Option;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@HartshornIntegrationTest(includeBasePackages = false)
+@HartshornIntegrationTest(
+    includeBasePackages = false,
+    processors = SimpleContextConfiguringComponentProcessor.class
+)
 public class ContextConfiguringComponentProcessorTests {
-
-    @CustomizeTests
-    public static void customize() {
-        TestCustomizer.CONSTRUCTOR.compose(constructor -> {
-            constructor.componentPostProcessors(processors -> {
-                processors.add(new SimpleContextConfiguringComponentProcessor());
-            });
-        });
-    }
 
     @Test
     @TestComponents(components = EmptyComponent.class)
