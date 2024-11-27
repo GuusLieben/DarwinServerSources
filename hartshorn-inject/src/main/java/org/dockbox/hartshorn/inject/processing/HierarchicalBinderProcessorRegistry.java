@@ -16,18 +16,60 @@
 
 package org.dockbox.hartshorn.inject.processing;
 
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A registry for {@link HierarchicalBinderPostProcessor} instances. This registry is typically used by {@link ComponentProvider}s to
+ * track and manage post processors that apply to instance provided by the provider.
+ *
+ * @see HierarchicalBinderPostProcessor
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface HierarchicalBinderProcessorRegistry {
 
+    /**
+     * Registers a {@link HierarchicalBinderPostProcessor} with this registry. If the processor is already registered, the
+     * processor will not be added again.
+     *
+     * @param processor the processor to register
+     */
     void register(HierarchicalBinderPostProcessor processor);
 
+    /**
+     * Unregisters a {@link HierarchicalBinderPostProcessor} from this registry. If the processor is not registered, this
+     * method has no effect.
+     *
+     * @param processor the processor to unregister
+     */
     void unregister(HierarchicalBinderPostProcessor processor);
 
+    /**
+     * Checks if a {@link HierarchicalBinderPostProcessor} exactly matching the given type is registered with this registry.
+     *
+     * @param componentProcessor the type of processor to check for
+     * @return {@code true} if a processor of the given type is registered, {@code false} otherwise
+     */
     boolean isRegistered(Class<? extends HierarchicalBinderPostProcessor> componentProcessor);
 
+    /**
+     * Looks up a {@link HierarchicalBinderPostProcessor} exactly matching the given type in this registry. If no processor
+     * of the given type is registered, an empty {@link Option} is returned.
+     *
+     * @param componentProcessor the type of processor to look up
+     * @param <T> the type of the processor
+     * @return an {@link Option} containing the processor, if it is registered
+     */
     <T extends HierarchicalBinderPostProcessor> Option<T> lookup(Class<T> componentProcessor);
 
+    /**
+     * Returns a {@link MultiMap} of all registered {@link HierarchicalBinderPostProcessor} instances, grouped by their priority.
+     *
+     * @return a {@link MultiMap} of all registered processors, grouped by priority
+     */
     MultiMap<Integer, HierarchicalBinderPostProcessor> processors();
 }

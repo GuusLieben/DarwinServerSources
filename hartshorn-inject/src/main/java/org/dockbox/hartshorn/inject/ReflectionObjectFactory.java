@@ -20,6 +20,14 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.dockbox.hartshorn.util.ApplicationRuntimeException;
 
+/**
+ * Reflection-based implementation of {@link ObjectFactory}. This implementation uses reflection to create instances of
+ * objects.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ReflectionObjectFactory implements ObjectFactory {
 
     @Override

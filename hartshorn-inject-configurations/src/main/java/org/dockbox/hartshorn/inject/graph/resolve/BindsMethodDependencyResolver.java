@@ -22,7 +22,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
+import org.dockbox.hartshorn.inject.InjectorEnvironment;
 import org.dockbox.hartshorn.inject.ManagedComponentEnvironment;
 import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurerContext;
 import org.dockbox.hartshorn.inject.component.ComponentRegistry;
@@ -40,6 +42,7 @@ import org.dockbox.hartshorn.inject.graph.strategy.BindingStrategyRegistry;
 import org.dockbox.hartshorn.inject.graph.strategy.MethodAwareBindingStrategyContext;
 import org.dockbox.hartshorn.inject.graph.strategy.MethodInstanceBindingStrategy;
 import org.dockbox.hartshorn.inject.graph.strategy.SimpleBindingStrategyRegistry;
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.provider.ComponentRegistryAwareComponentProvider;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
@@ -171,9 +174,26 @@ public class BindsMethodDependencyResolver extends AbstractContainerDependencyRe
             return this;
         }
 
+        /**
+         * Default implementation of the {@link ComponentRegistry} lookup function. By default two main components expose the component
+         * registry:
+         * <ul>
+         *     <li>{@link InjectorEnvironment} exposes the registry if it is a {@link ManagedComponentEnvironment}</li>
+         *     <li>{@link ComponentProvider} exposes the registry if it is a {@link ComponentRegistryAwareComponentProvider}</li>
+         * </ul>
+         *
+         * @see ComponentRegistry
+         * @see ManagedComponentEnvironment#componentRegistry()
+         * @see ComponentRegistryAwareComponentProvider#componentRegistry()
+         *
+         * @since 0.7.0
+         *
+         * @author Guus Lieben
+         */
         public static class ComponentRegistryLookup implements Function<InjectionCapableApplication, ComponentRegistry> {
 
             @Override
+            @Nullable
             public ComponentRegistry apply(InjectionCapableApplication application) {
                 if (application.environment() instanceof ManagedComponentEnvironment environment) {
                     return environment.componentRegistry();

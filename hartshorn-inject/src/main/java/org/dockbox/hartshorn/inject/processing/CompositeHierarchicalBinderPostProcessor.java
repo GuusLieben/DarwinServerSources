@@ -22,6 +22,16 @@ import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
 import org.dockbox.hartshorn.inject.scope.Scope;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 
+/**
+ * A {@link HierarchicalBinderPostProcessor} that delegates to a list of other {@link HierarchicalBinderPostProcessor}s. Each
+ * processor is invoked in order according to its indicated {@link HierarchicalBinderPostProcessor#priority()}. However, the
+ * composite processor itself has a priority of {@link ProcessingPriority#NORMAL_PRECEDENCE}, which could mean that ordering
+ * may behave differently than expected if the composite is part of a list of processors itself.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class CompositeHierarchicalBinderPostProcessor implements HierarchicalBinderPostProcessor {
 
     private final Supplier<MultiMap<Integer, HierarchicalBinderPostProcessor>> postProcessors;

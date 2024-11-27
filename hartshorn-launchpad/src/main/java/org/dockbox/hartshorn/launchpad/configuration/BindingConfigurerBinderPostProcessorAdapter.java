@@ -23,7 +23,18 @@ import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.ProcessingPriority;
 import org.dockbox.hartshorn.inject.scope.Scope;
 
-public record BindingConfigurerBinderPostProcessor(
+/**
+ * Adapter for {@link HierarchicalBinderPostProcessor} that configures the binder with a {@link DefaultBindingConfigurer}.
+ *
+ * @param configurer the {@link DefaultBindingConfigurer} to use for configuration
+ *
+ * @see DefaultBindingConfigurer
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public record BindingConfigurerBinderPostProcessorAdapter(
         DefaultBindingConfigurer configurer
 ) implements HierarchicalBinderPostProcessor {
 

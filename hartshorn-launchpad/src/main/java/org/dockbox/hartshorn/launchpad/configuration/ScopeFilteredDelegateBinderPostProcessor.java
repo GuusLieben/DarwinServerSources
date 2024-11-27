@@ -25,6 +25,16 @@ import org.dockbox.hartshorn.inject.scope.ScopeKey;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * An adapter {@link HierarchicalBinderPostProcessor} that delegates to another {@link HierarchicalBinderPostProcessor} if
+ * the {@link Scope} of the binder matches the provided {@link Predicate}. This is useful when adapting non-filtered
+ * processors to be filtered by scope, and is effectively equal to extending {@link AbstractScopeFilteredBinderPostProcessor}
+ * in the delegate processor.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ScopeFilteredDelegateBinderPostProcessor extends AbstractScopeFilteredBinderPostProcessor {
 
     private final HierarchicalBinderPostProcessor processor;
@@ -49,7 +59,7 @@ public class ScopeFilteredDelegateBinderPostProcessor extends AbstractScopeFilte
     }
 
     @Override
-    protected boolean supportsScope(Scope scope) {
+    protected boolean supportsScope(InjectionCapableApplication application, Scope scope) {
         return scope != null && this.scopeFilter.test(scope.installableScopeType());
     }
 

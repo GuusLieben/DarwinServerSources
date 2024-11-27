@@ -31,7 +31,7 @@ import org.dockbox.hartshorn.inject.processing.CompositeHierarchicalBinderPostPr
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
 import org.dockbox.hartshorn.inject.processing.MultiMapComponentProcessorRegistry;
-import org.dockbox.hartshorn.inject.processing.MultiMapHierarchicalBinderProcessorRegistry;
+import org.dockbox.hartshorn.inject.processing.ConcurrentHierarchicalBinderProcessorRegistry;
 import org.dockbox.hartshorn.inject.provider.singleton.ConcurrentHashSingletonCache;
 import org.dockbox.hartshorn.inject.scope.ScopeAdapter;
 import org.dockbox.hartshorn.inject.scope.ScopeModuleContext;
@@ -78,7 +78,7 @@ public class HierarchicalComponentProviderOrchestrator
 
         this.applicationScope = ScopeAdapter.of(this);
         this.componentProcessorRegistry = new MultiMapComponentProcessorRegistry();
-        this.binderProcessorRegistry = new MultiMapHierarchicalBinderProcessorRegistry();
+        this.binderProcessorRegistry = new ConcurrentHierarchicalBinderProcessorRegistry();
     }
 
     @NonNull

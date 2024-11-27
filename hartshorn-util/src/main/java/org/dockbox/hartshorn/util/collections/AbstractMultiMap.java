@@ -149,6 +149,12 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
     }
 
     @Override
+    public int removeValue(V processor) {
+        return this.entrySet().stream()
+            .reduce(0, (count, entry) -> count + (entry.getValue().remove(processor) ? 1 : 0), Integer::sum);
+    }
+
+    @Override
     public boolean replace(K key, V oldValue, V newValue) {
         if (this.map().get(key) != null) {
             if (this.map().get(key).remove(oldValue)) {

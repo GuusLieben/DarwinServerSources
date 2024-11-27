@@ -129,6 +129,11 @@ public class UnmodifiableMultiMap<K, V> implements MultiMap<K, V> {
     }
 
     @Override
+    public int removeValue(V processor) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean replace(K key, V oldValue, V newValue) {
         throw new UnsupportedOperationException();
     }

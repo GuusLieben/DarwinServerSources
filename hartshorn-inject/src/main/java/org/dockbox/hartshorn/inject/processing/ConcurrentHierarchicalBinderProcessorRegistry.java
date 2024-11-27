@@ -16,33 +16,39 @@
 
 package org.dockbox.hartshorn.inject.processing;
 
-import org.dockbox.hartshorn.util.collections.ConcurrentSetTreeMultiMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.dockbox.hartshorn.util.collections.MultiMap;
+import org.dockbox.hartshorn.util.collections.MultiMapCollector;
 import org.dockbox.hartshorn.util.option.Option;
 
-public class MultiMapHierarchicalBinderProcessorRegistry implements HierarchicalBinderProcessorRegistry {
+/**
+ * Basic implementation of a {@link HierarchicalBinderProcessorRegistry} that uses a {@link ConcurrentHashMap.KeySetView} to store
+ * the registered processors.
+ */
+public class ConcurrentHierarchicalBinderProcessorRegistry implements HierarchicalBinderProcessorRegistry {
 
-    private final MultiMap<Integer, HierarchicalBinderPostProcessor> globalProcessors = new ConcurrentSetTreeMultiMap<>();
+    private final Set<HierarchicalBinderPostProcessor> processors = ConcurrentHashMap.newKeySet();
 
     @Override
     public void register(HierarchicalBinderPostProcessor processor) {
-        this.globalProcessors.put(processor.priority(), processor);
+        this.processors.add(processor);
     }
 
     @Override
     public void unregister(HierarchicalBinderPostProcessor processor) {
-        this.globalProcessors.remove(processor.priority(), processor);
+        this.processors.remove(processor);
     }
 
     @Override
     public boolean isRegistered(Class<? extends HierarchicalBinderPostProcessor> componentProcessor) {
-        return this.globalProcessors.allValues().stream()
+        return this.processors.stream()
                 .anyMatch(processor -> processor.getClass().equals(componentProcessor));
     }
 
     @Override
     public <T extends HierarchicalBinderPostProcessor> Option<T> lookup(Class<T> componentProcessor) {
-        return Option.of(this.globalProcessors.allValues().stream()
+        return Option.of(this.processors.stream()
                 .filter(processor -> processor.getClass().equals(componentProcessor))
                 .map(componentProcessor::cast)
                 .findFirst());
@@ -50,6 +56,7 @@ public class MultiMapHierarchicalBinderProcessorRegistry implements Hierarchical
 
     @Override
     public MultiMap<Integer, HierarchicalBinderPostProcessor> processors() {
-        return this.globalProcessors;
+        return this.processors.stream()
+            .collect(MultiMapCollector.toMultiMap(HierarchicalBinderPostProcessor::priority));
     }
 }

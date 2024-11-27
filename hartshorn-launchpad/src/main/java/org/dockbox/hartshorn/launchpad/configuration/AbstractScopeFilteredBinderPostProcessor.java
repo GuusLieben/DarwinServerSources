@@ -21,16 +21,24 @@ import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
 import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.inject.scope.Scope;
 
+/**
+ * A {@link HierarchicalBinderPostProcessor} that filters the {@link HierarchicalBinder} based on the {@link Scope} of the
+ * binder.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public abstract class AbstractScopeFilteredBinderPostProcessor implements HierarchicalBinderPostProcessor {
 
     @Override
     public void process(InjectionCapableApplication application, Scope scope, HierarchicalBinder binder) {
-        if (this.supportsScope(scope)) {
+        if (this.supportsScope(application, scope)) {
             this.processBinder(application, scope, binder);
         }
     }
 
     protected abstract void processBinder(InjectionCapableApplication application, Scope scope, HierarchicalBinder binder);
 
-    protected abstract boolean supportsScope(Scope scope);
+    protected abstract boolean supportsScope(InjectionCapableApplication application, Scope scope);
 }

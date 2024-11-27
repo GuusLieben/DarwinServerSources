@@ -18,6 +18,15 @@ package org.dockbox.hartshorn.inject;
 
 import org.dockbox.hartshorn.inject.component.ComponentRegistry;
 
+/**
+ * Represents an environment that is capable of managing components.
+ *
+ * @see ComponentRegistry
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface ManagedComponentEnvironment extends InjectorEnvironment {
 
     /**

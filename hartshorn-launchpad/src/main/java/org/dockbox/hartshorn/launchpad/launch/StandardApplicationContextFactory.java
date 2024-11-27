@@ -37,7 +37,7 @@ import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorCollector;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivatorContext;
 import org.dockbox.hartshorn.launchpad.annotations.UseLaunchpad;
 import org.dockbox.hartshorn.launchpad.annotations.UseLifecycleObservers;
-import org.dockbox.hartshorn.launchpad.configuration.BindingConfigurerBinderPostProcessor;
+import org.dockbox.hartshorn.launchpad.configuration.BindingConfigurerBinderPostProcessorAdapter;
 import org.dockbox.hartshorn.launchpad.configuration.ScopeFilteredDelegateBinderPostProcessor;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
@@ -170,10 +170,10 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
             this.componentProcessorRegistrar.registerBinderProcessors(registry, applicationContext.environment().introspector(), serviceActivators);
 
             DefaultBindingConfigurer configurer = DefaultBindingConfigurer.empty();
-            for (DefaultBindingConfigurerContext configurerContext : initializerContext.contexts(DefaultBindingConfigurerContext.class)) {
+            for (DefaultBindingConfigurerContext configurerContext : this.initializerContext.contexts(DefaultBindingConfigurerContext.class)) {
                 configurer = configurer.compose(configurerContext.configurer());
             }
-            BindingConfigurerBinderPostProcessor processor = new BindingConfigurerBinderPostProcessor(configurer);
+            HierarchicalBinderPostProcessor processor = new BindingConfigurerBinderPostProcessorAdapter(configurer);
             ScopeKey scopeKey = applicationContext.scope().installableScopeType();
             // Only apply to global scope to prevent duplicating bindings across inheriting scopes
             registry.register(ScopeFilteredDelegateBinderPostProcessor.create(processor, scopeKey));
