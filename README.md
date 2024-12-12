@@ -5,15 +5,18 @@
 <img src="https://img.shields.io/github/v/release/Dockbox-OSS/Hartshorn?style=for-the-badge&color=438EAA">
 </p>
 
+> [!NOTE]
+> Hartshorn is currently in active development. You are welcome to use it, but please be aware that it may not be stable yet and features are subject to change at any time (though deprecation notices are typically given in advance). If you encounter any issues, please report them on the [issue tracker](https://github.com/Dockbox-OSS/Hartshorn/issues).
+
 <hr>
 
-[Hartshorn](https://hartshorn.dockbox.org/) is a cutting-edge Java framework built on the JVM platform that offers comprehensive support for modular, scalable, and testable application development using Java and other JVM-based languages. Its main objective is to simplify the creation and administration of intricate JVM applications by providing developers with the necessary tools. To learn more about Hartshorn's fundamental technologies and principles, you can refer to the dedicated topic on [core technologies](https://hartshorn.dockbox.org/core/cdi/).
+[Hartshorn](https://hartshorn.dockbox.org/) is a modern framework built on the JVM platform that offers support for modular, scalable, and testable application development using Java and other JVM-based languages. Its main objective is to simplify the creation and administration of complex JVM applications by providing developers with an easy to use ecosystem of utilities and conventions. To learn more about Hartshorn's fundamental technologies and principles, you can refer to the dedicated topic on [core technologies](https://hartshorn.dockbox.org/core/cdi/).
 
 <hr>
 
 ## Getting started
 
-If you are new to Hartshorn, the official documentation website has a [Getting Started](https://hartshorn.dockbox.org/getting-started/setup/) section that provides comprehensive guides to help you get started quickly. The guides use Hartshorn's application starter to facilitate your initial setup. Additionally, if you only need the Maven dependencies for your project, they are listed below for your convenience.
+If you are new to Hartshorn, the official documentation website has a [getting started](https://hartshorn.dockbox.org/getting-started/setup/) section that provides comprehensive guides to help you get started quickly. The guides use Hartshorn's application starter to facilitate your initial setup. Additionally, if you only need the Maven dependencies for your project, they are listed below for your convenience.
 
 ### Maven configuration
 
@@ -43,25 +46,45 @@ The `HartshornApplication` class is used to build Hartshorn applications. It ser
 
 ```java
 public static void main(String[] args) {
-    ApplicationContext applicationContext = HartshornApplication.create();
-    // ...
+    // Derives the main class automatically ..
+    ApplicationContext applicationContext = HartshornApplication.create(args);
+
+    // .. alternatively you can pass your main class as an argument
+    ApplicationContext applicationContext = HartshornApplication.create(MyMainClass.class, args);
+
+    // .. or you can configure almost every aspect of the application
+    ApplicationContext applicationContext = HartshornApplication.createApplication(MyMainClass.class, args).initialize(configurer -> {
+        // See HartshornApplicationConfigurer for more options
+    });
 }
 ```
 
-`ApplicationContext` is at the heart of Hartshorn, and its primary responsibility is to manage your application's lifecycle. It also manages your application's dependency injection container, which enables the injection of dependencies. The `@Binds` annotation is used to declare dependencies, which binds a type to its implementation. To inject dependencies, you can use the @Inject annotation.
+`ApplicationContext` is at the heart of Hartshorn, and its primary responsibility is to manage your application's lifecycle. It also manages your application's dependency injection container, which enables the injection of dependencies. 
+
+### Dependency injection
+The `@Binds` annotation is used to declare dependencies, which binds a type to its implementation. However, typically you should not use it directly. Instead, you can use the provided `@Singleton` and `@Prototype` annotations to declare your components. `@Singleton` components are created once and shared across the application, while `@Prototype` components are created each time they are requested.
 
 ```java
-@Binds
-public String helloWorld() {
-    return "Hello World!";
+@Configuration
+public class HelloWorldConfiguration {
+
+    @Singleton // Shared across the application
+    public String helloWorld() {
+        return "Hello World!";
+    }
+    
+    @Prototype // Created each time it is requested
+    public OtherComponent otherComponent() {
+        return new OtherComponent();
+    }
 }
 ```
 
-Managed components are part of your application structure, meaning they are automatically discovered and registered. Components annotated with `@Component` or a stereotype annotation annotated with `@Component`, such as `@Service`, are considered managed.
+Managed components are part of your application structure, meaning they are automatically discovered and registered. Components annotated with `@Component` or a stereotype annotation annotated with `@Component`, such as `@Configuration`, are considered managed.
 
 ```java
-@Service
-public class SampleService {
+@Component
+public class HelloWorldComponent {
     
     @Inject
     private String helloWorld;
@@ -77,8 +100,8 @@ Finally, we can bring everything together and print "Hello World!" to the consol
 ```java
 public static void main(String[] args) {
     ApplicationContext applicationContext = HartshornApplication.create();
-    SampleService sampleService = applicationContext.get(SampleService.class);
-    sampleService.sayHelloWorld();
+    HelloWorldComponent helloWorldComponent = applicationContext.get(HelloWorldComponent.class);
+    helloWorldComponent.sayHelloWorld();
 }
 ```
 
