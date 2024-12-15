@@ -27,6 +27,7 @@ import org.dockbox.hartshorn.inject.graph.resolve.BindsMethodDependencyResolver
 import org.dockbox.hartshorn.inject.introspect.ViewContextAdapter
 import org.dockbox.hartshorn.inject.processing.construction.AnnotatedMethodComponentPostConstructor
 import org.dockbox.hartshorn.inject.processing.construction.ComponentPostConstructor
+import org.dockbox.hartshorn.inject.provider.ComponentProviderOrchestrator
 import org.dockbox.hartshorn.inject.provider.HierarchicalComponentProviderOrchestrator
 import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider
 import org.dockbox.hartshorn.launchpad.ApplicationContext
@@ -138,7 +139,7 @@ class BootstrapConfigurationContractTests {
     fun testDelegatingApplicationContextContract() {
         val instance = DelegatingApplicationContext.Configurer()
 
-        assertDeferred(instance) { configurer, deferred: PostProcessingComponentProvider? -> configurer.componentProvider(deferred) }
+        assertDeferred(instance) { configurer, deferred: ComponentProviderOrchestrator? -> configurer.componentProvider(deferred) }
         assertContextInitializer(instance) { configurer, initializer -> configurer.componentProvider(initializer) }
 
         assertDeferred(instance) { configurer, deferred: DefaultBindingConfigurer? -> configurer.defaultBindings(deferred) }

@@ -27,7 +27,7 @@ import org.dockbox.hartshorn.util.TypeUtils;
  * can be used to add additional functionality to a component, or to modify the component in some way.
  *
  * <p>The component post processor will be called for each component that is created, and will be called
- * in the order of the specified {@link OrderedComponentProcessor#priority()} value.
+ * in the order of the specified {@link ComponentProcessor#priority()} value.
  *
  * @since 0.4.9
  *

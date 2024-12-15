@@ -27,6 +27,7 @@ import org.dockbox.hartshorn.util.IllegalModificationException;
 import org.dockbox.hartshorn.util.TypeUtils;
 import org.dockbox.hartshorn.util.collections.HashSetMultiMap;
 import org.dockbox.hartshorn.util.collections.MultiMap;
+import org.dockbox.hartshorn.util.collections.UnmodifiableMultiMap;
 import org.dockbox.hartshorn.util.option.Option;
 
 /**
@@ -66,6 +67,16 @@ public class ScopeAwareHierarchicalBinder implements HierarchicalBinder, NestedH
 
     protected Scope scope() {
         return this.scope;
+    }
+
+    @Override
+    public <C> BindingFunction<C> bind(Class<C> type) {
+        // Strict, so new hierarchies are created if needed, rather than using loose lookup
+        ComponentKey<C> componentKey = ComponentKey.builder(type)
+                .strict(true)
+                .scope(this.scope) // No explicit scope provided, so expected to use the current scope instead
+                .build();
+        return this.bind(componentKey);
     }
 
     protected Scope applicationScope() {
@@ -112,7 +123,7 @@ public class ScopeAwareHierarchicalBinder implements HierarchicalBinder, NestedH
     public MultiMap<Scope, BindingHierarchy<?>> hierarchies() {
         MultiMap<Scope, BindingHierarchy<?>> map = new HashSetMultiMap<>();
         map.putAll(this.scope(), this.hierarchyCache().hierarchies());
-        return map;
+        return new UnmodifiableMultiMap<>(map);
     }
 
     @Override

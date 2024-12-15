@@ -18,16 +18,21 @@ package org.dockbox.hartshorn.inject.graph.resolve;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
+import org.dockbox.hartshorn.inject.InjectorEnvironment;
+import org.dockbox.hartshorn.inject.ManagedComponentEnvironment;
 import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurerContext;
 import org.dockbox.hartshorn.inject.component.ComponentRegistry;
 import org.dockbox.hartshorn.inject.annotations.configuration.Configuration;
 import org.dockbox.hartshorn.inject.condition.ConditionMatcher;
 import org.dockbox.hartshorn.inject.annotations.configuration.Binds;
 import org.dockbox.hartshorn.inject.graph.AbstractContainerDependencyResolver;
+import org.dockbox.hartshorn.inject.graph.ComponentConfigurationException;
 import org.dockbox.hartshorn.inject.graph.DependencyResolver;
 import org.dockbox.hartshorn.inject.graph.declaration.DependencyContext;
 import org.dockbox.hartshorn.inject.graph.declaration.DependencyDeclarationContext;
@@ -37,6 +42,8 @@ import org.dockbox.hartshorn.inject.graph.strategy.BindingStrategyRegistry;
 import org.dockbox.hartshorn.inject.graph.strategy.MethodAwareBindingStrategyContext;
 import org.dockbox.hartshorn.inject.graph.strategy.MethodInstanceBindingStrategy;
 import org.dockbox.hartshorn.inject.graph.strategy.SimpleBindingStrategyRegistry;
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
+import org.dockbox.hartshorn.inject.provider.ComponentRegistryAwareComponentProvider;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.LazyStreamableConfigurer;
@@ -125,7 +132,10 @@ public class BindsMethodDependencyResolver extends AbstractContainerDependencyRe
                 binder.bind(ConditionMatcher.class).singleton(conditionMatcher);
             });
 
-            ComponentRegistry componentRegistry = application.defaultProvider().get(ComponentRegistry.class);
+            ComponentRegistry componentRegistry = configurer.registryLookup.apply(application);
+            if (componentRegistry == null) {
+                throw new ComponentConfigurationException("Could not resolve component registry from current application");
+            }
             return new BindsMethodDependencyResolver(conditionMatcher, componentRegistry, registry);
         };
     }
@@ -143,6 +153,7 @@ public class BindsMethodDependencyResolver extends AbstractContainerDependencyRe
             MethodInstanceBindingStrategy.create(Customizer.useDefaults())
         );
         private ContextualInitializer<InjectionCapableApplication, ConditionMatcher> conditionMatcher = context -> new ConditionMatcher(context.input());
+        private Function<InjectionCapableApplication, ComponentRegistry> registryLookup = new ComponentRegistryLookup();
 
         public Configurer conditionMatcher(ConditionMatcher conditionMatcher) {
             return this.conditionMatcher(ContextualInitializer.of(conditionMatcher));
@@ -156,6 +167,42 @@ public class BindsMethodDependencyResolver extends AbstractContainerDependencyRe
         public Configurer bindingStrategies(Customizer<StreamableConfigurer<InjectionCapableApplication, BindingStrategy>> customizer) {
             this.bindingStrategies.customizer(customizer);
             return this;
+        }
+
+        public Configurer registryLookup(Function<InjectionCapableApplication, ComponentRegistry> registryLookup) {
+            this.registryLookup = registryLookup;
+            return this;
+        }
+
+        /**
+         * Default implementation of the {@link ComponentRegistry} lookup function. By default two main components expose the component
+         * registry:
+         * <ul>
+         *     <li>{@link InjectorEnvironment} exposes the registry if it is a {@link ManagedComponentEnvironment}</li>
+         *     <li>{@link ComponentProvider} exposes the registry if it is a {@link ComponentRegistryAwareComponentProvider}</li>
+         * </ul>
+         *
+         * @see ComponentRegistry
+         * @see ManagedComponentEnvironment#componentRegistry()
+         * @see ComponentRegistryAwareComponentProvider#componentRegistry()
+         *
+         * @since 0.7.0
+         *
+         * @author Guus Lieben
+         */
+        public static class ComponentRegistryLookup implements Function<InjectionCapableApplication, ComponentRegistry> {
+
+            @Override
+            @Nullable
+            public ComponentRegistry apply(InjectionCapableApplication application) {
+                if (application.environment() instanceof ManagedComponentEnvironment environment) {
+                    return environment.componentRegistry();
+                } else if (application.defaultProvider() instanceof ComponentRegistryAwareComponentProvider orchestrator) {
+                    return orchestrator.componentRegistry();
+                } else {
+                    return null;
+                }
+            }
         }
     }
 }

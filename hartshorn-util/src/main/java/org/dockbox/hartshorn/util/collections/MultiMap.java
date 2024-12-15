@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 the original author or authors.
+ * Copyright 2019-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,6 +182,14 @@ public interface MultiMap<K, V> {
      * @return whether the value was removed
      */
     boolean remove(K key, V value);
+
+    /**
+     * Removes all values associated with the given value from this {@link MultiMap}.
+     *
+     * @param processor the value to remove
+     * @return the number of values removed
+     */
+    int removeValue(V processor);
 
     /**
      * Replaces the given old value with the given new value in the given key. If the key is in this {@link

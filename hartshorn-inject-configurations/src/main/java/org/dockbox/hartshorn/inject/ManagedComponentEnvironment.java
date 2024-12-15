@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.introspect.types;
+package org.dockbox.hartshorn.inject;
 
-@SuppressWarnings("EmptyClass")
-public class ScanClass {
+import org.dockbox.hartshorn.inject.component.ComponentRegistry;
 
-    @SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
-    public class NonStaticInnerClass {
-    }
+/**
+ * Represents an environment that is capable of managing components.
+ *
+ * @see ComponentRegistry
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public interface ManagedComponentEnvironment extends InjectorEnvironment {
 
-    public static class StaticInnerClass {
-    }
-
+    /**
+     * @return the {@link ComponentRegistry} that is used by this {@link ManagedComponentEnvironment} to locate components
+     */
+    ComponentRegistry componentRegistry();
 }

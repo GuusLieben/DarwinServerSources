@@ -42,7 +42,11 @@ public interface Binder {
      * @return The binding function
      */
     default <C> BindingFunction<C> bind(Class<C> type) {
-        return this.bind(ComponentKey.of(type));
+        // Strict, so new hierarchies are created if needed, rather than using loose lookup
+        ComponentKey<C> componentKey = ComponentKey.builder(type)
+                .strict(true)
+                .build();
+        return this.bind(componentKey);
     }
 
     /**

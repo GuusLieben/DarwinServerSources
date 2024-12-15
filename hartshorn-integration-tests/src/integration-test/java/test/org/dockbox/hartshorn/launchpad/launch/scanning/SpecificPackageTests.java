@@ -33,7 +33,7 @@ import test.org.dockbox.hartshorn.launchpad.launch.scanning.service.DemoServiceP
 @HartshornIntegrationTest(
         includeBasePackages = false,
         scanPackages = "test.org.dockbox.hartshorn.launchpad.launch.scanning",
-        processors = { DemoServicePreProcessor.class }
+        componentPreProcessors = { DemoServicePreProcessor.class }
 )
 public class SpecificPackageTests {
 

@@ -31,20 +31,29 @@ import org.dockbox.hartshorn.util.ApplicationException;
  *
  * @author Guus Lieben
  */
-public sealed interface ComponentProcessor extends OrderedComponentProcessor permits ComponentPostProcessor, ComponentPreProcessor {
+public sealed interface ComponentProcessor permits ComponentPostProcessor, ComponentPreProcessor {
 
     /**
-     * Processes a given component context. The given context should contain the application context, the component type and key, and
-     * an optional component instance. The instance may be null if the component is not yet created, or if the component could not be
-     * created through regular {@link InstantiationStrategy providers}. The component {@link ComponentKey} will always be valid, and will contain a
-     * valid {@link Class}. The {@link org.dockbox.hartshorn.util.introspect.view.TypeView} of the context will always be valid, and
-     * will always use the type providing the most amount of context. If the component instance is present, the type of that instance
+     * Processes a given component context. The given context should contain the application context, the component
+     * type and key, and an optional component instance. The instance may be null if the component is not yet created,
+     * or if the component could not be created through regular {@link InstantiationStrategy providers}. The component
+     * {@link ComponentKey} will always be valid, and will contain a valid {@link Class}. The {@link
+     * org.dockbox.hartshorn.util.introspect.view.TypeView} of the context will always be valid, and will always use
+     * the type providing the most amount of context. If the component instance is present, the type of that instance
      * will be used. If the component instance is not present, the type of the {@link ComponentKey} is used instead.
      *
-     * @param processingContext The context of the component being processed. This contains the application context and introspection details.
+     * @param processingContext The context of the component being processed. This contains the application context and
+     *                          introspection details.
      * @return The processed component instance.
      * @param <T> The type of the component.
      */
     <T> T process(ComponentProcessingContext<T> processingContext) throws ApplicationException;
 
+    /**
+     * Returns the priority of the component processor. The priority is used to determine the order in which the component
+     * processors are executed. The lower the priority, the earlier the processor will be executed.
+     *
+     * @return The phase of when the component should be processed.
+     */
+    int priority();
 }

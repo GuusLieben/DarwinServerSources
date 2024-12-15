@@ -18,6 +18,7 @@ package org.dockbox.hartshorn.inject.processing;
 
 import java.util.Collection;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurerContext;
 import org.dockbox.hartshorn.inject.provider.ComponentConstructorResolver;
 import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
@@ -113,7 +114,11 @@ public class ComponentPopulatorPostProcessor extends ComponentPostProcessor {
         return context -> {
             Configurer configurer = new Configurer();
             customizer.configure(configurer);
-            return new ComponentPopulatorPostProcessor(configurer.componentPopulator.initialize(context));
+            ComponentPopulator populator = configurer.componentPopulator.initialize(context);
+            DefaultBindingConfigurerContext.compose(context, binder -> {
+                binder.bind(ComponentPopulator.class).singleton(populator);
+            });
+            return new ComponentPopulatorPostProcessor(populator);
         };
     }
 

@@ -24,6 +24,7 @@ import java.lang.annotation.Target;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
 import org.dockbox.hartshorn.launchpad.launch.ApplicationContextFactory;
 import org.dockbox.hartshorn.launchpad.launch.StandardApplicationContextFactory;
+import org.dockbox.hartshorn.launchpad.configuration.DefaultConfigurationBinderPostProcessor;
 
 /**
  * Default service activator for Launchpad-based applications, enabling lifecycle observers and component proxying. When using
@@ -36,7 +37,9 @@ import org.dockbox.hartshorn.launchpad.launch.StandardApplicationContextFactory;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ServiceActivator
+@ServiceActivator(
+        binderPostProcessors = DefaultConfigurationBinderPostProcessor.class
+)
 @UseLifecycleObservers
 @UseProxying
 public @interface UseLaunchpad {

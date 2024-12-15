@@ -57,7 +57,7 @@ public class LazyStreamableConfigurer<I, O> implements ContextualInitializer<I, 
      */
     public LazyStreamableConfigurer<I, O> customizer(Customizer<StreamableConfigurer<I, O>> customizer) {
         // Note order, existing customizer is applied first, so the new customizer can override it if needed
-        this.customizer = this.customizer.compose(customizer);
+        this.customizer = customizer.compose(this.customizer);
         return this;
     }
 

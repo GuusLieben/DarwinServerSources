@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject.provider;
+package test.org.dockbox.hartshorn.inject.processing;
 
-import org.dockbox.hartshorn.inject.component.ComponentRegistry;
+import org.dockbox.hartshorn.inject.annotations.Component;
 
-/**
- * TODO: #1060 Add documentation
- *
- * @since 0.5.0
- *
- * @author Guus Lieben
- */
-public interface ComponentProviderOrchestrator extends PostProcessingComponentProvider {
+@Component(permitProcessing = false, permitProxying = false)
+public class NonProcessableType {
+    private String nonNullIfProcessed;
 
-    ComponentRegistry componentRegistry();
-
-    HierarchicalComponentProvider applicationProvider();
-
+    public String nonNullIfProcessed() {
+        return this.nonNullIfProcessed;
+    }
 }

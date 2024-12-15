@@ -72,7 +72,7 @@ public class HierarchyAwareComponentProvider extends StrategyChainComponentProvi
     private final SingletonCache singletonCache;
 
     public HierarchyAwareComponentProvider(
-            ComponentProviderOrchestrator orchestrator,
+            ComponentRegistryAwareProviderOrchestrator orchestrator,
             ComponentPostConstructor postConstructor,
             InjectionCapableApplication application,
             SingletonCache singletonCache,
@@ -104,7 +104,7 @@ public class HierarchyAwareComponentProvider extends StrategyChainComponentProvi
 
     protected static ComponentProviderPostProcessor createProviderPostProcessor(
             SingletonCache singletonCache,
-            ComponentProviderOrchestrator orchestrator,
+            ComponentRegistryAwareProviderOrchestrator orchestrator,
             InjectionCapableApplication application,
             ComponentPostConstructor postConstructor
     ) {
@@ -169,7 +169,7 @@ public class HierarchyAwareComponentProvider extends StrategyChainComponentProvi
     }
 
     public static HierarchyAwareComponentProvider create(
-            ComponentProviderOrchestrator orchestrator,
+            ComponentRegistryAwareProviderOrchestrator orchestrator,
             ComponentPostConstructor postConstructor,
             InjectionCapableApplication application,
             SingletonCache singletonCache,

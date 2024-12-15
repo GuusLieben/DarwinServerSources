@@ -22,6 +22,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
+import org.dockbox.hartshorn.inject.processing.ComponentPostProcessor;
+import org.dockbox.hartshorn.inject.processing.ComponentPreProcessor;
+import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.launchpad.condition.RequiresActivator;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessor;
 
@@ -59,5 +62,12 @@ public @interface ServiceActivator {
      *
      * @return The component processors that become active when this service activator is present.
      */
+    @Deprecated(since = "0.7.0", forRemoval = true)
     Class<? extends ComponentProcessor>[] processors() default {};
+
+    Class<? extends ComponentPreProcessor>[] componentPreProcessors() default {};
+
+    Class<? extends ComponentPostProcessor>[] componentPostProcessors() default {};
+
+    Class<? extends HierarchicalBinderPostProcessor>[] binderPostProcessors() default {};
 }

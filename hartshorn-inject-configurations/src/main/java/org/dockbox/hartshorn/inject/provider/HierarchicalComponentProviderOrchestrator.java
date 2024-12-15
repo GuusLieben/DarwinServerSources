@@ -21,13 +21,17 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.dockbox.hartshorn.inject.ContextKey;
-import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurerContext;
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.binding.HierarchicalBinder;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessorRegistry;
+import org.dockbox.hartshorn.inject.processing.CompositeHierarchicalBinderPostProcessor;
+import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
+import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
 import org.dockbox.hartshorn.inject.processing.MultiMapComponentProcessorRegistry;
+import org.dockbox.hartshorn.inject.processing.ConcurrentHierarchicalBinderProcessorRegistry;
 import org.dockbox.hartshorn.inject.provider.singleton.ConcurrentHashSingletonCache;
 import org.dockbox.hartshorn.inject.scope.ScopeAdapter;
 import org.dockbox.hartshorn.inject.scope.ScopeModuleContext;
@@ -43,7 +47,6 @@ import org.dockbox.hartshorn.inject.processing.construction.AnnotatedMethodCompo
 import org.dockbox.hartshorn.inject.scope.Scope;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
-import org.dockbox.hartshorn.util.SimpleSingleElementContext;
 import org.dockbox.hartshorn.util.collections.HashSetMultiMap;
 import org.dockbox.hartshorn.util.collections.MultiMap;
 
@@ -56,7 +59,7 @@ import org.dockbox.hartshorn.util.collections.MultiMap;
  */
 public class HierarchicalComponentProviderOrchestrator
         extends DefaultFallbackCompatibleContext
-        implements HierarchicalComponentProvider, ComponentProviderOrchestrator, HierarchicalBinder {
+        implements HierarchicalComponentProvider, ComponentRegistryAwareProviderOrchestrator, HierarchicalBinder {
 
     private final Map<Scope, HierarchicalBinderAwareComponentProvider> scopedProviders = Collections.synchronizedMap(new WeakHashMap<>());
     private final Scope applicationScope;
@@ -65,25 +68,17 @@ public class HierarchicalComponentProviderOrchestrator
     private final transient ComponentRegistry registry;
     private final transient ComponentPostConstructor postConstructor;
 
-    private final ComponentProcessorRegistry componentProcessorRegistry = new MultiMapComponentProcessorRegistry();
-
-    private HierarchicalBinderAwareComponentProvider getOrCreateProvider(Scope scope) {
-        if (scope == null) {
-            scope = this.applicationScope;
-        }
-        synchronized (this.scopedProviders) {
-            return this.scopedProviders.computeIfAbsent(scope, this::createComponentProvider);
-        }
-    }
+    private final ComponentProcessorRegistry componentProcessorRegistry;
+    private final HierarchicalBinderProcessorRegistry binderProcessorRegistry;
 
     protected HierarchicalComponentProviderOrchestrator(InjectionCapableApplication application, ComponentRegistry registry, ComponentPostConstructor postConstructor) {
         this.registry = registry;
         this.application = application;
         this.postConstructor = postConstructor;
 
-        // Eagerly initialize the application provider
         this.applicationScope = ScopeAdapter.of(this);
-        this.getOrCreateProvider(this.applicationScope);
+        this.componentProcessorRegistry = new MultiMapComponentProcessorRegistry();
+        this.binderProcessorRegistry = new ConcurrentHierarchicalBinderProcessorRegistry();
     }
 
     @NonNull
@@ -104,19 +99,32 @@ public class HierarchicalComponentProviderOrchestrator
                 provider.binder().bind(hierarchy);
             }
         }
+
+        // Cache provider before processing, in case of recursive calls
+        this.scopedProviders.put(scope, provider);
+
+        HierarchicalBinderPostProcessor binderPostProcessor = new CompositeHierarchicalBinderPostProcessor(this.binderProcessorRegistry()::processors);
+        binderPostProcessor.process(this.application, provider.scope(), provider.binder());
         return provider;
     }
 
-    private HierarchicalComponentProvider getOrDefaultProvider(Scope scope) {
+    private HierarchicalBinderAwareComponentProvider getOrDefaultProvider(Scope scope) {
+        return this.tryGetProvider(scope, s -> this.getOrCreateProvider(this.applicationScope));
+    }
+
+    private HierarchicalBinderAwareComponentProvider getOrCreateProvider(Scope scope) {
+        return this.tryGetProvider(scope, this::createComponentProvider);
+    }
+
+    private HierarchicalBinderAwareComponentProvider tryGetProvider(Scope scope, Function<Scope, HierarchicalBinderAwareComponentProvider> fallbackValue) {
         if (scope == null) {
             scope = this.applicationScope;
         }
         synchronized (this.scopedProviders) {
-            HierarchicalComponentProvider provider = this.scopedProviders.get(scope);
-            if (provider == null) {
-                return this.scopedProviders.get(this.applicationScope);
+            if (this.scopedProviders.containsKey(scope)) {
+                return this.scopedProviders.get(scope);
             }
-            return provider;
+            return fallbackValue.apply(scope);
         }
     }
 
@@ -127,6 +135,11 @@ public class HierarchicalComponentProviderOrchestrator
     @Override
     public ComponentRegistry componentRegistry() {
         return this.registry;
+    }
+
+    @Override
+    public HierarchicalBinderProcessorRegistry binderProcessorRegistry() {
+        return this.binderProcessorRegistry;
     }
 
     @Override
@@ -179,7 +192,12 @@ public class HierarchicalComponentProviderOrchestrator
         return this.getOrCreateProvider(this.applicationScope);
     }
 
-    public static ContextualInitializer<ComponentRegistry, PostProcessingComponentProvider> create(Customizer<Configurer> customizer) {
+    @Override
+    public boolean containsScope(Scope scopeKey) {
+        return this.scopedProviders.containsKey(scopeKey);
+    }
+
+    public static ContextualInitializer<ComponentRegistry, ComponentProviderOrchestrator> create(Customizer<Configurer> customizer) {
         return context -> {
             InjectionCapableApplication application = context.firstContext(InjectionCapableApplication.class)
                     .orElseThrow(() -> new IllegalStateException("No application context found"));
@@ -188,12 +206,8 @@ public class HierarchicalComponentProviderOrchestrator
             customizer.configure(configurer);
 
             ComponentRegistry registry = context.input();
-            ComponentPostConstructor postConstructor = configurer.componentPostConstructor.initialize(SimpleSingleElementContext.create(application));
-            HierarchicalComponentProviderOrchestrator componentProvider = new HierarchicalComponentProviderOrchestrator(application, registry, postConstructor);
-            DefaultBindingConfigurerContext.compose(context, binder -> {
-                binder.bind(ComponentRegistry.class).singleton(componentProvider.registry);
-            });
-            return componentProvider;
+            ComponentPostConstructor postConstructor = configurer.componentPostConstructor.initialize(context.transform(application));
+            return new HierarchicalComponentProviderOrchestrator(application, registry, postConstructor);
         };
     }
 

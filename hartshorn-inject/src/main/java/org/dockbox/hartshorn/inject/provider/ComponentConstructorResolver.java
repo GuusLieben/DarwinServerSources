@@ -62,20 +62,10 @@ public final class ComponentConstructorResolver {
     }
 
     public static ComponentConstructorResolver create(InjectionCapableApplication applicationContext) {
-        HierarchyLookup hierarchyLookup;
-        if (applicationContext.defaultBinder() instanceof HierarchyLookup lookup) {
-            hierarchyLookup = lookup;
-        }
-        else if (applicationContext.defaultProvider() instanceof HierarchyLookup lookup) {
-            hierarchyLookup = lookup;
-        }
-        else {
-            throw new IllegalStateException("No hierarchy lookup found");
-        }
         return new ComponentConstructorResolver(
             applicationContext.environment().injectionPointsResolver(),
             applicationContext.environment().introspector(),
-            hierarchyLookup
+            applicationContext.defaultBinder()
         );
     }
 

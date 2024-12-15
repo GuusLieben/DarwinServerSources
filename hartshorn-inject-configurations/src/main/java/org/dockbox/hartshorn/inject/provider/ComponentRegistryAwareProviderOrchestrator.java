@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject.processing;
+package org.dockbox.hartshorn.inject.provider;
+
+import org.dockbox.hartshorn.inject.component.ComponentRegistry;
 
 /**
- * An interface which defines the methods for processing components in an ordered manner.
+ * Represents a {@link ComponentProviderOrchestrator} that is aware of the {@link ComponentRegistry} that is used to locate
+ * managed components.
  *
- * @since 0.4.7
+ * @see ComponentRegistry
+ *
+ * @since 0.7.0
  *
  * @author Guus Lieben
  */
-@FunctionalInterface
-public interface OrderedComponentProcessor {
-
-    /**
-     * Returns the phase of when the component should be processed. Lower numbers are processed first.
-     *
-     * @return The phase of when the component should be processed.
-     */
-    int priority();
+public interface ComponentRegistryAwareProviderOrchestrator extends ComponentRegistryAwareComponentProvider, ComponentProviderOrchestrator {
 }

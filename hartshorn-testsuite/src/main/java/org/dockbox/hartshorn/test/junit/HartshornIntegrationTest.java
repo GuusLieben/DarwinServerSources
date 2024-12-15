@@ -24,7 +24,10 @@ import java.lang.annotation.Target;
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.annotations.Inject;
 import org.dockbox.hartshorn.inject.annotations.Populate;
+import org.dockbox.hartshorn.inject.processing.ComponentPostProcessor;
+import org.dockbox.hartshorn.inject.processing.ComponentPreProcessor;
 import org.dockbox.hartshorn.inject.processing.ComponentProcessor;
+import org.dockbox.hartshorn.inject.processing.HierarchicalBinderPostProcessor;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
 import org.dockbox.hartshorn.launchpad.launch.StandardApplicationBuilder;
@@ -67,8 +70,44 @@ public @interface HartshornIntegrationTest {
      * @see StandardApplicationContextFactory.Configurer#componentPostProcessors(Customizer)
      *
      * @return the additional {@link ComponentProcessor}s to use
+     *
+     * @deprecated see {@link ServiceActivator#processors()}
      */
-    Class<? extends ComponentProcessor>[] processors() default  {};
+    @Deprecated(since = "0.7.0", forRemoval = true)
+    Class<? extends ComponentProcessor>[] processors() default {};
+
+    /**
+     * Additional {@link ComponentPreProcessor}s to use when creating the {@link ApplicationContext} for
+     * the test class or method. These will be added to the default set of {@link ComponentPreProcessor}s
+     * used by the test suite, even if they are not found through prefix scanning.
+     *
+     * @see StandardApplicationContextFactory.Configurer#componentPreProcessors(Customizer)
+     *
+     * @return the additional {@link ComponentPreProcessor}s to use
+     */
+    Class<? extends ComponentPreProcessor>[] componentPreProcessors() default {};
+
+    /**
+     * Additional {@link ComponentPostProcessor}s to use when creating the {@link ApplicationContext} for
+     * the test class or method. These will be added to the default set of {@link ComponentPostProcessor}s
+     * used by the test suite, even if they are not found through prefix scanning.
+     *
+     * @see StandardApplicationContextFactory.Configurer#componentPostProcessors(Customizer)
+     *
+     * @return the additional {@link ComponentPostProcessor}s to use
+     */
+    Class<? extends ComponentPostProcessor>[] componentPostProcessors() default {};
+
+    /**
+     * Additional {@link HierarchicalBinderPostProcessor}s to use when creating the {@link ApplicationContext}
+     * for the test class or method. These will be added to the default set of {@link HierarchicalBinderPostProcessor}s
+     * used by the test suite, even if they are not found through prefix scanning.
+     *
+     * @see StandardApplicationContextFactory.Configurer#binderPostProcessors(Customizer)
+     *
+     * @return the additional {@link HierarchicalBinderPostProcessor}s to use
+     */
+    Class<? extends HierarchicalBinderPostProcessor>[] binderPostProcessors() default {};
 
     /**
      * Additional packages to scan for {@link ComponentProcessor}s when creating the {@link ApplicationContext}

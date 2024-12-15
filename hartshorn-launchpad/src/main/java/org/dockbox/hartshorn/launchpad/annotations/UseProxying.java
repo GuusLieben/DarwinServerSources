@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ServiceActivator(processors = {
+@ServiceActivator(componentPostProcessors = {
         ContextCarrierDelegationPostProcessor.class,
         ContextMethodPostProcessor.class,
 })

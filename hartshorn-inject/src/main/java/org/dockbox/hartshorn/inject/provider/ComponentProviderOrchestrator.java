@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.introspect.types;
+package org.dockbox.hartshorn.inject.provider;
 
-@SuppressWarnings("EmptyClass")
-public class ScanClass {
+import org.dockbox.hartshorn.inject.processing.HierarchicalBinderProcessorRegistry;
+import org.dockbox.hartshorn.inject.scope.Scope;
 
-    @SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
-    public class NonStaticInnerClass {
-    }
+/**
+ * TODO: #1060 Add documentation
+ *
+ * @since 0.5.0
+ *
+ * @author Guus Lieben
+ */
+public interface ComponentProviderOrchestrator extends PostProcessingComponentProvider {
 
-    public static class StaticInnerClass {
-    }
+    HierarchicalBinderProcessorRegistry binderProcessorRegistry();
 
+    HierarchicalComponentProvider applicationProvider();
+
+    boolean containsScope(Scope scope);
 }

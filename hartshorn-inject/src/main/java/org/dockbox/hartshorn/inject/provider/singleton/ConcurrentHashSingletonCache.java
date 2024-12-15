@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.dockbox.hartshorn.inject.ComponentKey;
+import org.dockbox.hartshorn.inject.ComponentKeyView;
 import org.dockbox.hartshorn.util.IllegalModificationException;
 import org.dockbox.hartshorn.util.option.Option;
 
@@ -37,33 +38,34 @@ import org.dockbox.hartshorn.util.option.Option;
  */
 public class ConcurrentHashSingletonCache implements SingletonCache {
 
-    private final Map<ComponentKey<?>, Object> cache = new ConcurrentHashMap<>();
-    private final Set<ComponentKey<?>> locked = ConcurrentHashMap.newKeySet();
+    private final Map<ComponentKeyView<?>, Object> cache = new ConcurrentHashMap<>();
+    private final Set<ComponentKeyView<?>> locked = ConcurrentHashMap.newKeySet();
 
     @Override
     public void lock(ComponentKey<?> key) {
-        if (!this.cache.containsKey(key)) {
+        ComponentKeyView<?> keyView = new ComponentKeyView<>(key);
+        if (!this.cache.containsKey(keyView)) {
             throw new IllegalModificationException("Cannot lock a key that is not present in the cache");
         }
-        this.locked.add(key);
+        this.locked.add(keyView);
     }
 
     @Override
     public <T> void put(ComponentKey<T> key, T instance) {
-        if (this.locked.contains(key) && this.cache.get(key) != instance) {
+        ComponentKeyView<T> keyView = new ComponentKeyView<>(key);
+        if (this.locked.contains(keyView) && this.cache.get(keyView) != instance) {
             throw new IllegalModificationException("Another instance is already stored for key '" + key + "'");
         }
-        this.cache.put(key, instance);
+        this.cache.put(keyView, instance);
     }
 
     @Override
     public <T> Option<T> get(ComponentKey<T> key) {
-        return Option.of(key.type().cast(this.cache.get(key)));
+        return Option.of(key.type().cast(this.cache.get(new ComponentKeyView<>(key))));
     }
 
     @Override
     public <T> boolean contains(ComponentKey<T> key) {
-        return this.cache.containsKey(key);
+        return this.cache.containsKey(new ComponentKeyView<>(key));
     }
-
 }

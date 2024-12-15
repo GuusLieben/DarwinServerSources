@@ -19,8 +19,7 @@ package org.dockbox.hartshorn.launchpad.environment;
 import java.util.Properties;
 import org.dockbox.hartshorn.inject.ExceptionHandler;
 import org.dockbox.hartshorn.inject.ComponentKey;
-import org.dockbox.hartshorn.inject.InjectorEnvironment;
-import org.dockbox.hartshorn.inject.component.ComponentRegistry;
+import org.dockbox.hartshorn.inject.ManagedComponentEnvironment;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.HartshornApplication;
 import org.dockbox.hartshorn.launchpad.context.ApplicationContextCarrier;
@@ -33,7 +32,7 @@ import org.dockbox.hartshorn.launchpad.context.ApplicationContextCarrier;
  *
  * @author Guus Lieben
  */
-public interface ApplicationEnvironment extends ApplicationContextCarrier, ExceptionHandler, InjectorEnvironment {
+public interface ApplicationEnvironment extends ApplicationContextCarrier, ExceptionHandler, ManagedComponentEnvironment {
 
     /**
      * Gets the {@link FileSystemProvider file system provider} for the current environment. The provider is
@@ -60,11 +59,6 @@ public interface ApplicationEnvironment extends ApplicationContextCarrier, Excep
      * @return The environment type resolver
      */
     EnvironmentTypeResolver typeResolver();
-
-    /**
-     * @return the {@link ComponentRegistry} that is used by this {@link ApplicationContext} to locate components
-     */
-    ComponentRegistry componentRegistry();
 
     /**
      * Indicates whether the current environment exists within a Continuous Integration environment. If this returns
