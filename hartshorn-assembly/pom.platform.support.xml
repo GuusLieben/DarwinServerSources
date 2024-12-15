@@ -18,6 +18,9 @@
     <description>Common parent POM for all public facing Hartshorn modules</description>
 
     <properties>
+        <!-- Shorthands for project paths -->
+        <path.assembly>${maven.multiModuleProjectDirectory}/hartshorn-assembly</path.assembly>
+
         <!--
         Feature toggles for CI, defaults to opt-out behavior.
         Use the 'ci' profile to disable by default, making this opt-in instead.
@@ -322,11 +325,11 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <headerDefinitions>
-                        <headerDefinition>hartshorn-assembly/licenses/JavaBlockStyleHeader.xml</headerDefinition>
+                        <headerDefinition>${path.assembly}/licenses/JavaBlockStyleHeader.xml</headerDefinition>
                     </headerDefinitions>
                     <licenseSets>
                         <licenseSet>
-                            <header>hartshorn-assembly/licenses/APACHE-2.txt</header>
+                            <header>${path.assembly}/licenses/APACHE-2.txt</header>
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <includes>
                                 <include>**/*.java</include>
@@ -357,7 +360,7 @@
                     <skip>${owasp.skip}</skip>
                     <failBuildOnCVSS>1</failBuildOnCVSS>
                     <suppressionFiles>
-                        <suppressionFile>hartshorn-assembly/dependency-check/dependency-check-suppressions.xml</suppressionFile>
+                        <suppressionFile>${path.assembly}/dependency-check/dependency-check-suppressions.xml</suppressionFile>
                     </suppressionFiles>
                     <reportOutputDirectory>${project.build.directory}/dependency-check-report</reportOutputDirectory>
                 </configuration>
@@ -383,8 +386,8 @@
                     <violationSeverity>error</violationSeverity>
                     <linkXRef>false</linkXRef>
                     <includeTestSourceDirectory>false</includeTestSourceDirectory>
-                    <configLocation>hartshorn-assembly/checkstyle/checkstyle.xml</configLocation>
-                    <suppressionsLocation>hartshorn-assembly/checkstyle/suppressions.xml</suppressionsLocation>
+                    <configLocation>${path.assembly}/checkstyle/checkstyle.xml</configLocation>
+                    <suppressionsLocation>${path.assembly}/checkstyle/suppressions.xml</suppressionsLocation>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -410,7 +413,7 @@
                 <artifactId>antora-maven-plugin</artifactId>
                 <configuration>
                     <skip>${antora.skip}</skip>
-                    <playbookFile>hartshorn-assembly/antora/${antora.playbook}</playbookFile>
+                    <playbookFile>${path.assembly}/antora/${antora.playbook}</playbookFile>
                     <packages>
                         <package>@antora/lunr-extension</package>
                         <package>@asciidoctor/tabs</package>
