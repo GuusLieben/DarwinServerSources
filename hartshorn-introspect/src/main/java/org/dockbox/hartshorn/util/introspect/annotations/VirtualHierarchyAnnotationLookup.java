@@ -121,14 +121,14 @@ public class VirtualHierarchyAnnotationLookup implements AnnotationLookup {
         SequencedSet<Class<? extends Annotation>> hierarchy = this.annotationHierarchy(actual.annotationType());
 
         if (!hierarchy.contains(targetAnnotationClass)) {
+            // Cannot safely cast the annotation to the target annotation type
             return null;
         }
 
         InvocationHandler adapter = new AnnotationAdapterProxy<>(actual, targetAnnotationClass, hierarchy, this);
-        HashSet<Class<?>> parentInterfaces = new HashSet<>(hierarchy);
+        Set<Class<?>> parentInterfaces = new HashSet<>(hierarchy);
         parentInterfaces.add(AnnotationAdapter.class);
 
-        Class<?>[] interfaces = { targetAnnotationClass, AnnotationAdapter.class };
         Object proxy = Proxy.newProxyInstance(
                 VirtualHierarchyAnnotationLookup.class.getClassLoader(),
                 parentInterfaces.toArray(Class[]::new),
