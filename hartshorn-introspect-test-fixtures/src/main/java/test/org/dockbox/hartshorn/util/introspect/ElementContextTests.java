@@ -283,18 +283,18 @@ public abstract class ElementContextTests {
 
     @Test
     void testInterfacesAreObtainable() {
-        Assertions.assertEquals(1, this.introspector().introspect(ImplementationWithTP.class).interfaces().size());
+        Assertions.assertEquals(1, this.introspector().introspect(ImplementationWithTypeParameter.class).interfaces().size());
         Assertions.assertEquals(
-                this.introspector().introspect(InterfaceWithTP.class),
-                this.introspector().introspect(ImplementationWithTP.class).interfaces().get(0)
+                this.introspector().introspect(InterfaceWithTypeParameter.class),
+                this.introspector().introspect(ImplementationWithTypeParameter.class).interfaces().get(0)
         );
     }
 
     @Test
     void testTypeParametersWithoutSourceAreFromSuperclass() {
-        TypeView<ImplementationWithTP> type = this.introspector().introspect(ImplementationWithTP.class);
-        assertTypeParameterForType(type, AbstractTypeWithTP.class, Integer.class);
-        assertTypeParameterForType(type, InterfaceWithTP.class, String.class);
+        TypeView<ImplementationWithTypeParameter> type = this.introspector().introspect(ImplementationWithTypeParameter.class);
+        assertTypeParameterForType(type, AbstractTypeWithTypeParameter.class, Integer.class);
+        assertTypeParameterForType(type, InterfaceWithTypeParameter.class, String.class);
     }
 
     private static void assertTypeParameterForType(TypeView<?> type, Class<?> forClass, Class<?> expectedClass) {

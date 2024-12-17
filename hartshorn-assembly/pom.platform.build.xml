@@ -26,7 +26,6 @@
         <scala.version>3.3.1</scala.version>
 
         <!-- Maven plugin versions, in alphabetical order -->
-        <plugin.buildhelper.version>3.6.0</plugin.buildhelper.version>
         <plugin.compiler.version>3.13.0</plugin.compiler.version>
         <plugin.gmaven.version>3.0.2</plugin.gmaven.version>
         <plugin.groovy.version>2.1.1</plugin.groovy.version>
@@ -41,18 +40,10 @@
             <testResource>
                 <directory>src/test/resources</directory>
             </testResource>
-            <testResource>
-                <directory>src/testFixtures/resources</directory>
-            </testResource>
         </testResources>
         <pluginManagement>
             <!-- Plugin management, in alphabetical order of version property -->
             <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>${plugin.buildhelper.version}</version>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -150,26 +141,6 @@
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
-
-            <!-- Testing -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-gradle-testfixtures</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/testFixtures/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Language support -->

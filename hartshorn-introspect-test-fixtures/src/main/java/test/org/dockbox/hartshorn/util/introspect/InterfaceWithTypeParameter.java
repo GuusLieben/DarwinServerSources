@@ -16,5 +16,5 @@
 
 package test.org.dockbox.hartshorn.util.introspect;
 
-public class AbstractTypeWithTP<A> {
+public interface InterfaceWithTypeParameter<A> {
 }

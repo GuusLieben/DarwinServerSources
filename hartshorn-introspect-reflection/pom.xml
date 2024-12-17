@@ -27,12 +27,9 @@
             <groupId>org.dockbox.hartshorn</groupId>
             <artifactId>hartshorn-spi</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.dockbox.hartshorn</groupId>
-            <artifactId>hartshorn-introspect</artifactId>
-            <version>${revision}</version>
-            <type>test-jar</type>
+            <artifactId>hartshorn-introspect-test-fixtures</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -27,8 +27,10 @@
         <module>hartshorn-profiles</module>
         <module>hartshorn-spi</module>
         <module>hartshorn-proxy</module>
+        <module>hartshorn-proxy-test-fixtures</module>
         <module>hartshorn-proxy-javassist</module>
         <module>hartshorn-introspect</module>
+        <module>hartshorn-introspect-test-fixtures</module>
         <module>hartshorn-introspect-reflection</module>
         <module>hartshorn-inject</module>
         <module>hartshorn-integration-tests</module>

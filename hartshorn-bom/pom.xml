@@ -69,6 +69,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dockbox.hartshorn</groupId>
+                <artifactId>hartshorn-proxy-test-fixtures</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dockbox.hartshorn</groupId>
                 <artifactId>hartshorn-proxy-javassist</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -76,6 +81,12 @@
                 <groupId>org.dockbox.hartshorn</groupId>
                 <artifactId>hartshorn-introspect</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dockbox.hartshorn</groupId>
+                <artifactId>hartshorn-introspect-test-fixtures</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.dockbox.hartshorn</groupId>

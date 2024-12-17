@@ -10,8 +10,8 @@
         <relativePath>../hartshorn-assembly/pom.platform.support.xml</relativePath>
     </parent>
 
-    <name>Hartshorn Proxy (Javassist)</name>
-    <artifactId>hartshorn-proxy-javassist</artifactId>
+    <name>Hartshorn Introspection test fixtures</name>
+    <artifactId>hartshorn-introspect-test-fixtures</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -19,29 +19,26 @@
             <groupId>org.dockbox.hartshorn</groupId>
             <artifactId>hartshorn-introspect</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.dockbox.hartshorn</groupId>
-            <artifactId>hartshorn-proxy</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dockbox.hartshorn</groupId>
-            <artifactId>hartshorn-spi</artifactId>
-        </dependency>
 
         <dependency>
-            <groupId>org.dockbox.hartshorn</groupId>
-            <artifactId>hartshorn-introspect-reflection</artifactId>
-            <scope>test</scope>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.dockbox.hartshorn</groupId>
-            <artifactId>hartshorn-proxy-test-fixtures</artifactId>
-            <scope>test</scope>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>compile</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
