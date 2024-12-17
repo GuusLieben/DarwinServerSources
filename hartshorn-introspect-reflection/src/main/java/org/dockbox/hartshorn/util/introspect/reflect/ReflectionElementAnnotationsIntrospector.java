@@ -22,6 +22,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -66,14 +67,16 @@ public class ReflectionElementAnnotationsIntrospector implements ElementAnnotati
 
     @Override
     public Set<Annotation> all() {
-        return Set.copyOf(this.annotationCache().values());
+        return this.annotationCache().values().stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public Set<Annotation> annotedWith(Class<? extends Annotation> annotation) {
         return this.all().stream()
                 .filter(presentAnnotation -> this.introspector.introspect(presentAnnotation.annotationType()).annotations().has(annotation))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override

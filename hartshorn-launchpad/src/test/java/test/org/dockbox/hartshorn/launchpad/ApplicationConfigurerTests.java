@@ -16,7 +16,11 @@
 
 package test.org.dockbox.hartshorn.launchpad;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Properties;
 import java.util.Set;
@@ -37,7 +41,7 @@ import org.dockbox.hartshorn.launchpad.HartshornApplication;
 import org.dockbox.hartshorn.launchpad.HartshornApplicationConfigurer;
 import org.dockbox.hartshorn.launchpad.ProcessableApplicationContext;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
-import org.dockbox.hartshorn.launchpad.banner.HartshornBanner;
+import org.dockbox.hartshorn.launchpad.banner.HartshornLogoBanner;
 import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.TypeUtils;
@@ -299,7 +303,7 @@ public class ApplicationConfigurerTests {
     private static class DummyUnmanagedComponent {
     }
 
-    private static class HartshornBannerAccessor extends HartshornBanner {
+    private static class HartshornBannerAccessor extends HartshornLogoBanner {
         @Override
         public Iterable<String> lines() {
             return super.lines();

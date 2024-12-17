@@ -100,7 +100,7 @@ public class DefaultCommentTokenList implements CommentTokenList {
 
     @Override
     public Option<CommentType> resolveFromOpenToken(TokenType tokenType) {
-        MultiMap<CommentType, TokenTypePair> commentTypes = commentTypes();
+        MultiMap<CommentType, TokenTypePair> commentTypes = this.commentTypes();
         return Option.of(commentTypes.keySet().stream()
                 .filter(type -> {
                     Collection<TokenTypePair> tokenTypePairs = commentTypes.get(type);
@@ -111,7 +111,7 @@ public class DefaultCommentTokenList implements CommentTokenList {
 
     @Override
     public Option<TokenTypePair> resolveTokenPairFromOpen(TokenType tokenType) {
-        return Option.of(commentTypes().allValues().stream()
+        return Option.of(this.commentTypes().allValues().stream()
                 .filter(pair -> pair.open().equals(tokenType))
                 .findFirst());
     }

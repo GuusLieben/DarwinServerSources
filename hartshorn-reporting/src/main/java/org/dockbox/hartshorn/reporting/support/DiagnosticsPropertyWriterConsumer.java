@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.inject.provider;
+package org.dockbox.hartshorn.reporting.support;
 
-public class SampleImplementation implements SampleInterface {
+import org.dockbox.hartshorn.reporting.DiagnosticsPropertyWriter;
 
-    public static final String NAME = "sample@#";
+/**
+ * A consumer that writes to a {@link DiagnosticsPropertyWriter}, typically used for delegation of
+ * writing to a specific type.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public interface DiagnosticsPropertyWriterConsumer {
 
-    @Override
-    public String name() {
-        return NAME;
-    }
+    void writeTo(DiagnosticsPropertyWriter writer);
 }

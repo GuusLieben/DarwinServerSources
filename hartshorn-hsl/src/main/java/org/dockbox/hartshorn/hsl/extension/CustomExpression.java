@@ -47,6 +47,6 @@ public abstract non-sealed class CustomExpression<T extends CustomExpression<T>>
 
     @Override
     public <R> R accept(ExpressionVisitor<R> visitor) {
-        return module().accept(visitor);
+        return this.module().accept(visitor);
     }
 }

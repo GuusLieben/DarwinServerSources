@@ -19,6 +19,8 @@ package org.dockbox.hartshorn.inject.component;
 import org.dockbox.hartshorn.inject.provider.LifecycleType;
 import org.dockbox.hartshorn.util.introspect.view.TypeView;
 
+import java.util.Comparator;
+
 /**
  * TODO: #1060 Add documentation
  *
@@ -29,6 +31,8 @@ import org.dockbox.hartshorn.util.introspect.view.TypeView;
  * @author Guus Lieben
  */
 public interface ComponentContainer<T> {
+
+    Comparator<ComponentContainer<?>> COMPARE_BY_ID = Comparator.comparing(ComponentContainer::id);
 
     String id();
 
@@ -43,5 +47,4 @@ public interface ComponentContainer<T> {
     boolean permitsProxying();
 
     boolean permitsProcessing();
-
 }

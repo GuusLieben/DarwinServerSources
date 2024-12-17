@@ -110,10 +110,10 @@ public class BinaryExpressionInterpreter implements ASTNodeInterpreter<Object, B
                 }
                 yield (double) left / (double) right;
             }
-            case ConditionTokenType.GREATER -> compareNumbers(node, left, right, (l, r) -> l > r);
-            case ConditionTokenType.GREATER_EQUAL -> compareNumbers(node, left, right, (l, r) -> l >= r);
-            case ConditionTokenType.LESS -> compareNumbers(node, left, right, (l, r) -> l < r);
-            case ConditionTokenType.LESS_EQUAL -> compareNumbers(node, left, right, (l, r) -> l <= r);
+            case ConditionTokenType.GREATER -> this.compareNumbers(node, left, right, (l, r) -> l > r);
+            case ConditionTokenType.GREATER_EQUAL -> this.compareNumbers(node, left, right, (l, r) -> l >= r);
+            case ConditionTokenType.LESS -> this.compareNumbers(node, left, right, (l, r) -> l < r);
+            case ConditionTokenType.LESS_EQUAL -> this.compareNumbers(node, left, right, (l, r) -> l <= r);
             case ConditionTokenType.BANG_EQUAL -> !InterpreterUtilities.isEqual(left, right);
             case ConditionTokenType.EQUAL_EQUAL -> InterpreterUtilities.isEqual(left, right);
             default -> null;

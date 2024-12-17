@@ -216,13 +216,13 @@ public interface Option<T> extends Context, Iterable<T> {
     T orElse(@Nullable T value);
 
     /**
-     * If a value is present in this {@link Option}, the value is returned. If no value is present, the value returned
-     * by the given {@link Supplier} is returned. The {@link Supplier} is only executed if no value is present. If the
-     * {@link Supplier} returns {@code null}, no exception is thrown.
+     * Equivalent of {@link #orCompute(Supplier)}, but always returns the result of either the current {@link Option},
+     * or the given {@link Supplier}. If the current {@link Option} is empty, and the result of the supplier is {@code
+     * null}, then {@code null} is returned.
      *
      * @param supplier the {@link Supplier} to execute if no value is present.
      *
-     * @return the value wrapped by the {@link Option} instance, or the value returned by the given
+     * @return the value wrapped by the {@link Option} instance, or the value returned by the given supplier.
      */
     @Nullable
     T orElseGet(@NonNull Supplier<@Nullable T> supplier);

@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.dockbox.hartshorn.inject.annotations.Component;
+import org.dockbox.hartshorn.inject.component.ApplicationMainComponentContainer;
 import org.dockbox.hartshorn.inject.component.ComponentContainer;
 import org.dockbox.hartshorn.inject.component.ComponentRegistry;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
@@ -90,8 +91,13 @@ public class ComponentDiagnosticsReporter implements ConfigurableDiagnosticsRepo
      * @return the stereotype of the given container
      */
     public static Class<?> stereotype(ComponentContainer<?> container) {
-        Component component = container.type().annotations().get(Component.class).get();
-        return component.annotationType();
+        if (container instanceof ApplicationMainComponentContainer<?> mainComponentContainer) {
+            return mainComponentContainer.type().type();
+        }
+        else {
+            Component component = container.type().annotations().get(Component.class).get();
+            return component.annotationType();
+        }
     }
 
     @Override

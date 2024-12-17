@@ -65,7 +65,7 @@ public class HierarchyCache {
     }
 
     public <T> void put(BindingHierarchy<T> hierarchy) {
-        put(hierarchy.key().view(), hierarchy);
+        this.put(hierarchy.key().view(), hierarchy);
     }
 
     public <T> void put(ComponentKeyView<T> view, BindingHierarchy<T> updated) {

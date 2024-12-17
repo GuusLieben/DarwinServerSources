@@ -26,6 +26,7 @@ import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.InjectorEnvironment;
 import org.dockbox.hartshorn.inject.annotations.Inject;
 import org.dockbox.hartshorn.inject.processing.construction.AnnotatedMethodComponentPostConstructor;
+import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
 import org.dockbox.hartshorn.launchpad.launch.ApplicationBootstrapContext;
 import org.dockbox.hartshorn.launchpad.launch.ApplicationBuildContext;
 import org.dockbox.hartshorn.launchpad.launch.StandardApplicationBuilder;
@@ -141,7 +142,7 @@ public class HartshornApplicationConfigurer {
 
     /**
      * Configures the packages that should be scanned by the application. By default, this contains no packages outside the
-     * main class package and the default {@link Hartshorn#PACKAGE_PREFIX Hartshorn package prefix}.
+     * main class package and values provided by {@link ServiceActivator#scanPackages() service activators}.
      *
      * @param customizer The customizer that is used to configure the packages that should be scanned
      * @return The current configurator instance

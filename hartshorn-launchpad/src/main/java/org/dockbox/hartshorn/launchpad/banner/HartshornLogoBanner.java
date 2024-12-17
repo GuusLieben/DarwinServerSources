@@ -17,11 +17,10 @@
 package org.dockbox.hartshorn.launchpad.banner;
 
 import java.util.List;
+import java.util.Objects;
 
-import org.dockbox.hartshorn.launchpad.Hartshorn;
 import org.dockbox.hartshorn.launchpad.logging.AnsiColor;
 import org.dockbox.hartshorn.launchpad.logging.AnsiMessage;
-import org.dockbox.hartshorn.launchpad.logging.AnsiStyle;
 
 /**
  * The default banner of Hartshorn. This banner is printed when the application starts if
@@ -31,7 +30,7 @@ import org.dockbox.hartshorn.launchpad.logging.AnsiStyle;
  *
  * @author Guus Lieben
  */
-public class HartshornBanner extends AbstractConsoleBanner {
+public class HartshornLogoBanner extends AbstractConsoleBanner {
 
     private static final List<String> BANNER_LINES = List.of(
             "",
@@ -39,24 +38,18 @@ public class HartshornBanner extends AbstractConsoleBanner {
             "    | | | | __ _ _ __| |_ ___| |__   ___  _ __ _ __",
             "    | |_| |/ _` | '__| __/ __| '_ \\ / _ \\| '__| '_ \\",
             "    |  _  | (_| | |  | |_\\__ \\ | | | (_) | |  | | | |",
-            AnsiMessage.of("====", AnsiColor.CYAN, AnsiStyle.BOLD)
-                    .append("|_| |_|\\__,_|_|")
-                    .append(AnsiMessage.of("===", AnsiColor.CYAN, AnsiStyle.BOLD))
-                    .append("\\__|___/_|")
-                    .append(AnsiMessage.of("=", AnsiColor.CYAN, AnsiStyle.BOLD))
-                    .append("|_|\\___/|_|")
-                    .append(AnsiMessage.of("==", AnsiColor.CYAN, AnsiStyle.BOLD))
-                    .append("|_|")
-                    .append(AnsiMessage.of("=", AnsiColor.CYAN, AnsiStyle.BOLD))
-                    .append("|_|")
-                    .append(AnsiMessage.of("====", AnsiColor.CYAN, AnsiStyle.BOLD))
-                    .toString(),
+            "    |_| |_|\\__,_|_|   \\__|___/_| |_|\\___/|_|  |_| |_|    ",
             AnsiMessage.of("                                  ")
                     .append(AnsiMessage.of("-< ", AnsiColor.WHITE))
-                    .append(AnsiMessage.of("Hartshorn v%s".formatted(Hartshorn.VERSION), AnsiColor.GREEN))
+                    .append(AnsiMessage.of("Hartshorn %s".formatted(getImplementationVersion()), AnsiColor.GREEN))
                     .append(AnsiMessage.of(" >-\n", AnsiColor.WHITE))
                     .toString()
     );
+
+    private static String getImplementationVersion() {
+        String implementationVersion = HartshornLogoBanner.class.getPackage().getImplementationVersion();
+        return Objects.requireNonNullElse(implementationVersion, "(unreleased version)");
+    }
 
     @Override
     protected Iterable<String> lines() {

@@ -38,7 +38,7 @@ import org.dockbox.hartshorn.inject.targets.MethodsAndFieldsInjectionPointResolv
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.SimpleApplicationContext;
 import org.dockbox.hartshorn.launchpad.banner.Banner;
-import org.dockbox.hartshorn.launchpad.banner.HartshornBanner;
+import org.dockbox.hartshorn.launchpad.banner.HartshornLogoBanner;
 import org.dockbox.hartshorn.launchpad.banner.ResourcePathBanner;
 import org.dockbox.hartshorn.launchpad.context.ModifiableApplicationContextCarrier;
 import org.dockbox.hartshorn.launchpad.lifecycle.ObservableApplicationEnvironment;
@@ -310,10 +310,10 @@ public final class ContextualApplicationEnvironment implements ObservableApplica
         try {
             return this.classPathResourceLocator.resource("banner.txt")
                     .map(resource -> (Banner) new ResourcePathBanner(resource))
-                    .orElseGet(HartshornBanner::new);
+                    .orElseGet(HartshornLogoBanner::new);
         }
         catch (IOException e) {
-            return new HartshornBanner();
+            return new HartshornLogoBanner();
         }
     }
 

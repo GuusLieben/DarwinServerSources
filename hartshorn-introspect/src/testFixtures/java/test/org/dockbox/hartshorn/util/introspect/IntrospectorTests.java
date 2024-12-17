@@ -525,7 +525,7 @@ public abstract class IntrospectorTests {
                 .parameters(argumentType)
                 .build();
 
-        TypeView<?> typeView = introspector().introspect(collectionType);
+        TypeView<?> typeView = this.introspector().introspect(collectionType);
         Assertions.assertTrue(typeView.is(List.class));
         Assertions.assertEquals(1, typeView.typeParameters().allInput().count());
 
