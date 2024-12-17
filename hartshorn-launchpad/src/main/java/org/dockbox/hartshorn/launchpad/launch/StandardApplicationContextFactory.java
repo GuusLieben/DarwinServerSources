@@ -241,7 +241,7 @@ public class StandardApplicationContextFactory implements ApplicationContextFact
 
         // Not optional, required for the application to function. Note that any configuration that is required for the
         // application can be overridden by the application itself.
-        prefixes.add(Hartshorn.PACKAGE_PREFIX);
+        prefixes.add("org.dockbox.hartshorn");
 
         // Optional, application may prefer to use alternative packages for scanning. This is configured by the application
         // bootstrap context.

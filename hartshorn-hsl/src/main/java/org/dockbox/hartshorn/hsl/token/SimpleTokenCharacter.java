@@ -57,6 +57,6 @@ public interface SimpleTokenCharacter extends TokenCharacter {
 
     @Override
     default boolean isAlphaNumeric() {
-        return isAlpha() || isDigit();
+        return this.isAlpha() || this.isDigit();
     }
 }

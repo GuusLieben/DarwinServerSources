@@ -54,7 +54,7 @@ public class RuntimeExtensionCodeCustomizer extends AbstractCodeCustomizer {
 
     @Override
     public void call(ScriptContext context) {
-        customizeContext(context);
+        this.customizeContext(context);
     }
 
     private void customizeContext(ScriptContext context) {

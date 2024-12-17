@@ -50,7 +50,7 @@ public class ModuleStatementInterpreter implements ASTNodeInterpreter<Void, Modu
                 .collect(Collectors.groupingBy(function -> function.name().lexeme()));
 
         for(List<NativeFunctionStatement> functions : functionsByName.values()) {
-            registerModuleFunction(node, interpreter, functions, moduleName, module);
+            this.registerModuleFunction(node, interpreter, functions, moduleName, module);
         }
 
         return null;

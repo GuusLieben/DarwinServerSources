@@ -147,7 +147,7 @@ public class DiscoveryServiceTests {
         protected Class<?> findClass(String name) throws ClassNotFoundException {
             byte[] classBytes = this.extraClassDefs.get(name);
             if (classBytes != null) {
-                return defineClass(name, classBytes, 0, classBytes.length);
+                return this.defineClass(name, classBytes, 0, classBytes.length);
             }
             return super.findClass(name);
         }

@@ -58,7 +58,7 @@ public class ComponentPopulationTests {
         ComponentPopulationStrategy strategy = InjectPopulationStrategy.create(Customizer.useDefaults())
                 .initialize(SimpleSingleElementContext.create(this.applicationContext));
 
-        PopulationTestComponent component = createAndPopulateComponent(strategy, type -> createFieldInjectionPoint("context", type));
+        PopulationTestComponent component = this.createAndPopulateComponent(strategy, type -> createFieldInjectionPoint("context", type));
         Assertions.assertNotNull(component.context);
         Assertions.assertSame(sampleContext, component.context);
     }
@@ -68,7 +68,8 @@ public class ComponentPopulationTests {
         ComponentPopulationStrategy strategy = InjectPopulationStrategy.create(Customizer.useDefaults())
                 .initialize(SimpleSingleElementContext.create(this.applicationContext));
 
-        PopulationTestComponent component = createAndPopulateComponent(strategy, type -> createFieldInjectionPoint("applicationContext", type));
+        PopulationTestComponent component =
+            this.createAndPopulateComponent(strategy, type -> createFieldInjectionPoint("applicationContext", type));
         Assertions.assertNotNull(component.applicationContext);
         Assertions.assertSame(this.applicationContext, component.applicationContext);
     }
@@ -78,7 +79,7 @@ public class ComponentPopulationTests {
         ComponentPopulationStrategy strategy = InjectPopulationStrategy.create(Customizer.useDefaults())
                 .initialize(SimpleSingleElementContext.create(this.applicationContext));
 
-        PopulationTestComponent component = createAndPopulateComponent(strategy, type -> createMethodInjectionPoint("setApplicationContext", List.of(ApplicationContext.class), type));
+        PopulationTestComponent component = this.createAndPopulateComponent(strategy, type -> createMethodInjectionPoint("setApplicationContext", List.of(ApplicationContext.class), type));
         Assertions.assertNotNull(component.applicationContext);
         Assertions.assertSame(this.applicationContext, component.applicationContext);
     }
@@ -91,7 +92,7 @@ public class ComponentPopulationTests {
         ComponentPopulationStrategy strategy = InjectPopulationStrategy.create(Customizer.useDefaults())
                 .initialize(SimpleSingleElementContext.create(this.applicationContext));
 
-        PopulationTestComponent component = createAndPopulateComponent(strategy, type -> createMethodInjectionPoint("setContexts", List.of(ApplicationContext.class, SampleContext.class), type));
+        PopulationTestComponent component = this.createAndPopulateComponent(strategy, type -> createMethodInjectionPoint("setContexts", List.of(ApplicationContext.class, SampleContext.class), type));
         Assertions.assertNotNull(component.applicationContext);
         Assertions.assertSame(this.applicationContext, component.applicationContext);
 

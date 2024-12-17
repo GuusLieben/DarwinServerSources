@@ -22,6 +22,15 @@ import org.dockbox.hartshorn.reporting.Reportable;
 import java.lang.annotation.Annotation;
 import java.util.stream.Stream;
 
+/**
+ * Adapter type that writes a value to a {@link DiagnosticsPropertyWriter} based on the type of the value. This
+ * implementation only supports a limited set of types, and will throw an {@link IllegalStateException} if an unsupported
+ * type is encountered.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ValueAdapterDiagnosticsPropertyWriterConsumer implements DiagnosticsPropertyWriterConsumer {
 
     private final Object object;
@@ -33,7 +42,7 @@ public class ValueAdapterDiagnosticsPropertyWriterConsumer implements Diagnostic
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void writeTo(DiagnosticsPropertyWriter writer) {
-        switch (object) {
+        switch (this.object) {
             case String string -> writer.writeString(string);
             case Integer integer -> writer.writeInt(integer);
             case Long longNumber -> writer.writeLong(longNumber);

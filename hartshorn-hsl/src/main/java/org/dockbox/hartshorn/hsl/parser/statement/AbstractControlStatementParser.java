@@ -54,7 +54,7 @@ public abstract class AbstractControlStatementParser<T extends Statement> implem
 
     @Override
     public Option<? extends T> parse(TokenParser parser, TokenStepValidator validator) throws ScriptEvaluationError {
-        TokenType tokenType = keyword();
+        TokenType tokenType = this.keyword();
         if (parser.match(tokenType)) {
             Token keyword = parser.previous();
             validator.expectAfter(parser.tokenRegistry().statementEnd(), tokenType);

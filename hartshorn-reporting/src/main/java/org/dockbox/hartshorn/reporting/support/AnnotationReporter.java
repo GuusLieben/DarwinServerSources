@@ -23,6 +23,16 @@ import org.dockbox.hartshorn.util.TypeUtils;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
+/**
+ * A {@link Reportable} implementation for {@link Annotation} instances. This will report the annotation type and all
+ * attributes of the annotation.
+ *
+ * @param <A> the type of the annotation
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class AnnotationReporter<A extends Annotation> implements Reportable {
 
     private final A annotation;
@@ -33,12 +43,12 @@ public class AnnotationReporter<A extends Annotation> implements Reportable {
 
     @Override
     public void report(DiagnosticsPropertyCollector collector) {
-        Class<? extends Annotation> annotationType = annotation.annotationType();
-        Map<String, Object> attributes = TypeUtils.getAttributes(annotation);
+        Class<? extends Annotation> annotationType = this.annotation.annotationType();
+        Map<String, Object> attributes = TypeUtils.getAttributes(this.annotation);
         collector.property("annotationType").writeString(annotationType.getCanonicalName());
         for (String attributeKey : attributes.keySet()) {
             Object attributeValue = attributes.get(attributeKey);
-            var consumer = new ValueAdapterDiagnosticsPropertyWriterConsumer(attributeValue);
+            DiagnosticsPropertyWriterConsumer consumer = new ValueAdapterDiagnosticsPropertyWriterConsumer(attributeValue);
             consumer.writeTo(collector.property(attributeKey));
         }
     }

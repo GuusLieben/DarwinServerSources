@@ -18,6 +18,14 @@ package org.dockbox.hartshorn.reporting.support;
 
 import org.dockbox.hartshorn.reporting.DiagnosticsPropertyWriter;
 
+/**
+ * A consumer that writes to a {@link DiagnosticsPropertyWriter}, typically used for delegation of
+ * writing to a specific type.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface DiagnosticsPropertyWriterConsumer {
 
     void writeTo(DiagnosticsPropertyWriter writer);

@@ -214,7 +214,7 @@ public final class ClassPathScanner {
                 JarEntry entry = entries.nextElement();
                 if(!entry.isDirectory()) {
                     String name = entry.getName();
-                    processPathResource(handler, classLoader, name, jarFile.toPath());
+                    this.processPathResource(handler, classLoader, name, jarFile.toPath());
                 }
             }
         }
@@ -312,12 +312,9 @@ public final class ClassPathScanner {
         }
 
         // Skip package-info classes
-        if (this.excludePackageInfo && isClassResource && checkedResourceName.endsWith("package-info")) {
-            return false;
-        }
+        return !this.excludePackageInfo || !isClassResource || !checkedResourceName.endsWith("package-info");
 
         // If none of the above conditions are met, we should process the resource
-        return true;
     }
 
     @NonNull

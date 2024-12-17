@@ -142,7 +142,7 @@ public class ComponentProcessorRegistrar {
         Set<Class<? extends ComponentProcessor>> processorsFromOldActivatorAttribute = CollectionUtilities
                 .flatMapArray(serviceActivators, ServiceActivator::processors)
                 .collect(Collectors.toSet());
-        Set<Class<? extends T>> deprecatedNotationProcessors = extractProcessors(processorsFromOldActivatorAttribute, processorType);
+        Set<Class<? extends T>> deprecatedNotationProcessors = this.extractProcessors(processorsFromOldActivatorAttribute, processorType);
 
         return CollectionUtilities.merge(processorsFromActivator, deprecatedNotationProcessors);
     }

@@ -16,8 +16,9 @@
 
 package org.dockbox.hartshorn.launchpad.component;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.function.Function;
 
@@ -27,7 +28,6 @@ import org.dockbox.hartshorn.inject.component.ComponentContainer;
 import org.dockbox.hartshorn.inject.component.ComponentRegistry;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.environment.EnvironmentTypeResolver;
-import org.dockbox.hartshorn.util.CollectionUtilities;
 import org.dockbox.hartshorn.util.introspect.annotations.AnnotationUtilities;
 import org.dockbox.hartshorn.util.option.Option;
 
@@ -58,10 +58,10 @@ public class TypeReferenceLookupComponentRegistry implements ComponentRegistry {
 
     /**
      * Register the given container to the current registry
-     * @param container
+     * @param container the container to register
      */
     public void addCustomContainer(ComponentContainer<?> container) {
-        withContainerCache(containers -> containers.add(container));
+        this.withContainerCache(containers -> containers.add(container));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TypeReferenceLookupComponentRegistry implements ComponentRegistry {
 
     @Override
     public Option<ComponentContainer<?>> container(Class<?> type) {
-        return withContainerCache(containers -> {
+        return this.withContainerCache(containers -> {
             List<ComponentContainer<?>> compatibleContainers = containers.stream()
                     .filter(container -> container.type().is(type))
                     .toList();
@@ -83,13 +83,13 @@ public class TypeReferenceLookupComponentRegistry implements ComponentRegistry {
     }
 
     private <T> T withContainerCache(Function<Set<ComponentContainer<?>>, T> operator) {
-        initializeCacheIfEmpty();
+        this.initializeCacheIfEmpty();
         return operator.apply(this.containers);
     }
 
     private void initializeCacheIfEmpty() {
-        if (!environmentTypesResolved) {
-            environmentTypesResolved = true;
+        if (!this.environmentTypesResolved) {
+            this.environmentTypesResolved = true;
             this.typeResolver.types(Component.class).stream()
                     // Filter out component stereotypes
                     .filter(type -> !AnnotationUtilities.isStereotypeOf(type.type(), Component.class))
