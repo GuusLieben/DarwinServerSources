@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.proxy.support.inheritance.single;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
-
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
+/**
+ * Abstract class that implements the {@link InterfaceProxy} interface. Intended to test the proxying of
+ * abstract classes and interfaces.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public abstract class AbstractProxy implements InterfaceProxy {
     @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
+    public int age() {
+        return 21;
     }
 }

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.util.introspect.support.bridge;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
-
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
-    }
+/**
+ * Basic parent interface for {@link BridgeElement}.
+ *
+ * @param <R> The return type of the bridge method.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public interface BridgeParent<R> {
+    R bridgeMethod();
 }

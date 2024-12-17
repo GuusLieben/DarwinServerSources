@@ -37,6 +37,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * Tests for introspecting type parameters.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @SuppressWarnings({"rawtypes", "InterfaceMayBeAnnotatedFunctional"})
 public abstract class TypeParameterIntrospectionTests {
 

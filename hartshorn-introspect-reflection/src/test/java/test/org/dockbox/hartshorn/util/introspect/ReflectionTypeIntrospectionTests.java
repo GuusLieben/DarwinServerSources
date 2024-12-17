@@ -20,10 +20,20 @@ import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
 import org.dockbox.hartshorn.util.introspect.Introspector;
 import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
 import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+import org.junit.jupiter.api.BeforeEach;
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
+public class ReflectionTypeIntrospectionTests extends TypeIntrospectionTests {
+
+    private Introspector introspector;
+
+    @BeforeEach
+    public void setup() {
+        // Re-use the same introspector while inside a single test, so caching can be tested
+        this.introspector = new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
+    }
+
     @Override
     protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
+        return this.introspector;
     }
 }

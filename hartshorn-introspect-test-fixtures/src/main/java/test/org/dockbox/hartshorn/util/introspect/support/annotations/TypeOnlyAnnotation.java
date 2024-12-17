@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.util.introspect.support.annotations;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
-    }
+/**
+ * Annotation which can only be applied to types.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface TypeOnlyAnnotation {
 }

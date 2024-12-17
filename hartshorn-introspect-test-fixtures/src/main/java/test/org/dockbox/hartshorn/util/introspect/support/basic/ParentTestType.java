@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.util.introspect.support.basic;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+import test.org.dockbox.hartshorn.util.introspect.support.annotations.MultipleElementAnnotation;
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
-    }
+/**
+ * Parent class for {@link ConcreteTestType}.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+@SuppressWarnings("unused")
+public abstract class ParentTestType {
+
+    private final String parentField = "parentField";
+
+    @MultipleElementAnnotation
+    public void parentMethod() {}
+
 }

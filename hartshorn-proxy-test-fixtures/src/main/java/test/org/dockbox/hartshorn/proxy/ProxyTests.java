@@ -16,16 +16,11 @@
 
 package test.org.dockbox.hartshorn.proxy;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import org.dockbox.hartshorn.proxy.ProxyOrchestratorLoader;
 import org.dockbox.hartshorn.proxy.Proxy;
 import org.dockbox.hartshorn.proxy.ProxyFactory;
 import org.dockbox.hartshorn.proxy.ProxyManager;
 import org.dockbox.hartshorn.proxy.ProxyOrchestrator;
+import org.dockbox.hartshorn.proxy.ProxyOrchestratorLoader;
 import org.dockbox.hartshorn.proxy.advice.intercept.MethodInterceptor;
 import org.dockbox.hartshorn.proxy.advice.wrap.MethodWrapper;
 import org.dockbox.hartshorn.proxy.advice.wrap.ProxyCallbackContext;
@@ -43,9 +38,35 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import test.org.dockbox.hartshorn.proxy.types.ConcreteProxyTarget;
-import test.org.dockbox.hartshorn.proxy.types.FinalProxyTarget;
+import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import test.org.dockbox.hartshorn.proxy.support.basic.ConcreteProxyWithNonDefaultConstructor;
+import test.org.dockbox.hartshorn.proxy.support.basic.DescribedProxy;
+import test.org.dockbox.hartshorn.proxy.support.equals.AbstractEqualProxy;
+import test.org.dockbox.hartshorn.proxy.support.equals.EqualInterfaceProxy;
+import test.org.dockbox.hartshorn.proxy.support.equals.EqualProxy;
+import test.org.dockbox.hartshorn.proxy.support.inheritance.multi.AgedProxy;
+import test.org.dockbox.hartshorn.proxy.support.inheritance.multi.NamedAgedProxy;
+import test.org.dockbox.hartshorn.proxy.support.inheritance.multi.NamedProxy;
+import test.org.dockbox.hartshorn.proxy.support.inheritance.single.AbstractProxy;
+import test.org.dockbox.hartshorn.proxy.support.inheritance.single.ConcreteProxy;
+import test.org.dockbox.hartshorn.proxy.support.inheritance.single.InterfaceProxy;
+import test.org.dockbox.hartshorn.proxy.support.standard.ConcreteProxyTarget;
+import test.org.dockbox.hartshorn.proxy.support.standard.FinalClassProxyTarget;
+import test.org.dockbox.hartshorn.proxy.support.standard.FinalMethodProxyTarget;
+import test.org.dockbox.hartshorn.proxy.support.standard.RecordProxy;
+import test.org.dockbox.hartshorn.proxy.support.standard.SealedProxy;
+
+/**
+ * Tests for the default behavior of proxies of various types.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @SuppressWarnings("unchecked")
 public abstract class ProxyTests {
 
@@ -66,10 +87,10 @@ public abstract class ProxyTests {
 
     @Test
     void testFinalMethodsCanNotBeProxied() throws NoSuchMethodException {
-        Method name = FinalProxyTarget.class.getMethod("name");
-        ProxyFactory<FinalProxyTarget> handler = this.orchestratorLoader()
+        Method name = FinalMethodProxyTarget.class.getMethod("name");
+        ProxyFactory<FinalMethodProxyTarget> handler = this.orchestratorLoader()
                 .create(this.introspector())
-                .factory(FinalProxyTarget.class);
+                .factory(FinalMethodProxyTarget.class);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> handler.advisors()
                 .method(name)
@@ -101,8 +122,8 @@ public abstract class ProxyTests {
 
     @Test
     void testFinalClassProxyCannotBeCreated() {
-        // classes cannot be extended and should not be proxied
-        ProxyFactory<FinalProxy> handler = this.orchestratorLoader().create(this.introspector()).factory(FinalProxy.class);
+        // Final classes cannot be extended and should not be proxied
+        ProxyFactory<FinalClassProxyTarget> handler = this.orchestratorLoader().create(this.introspector()).factory(FinalClassProxyTarget.class);
         Assertions.assertThrows(ProxyConstraintViolationException.class, handler::proxy);
     }
 
@@ -437,7 +458,7 @@ public abstract class ProxyTests {
 
     @Test
     void testServiceSelfEquality() throws ApplicationException {
-        EqualServiceProxy service = this.orchestratorLoader().create(this.introspector()).factory(EqualServiceProxy.class).proxy().get();
+        AbstractEqualProxy service = this.orchestratorLoader().create(this.introspector()).factory(AbstractEqualProxy.class).proxy().get();
         Assertions.assertEquals(service, service);
         Assertions.assertTrue(service.test(service));
     }

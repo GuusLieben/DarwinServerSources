@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.proxy.support.inheritance.multi;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
-
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
-    }
+/**
+ * Proxy interface that extends from multiple other interfaces.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public interface NamedAgedProxy extends NamedProxy, AgedProxy {
 }

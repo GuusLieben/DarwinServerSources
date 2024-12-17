@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.proxy.support.inheritance.single;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
-
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
+/**
+ * Concrete implementation of {@link InterfaceProxy}. This class is used to test the proxying of interfaces and
+ * implementations of those interfaces.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public class ConcreteProxy implements InterfaceProxy {
     @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
+    public String name() {
+        return "concrete";
+    }
+
+    @Override
+    public int age() {
+        return -1;
     }
 }

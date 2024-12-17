@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.util.introspect.support.annotated;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+import test.org.dockbox.hartshorn.util.introspect.support.annotations.AnyElementAnnotation;
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
-    }
+/**
+ * Parent interface for {@link AnnotatedObject}.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+@AnyElementAnnotation("parent")
+public interface AnnotatedParent {
 }

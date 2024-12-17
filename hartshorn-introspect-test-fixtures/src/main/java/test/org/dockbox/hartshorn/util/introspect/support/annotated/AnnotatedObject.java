@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 the original author or authors.
+ * Copyright 2019-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.util.introspect.convert;
+package test.org.dockbox.hartshorn.util.introspect.support.annotated;
+
+import test.org.dockbox.hartshorn.util.introspect.support.annotations.AnyElementAnnotation;
 
 /**
- * Accessor to expose the {@link Null} instance, which is otherwise only accessible to the converter package
- * for internal usage.
+ * Annotated class that implements an interface with the same annotation.
  *
  * @since 0.7.0
  *
  * @author Guus Lieben
  */
-public class NullAccess {
-
-    public static Null getInstance() {
-        return Null.INSTANCE;
-    }
+@AnyElementAnnotation("impl")
+public class AnnotatedObject implements AnnotatedParent {
 }

@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.proxy.support.standard;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+import test.org.dockbox.hartshorn.proxy.support.inheritance.single.InterfaceProxy;
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
+/**
+ * Simple record used to verify records cannot be proxied (as they are inherently final).
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public record RecordProxy() implements InterfaceProxy {
     @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
+    public String name() {
+        return "Record";
+    }
+
+    @Override
+    public int age() {
+        return 1;
     }
 }

@@ -41,7 +41,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import test.org.dockbox.hartshorn.util.introspect.support.annotated.AnnotatedObject;
+import test.org.dockbox.hartshorn.util.introspect.support.annotations.AnyElementAnnotation;
+import test.org.dockbox.hartshorn.util.introspect.support.annotations.MultipleElementAnnotation;
+import test.org.dockbox.hartshorn.util.introspect.support.basic.ConcreteTestType;
+import test.org.dockbox.hartshorn.util.introspect.support.basic.ParentTestType;
+import test.org.dockbox.hartshorn.util.introspect.support.basic.TestEnumType;
+import test.org.dockbox.hartshorn.util.introspect.support.bridge.BridgeElement;
 
+/**
+ * Tests for the {@link Introspector} interface. Unlike {@link TypeIntrospectionTests}, this class
+ * focuses more on the complex implementations of the {@link Introspector} interface, rather than
+ * basic type information.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public abstract class IntrospectorTests {
 
     private static Stream<Arguments> fields() {
@@ -117,8 +133,8 @@ public abstract class IntrospectorTests {
     @ParameterizedTest
     @MethodSource("fields")
     void testFieldValueReturnsValue(String field) throws Throwable {
-        ReflectTestType instance = new ReflectTestType();
-        TypeView<ReflectTestType> type = this.introspector().introspect(instance);
+        ConcreteTestType instance = new ConcreteTestType();
+        TypeView<ConcreteTestType> type = this.introspector().introspect(instance);
         Option<?> value = type.fields().named(field).get().get(instance);
         Assertions.assertTrue(value.present());
         Assertions.assertEquals(field, value.get());
@@ -127,8 +143,8 @@ public abstract class IntrospectorTests {
     @ParameterizedTest
     @MethodSource("methods")
     void testRunMethodReturnsValue(String method) throws Throwable {
-        ReflectTestType instance = new ReflectTestType();
-        TypeView<ReflectTestType> type = this.introspector().introspect(instance);
+        ConcreteTestType instance = new ConcreteTestType();
+        TypeView<ConcreteTestType> type = this.introspector().introspect(instance);
         Option<?> value = type.methods().named(method, List.of(String.class)).get().invoke(instance, "value");
         Assertions.assertTrue(value.present());
         Assertions.assertEquals("VALUE", value.get());
@@ -145,23 +161,23 @@ public abstract class IntrospectorTests {
 
     @Test
     void testAssignableFromSuper() {
-        Assertions.assertTrue(this.introspector().introspect(ReflectTestType.class).isChildOf(ParentTestType.class));
+        Assertions.assertTrue(this.introspector().introspect(ConcreteTestType.class).isChildOf(ParentTestType.class));
     }
 
     @Test
     void testAssignableFromSame() {
-        Assertions.assertTrue(this.introspector().introspect(ReflectTestType.class).isChildOf(ReflectTestType.class));
+        Assertions.assertTrue(this.introspector().introspect(ConcreteTestType.class).isChildOf(ConcreteTestType.class));
     }
 
     @Test
     void testAssignableFromChild() {
-        Assertions.assertFalse(this.introspector().introspect(ParentTestType.class).isChildOf(ReflectTestType.class));
+        Assertions.assertFalse(this.introspector().introspect(ParentTestType.class).isChildOf(ConcreteTestType.class));
     }
 
     @Test
     void testAnnotatedMethodsReturnsAllModifiers() {
-        TypeView<ReflectTestType> type = this.introspector().introspect(ReflectTestType.class);
-        List<MethodView<ReflectTestType, ?>> methods = type.methods().annotatedWith(Demo.class);
+        TypeView<ConcreteTestType> type = this.introspector().introspect(ConcreteTestType.class);
+        List<MethodView<ConcreteTestType, ?>> methods = type.methods().annotatedWith(MultipleElementAnnotation.class);
         Assertions.assertEquals(3, methods.size());
 
         List<String> names = methods.stream().map(MethodView::name).toList();
@@ -171,7 +187,7 @@ public abstract class IntrospectorTests {
 
     @Test
     void testStaticFieldsReturnsAllModifiers() {
-        List<FieldView<ReflectTestType, ?>> fields = this.introspector().introspect(ReflectTestType.class).fields().all().stream()
+        List<FieldView<ConcreteTestType, ?>> fields = this.introspector().introspect(ConcreteTestType.class).fields().all().stream()
                 .filter(field -> field.modifiers().isStatic())
                 .toList();
         Assertions.assertEquals(2, fields.size());
@@ -179,26 +195,26 @@ public abstract class IntrospectorTests {
 
     @Test
     void testHasAnnotationOnMethod() {
-        Option<MethodView<ReflectTestType, ?>> method = this.introspector().introspect(ReflectTestType.class)
+        Option<MethodView<ConcreteTestType, ?>> method = this.introspector().introspect(ConcreteTestType.class)
                 .methods()
                 .named("publicAnnotatedMethod");
         Assertions.assertTrue(method.present());
-        Assertions.assertTrue(method.get().annotations().has(Demo.class));
+        Assertions.assertTrue(method.get().annotations().has(MultipleElementAnnotation.class));
     }
 
     @Test
     void testSuperTypesReturnsAllSuperTypesWithoutObject() {
-        TypeView<?> parent = this.introspector().introspect(ReflectTestType.class).superClass();
+        TypeView<?> parent = this.introspector().introspect(ConcreteTestType.class).superClass();
         Assertions.assertFalse(parent.isVoid());
         Assertions.assertSame(ParentTestType.class, parent.type());
     }
 
     @Test
     void testMethodsReturnsAllDeclaredAndParentMethods() {
-        TypeView<ReflectTestType> type = this.introspector().introspect(ReflectTestType.class);
-        List<MethodView<ReflectTestType, ?>> methods = type.methods().all();
+        TypeView<ConcreteTestType> type = this.introspector().introspect(ConcreteTestType.class);
+        List<MethodView<ConcreteTestType, ?>> methods = type.methods().all();
         boolean fail = true;
-        for (MethodView<ReflectTestType, ?> method : methods) {
+        for (MethodView<ConcreteTestType, ?> method : methods) {
             if ("parentMethod".equals(method.name())) {
                 fail = false;
             }
@@ -231,9 +247,9 @@ public abstract class IntrospectorTests {
 
     @Test
     void testLookupReturnsClassIfPresent() {
-        TypeView<?> lookup = this.introspector().introspect(ReflectTestType.class.getName());
+        TypeView<?> lookup = this.introspector().introspect(ConcreteTestType.class.getName());
         Assertions.assertNotNull(lookup);
-        Assertions.assertSame(ReflectTestType.class, lookup.type());
+        Assertions.assertSame(ConcreteTestType.class, lookup.type());
     }
 
     @Test
@@ -244,7 +260,7 @@ public abstract class IntrospectorTests {
 
     @Test
     void testHasMethodIsTrueIfMethodExists() {
-        Assertions.assertTrue(this.introspector().introspect(ReflectTestType.class)
+        Assertions.assertTrue(this.introspector().introspect(ConcreteTestType.class)
                 .methods()
                 .named("publicMethod", String.class)
                 .present());
@@ -252,7 +268,7 @@ public abstract class IntrospectorTests {
 
     @Test
     void testHasMethodIsFalseIfMethodDoesNotExist() {
-        Assertions.assertFalse(this.introspector().introspect(ReflectTestType.class)
+        Assertions.assertFalse(this.introspector().introspect(ConcreteTestType.class)
                 .methods()
                 .named("otherMethod")
                 .present());
@@ -260,7 +276,7 @@ public abstract class IntrospectorTests {
 
     @Test
     void testInstanceHasMethodIsTrueIfMethodExists() {
-        Assertions.assertTrue(this.introspector().introspect(new ReflectTestType())
+        Assertions.assertTrue(this.introspector().introspect(new ConcreteTestType())
                 .methods()
                 .named("publicMethod", String.class)
                 .present());
@@ -268,7 +284,7 @@ public abstract class IntrospectorTests {
 
     @Test
     void testInstanceHasMethodIsFalseIfMethodDoesNotExist() {
-        Assertions.assertFalse(this.introspector().introspect(new ReflectTestType())
+        Assertions.assertFalse(this.introspector().introspect(new ConcreteTestType())
                 .methods()
                 .named("otherMethod")
                 .present());
@@ -293,7 +309,7 @@ public abstract class IntrospectorTests {
     @ParameterizedTest
     @MethodSource("fields")
     void testHasFieldReturnsTrue(String field) {
-        Assertions.assertTrue(this.introspector().introspect(ReflectTestType.class)
+        Assertions.assertTrue(this.introspector().introspect(ConcreteTestType.class)
                 .fields()
                 .named(field)
                 .present());
@@ -303,8 +319,8 @@ public abstract class IntrospectorTests {
     @MethodSource("fields")
     void testFieldsConsumesAllFields(String field) {
         boolean activated = false;
-        TypeView<ReflectTestType> type = this.introspector().introspect(ReflectTestType.class);
-        for (FieldView<ReflectTestType, ?> fieldView : type.fields().all()) {
+        TypeView<ConcreteTestType> type = this.introspector().introspect(ConcreteTestType.class);
+        for (FieldView<ConcreteTestType, ?> fieldView : type.fields().all()) {
             if (fieldView.name().equals(field)) {
                 activated = true;
             }
@@ -314,9 +330,9 @@ public abstract class IntrospectorTests {
 
     @Test
     void testSetFieldUpdatesAccessorField() throws Throwable {
-        Field fieldRef = ReflectTestType.class.getDeclaredField("accessorField");
+        Field fieldRef = ConcreteTestType.class.getDeclaredField("accessorField");
         FieldView<?, ?> field = this.introspector().introspect(fieldRef);
-        ReflectTestType instance = new ReflectTestType();
+        ConcreteTestType instance = new ConcreteTestType();
         field.set(instance, "newValue");
 
         Assertions.assertTrue(instance.activatedSetter());
@@ -324,9 +340,9 @@ public abstract class IntrospectorTests {
 
     @Test
     void testSetFieldUpdatesNormalField() throws Throwable {
-        Field fieldRef = ReflectTestType.class.getDeclaredField("publicField");
+        Field fieldRef = ConcreteTestType.class.getDeclaredField("publicField");
         FieldView<?, ?> field = this.introspector().introspect(fieldRef);
-        ReflectTestType instance = new ReflectTestType();
+        ConcreteTestType instance = new ConcreteTestType();
         field.set(instance, "newValue");
 
         Assertions.assertEquals("newValue", instance.publicField);
@@ -334,10 +350,11 @@ public abstract class IntrospectorTests {
 
     @Test
     void testAnnotatedFieldsIncludesStatic() {
-        List<FieldView<ReflectTestType, ?>> fields = this.introspector().introspect(ReflectTestType.class).fields().annotatedWith(Demo.class);
+        List<FieldView<ConcreteTestType, ?>> fields = this.introspector().introspect(ConcreteTestType.class).fields().annotatedWith(
+            MultipleElementAnnotation.class);
         Assertions.assertEquals(2, fields.size());
         int statics = 0;
-        for (FieldView<ReflectTestType, ?> field : fields) {
+        for (FieldView<ConcreteTestType, ?> field : fields) {
             if (field.modifiers().isStatic()) {
                 statics++;
             }
@@ -347,8 +364,8 @@ public abstract class IntrospectorTests {
 
     @Test
     void testAnnotatedConstructors() {
-        TypeView<ReflectTestType> type = this.introspector().introspect(ReflectTestType.class);
-        List<ConstructorView<ReflectTestType>> constructors = type.constructors().annotatedWith(Demo.class);
+        TypeView<ConcreteTestType> type = this.introspector().introspect(ConcreteTestType.class);
+        List<ConstructorView<ConcreteTestType>> constructors = type.constructors().annotatedWith(MultipleElementAnnotation.class);
         Assertions.assertEquals(1, constructors.size());
     }
 
@@ -363,7 +380,7 @@ public abstract class IntrospectorTests {
     @Test
     void testRedefinedAnnotationsTakePriority() {
         TypeView<AnnotatedObject> typeContext = this.introspector().introspect(AnnotatedObject.class);
-        Option<Base> annotation = typeContext.annotations().get(Base.class);
+        Option<AnyElementAnnotation> annotation = typeContext.annotations().get(AnyElementAnnotation.class);
         Assertions.assertTrue(annotation.present());
         Assertions.assertEquals("impl", annotation.get().value());
     }

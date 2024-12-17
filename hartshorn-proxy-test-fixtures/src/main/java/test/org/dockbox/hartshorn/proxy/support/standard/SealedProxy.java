@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.proxy.support.standard;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+import test.org.dockbox.hartshorn.proxy.support.standard.SealedProxy.SealedProxy1;
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
-    }
+/**
+ * Simple sealed class to verify sealed classes cannot be proxied (as they are inherently final to any class except those
+ * explicitly permitted to extend it)
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public sealed class SealedProxy permits SealedProxy1 {
+    public static final class SealedProxy1 extends SealedProxy {}
 }

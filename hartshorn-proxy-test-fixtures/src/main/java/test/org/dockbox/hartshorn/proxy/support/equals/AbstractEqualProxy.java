@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.proxy.support.equals;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+/**
+ * Abstract class to test equality of abstract-class proxies.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public abstract class AbstractEqualProxy {
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
+    public boolean test(AbstractEqualProxy self) {
+        return this.equals(self);
     }
 }

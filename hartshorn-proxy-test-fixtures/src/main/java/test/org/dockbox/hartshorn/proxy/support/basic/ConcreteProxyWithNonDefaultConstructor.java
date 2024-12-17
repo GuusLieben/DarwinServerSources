@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.proxy.support.basic;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+/**
+ * A concrete class with a non-default constructor.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+@SuppressWarnings("ClassCanBeRecord") // Intended for proxy testing
+public class ConcreteProxyWithNonDefaultConstructor {
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
+    private final String message;
+
+    public ConcreteProxyWithNonDefaultConstructor(String message) {
+        this.message = message;
+    }
+
+    public String message() {
+        return this.message;
     }
 }

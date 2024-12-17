@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package test.org.dockbox.hartshorn.util.introspect;
+package test.org.dockbox.hartshorn.proxy.support.equals;
 
-import org.dockbox.hartshorn.util.introspect.NativeProxyLookup;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
-import org.dockbox.hartshorn.util.introspect.reflect.ReflectionIntrospector;
+import org.dockbox.hartshorn.proxy.lookup.Unproxy;
 
-public class ReflectionConversionServiceTests extends ConversionServiceTests {
-    @Override
-    protected Introspector introspector() {
-        return new ReflectionIntrospector(new NativeProxyLookup(), new VirtualHierarchyAnnotationLookup());
+/**
+ * Concrete class to test equality of proxies.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public class EqualProxy {
+    public boolean test(@Unproxy(fallbackToProxy = true) EqualProxy self) {
+        return this.equals(self);
     }
 }
