@@ -16,19 +16,17 @@
 
 package org.dockbox.hartshorn.inject.populate;
 
-import java.util.Set;
-
 import org.dockbox.hartshorn.inject.ComponentKey;
-import org.dockbox.hartshorn.inject.InjectionCapableApplication;
-import org.dockbox.hartshorn.inject.provider.ComponentProvider;
+import org.dockbox.hartshorn.inject.ComponentKeyResolver;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
 import org.dockbox.hartshorn.inject.ComponentResolutionException;
+import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.InjectorEnvironment;
 import org.dockbox.hartshorn.inject.annotations.Inject;
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.targets.AnnotatedInjectionPointRequireRule;
 import org.dockbox.hartshorn.inject.targets.ComponentInjectionPoint;
 import org.dockbox.hartshorn.inject.targets.ComponentInjectionPointsResolver;
-import org.dockbox.hartshorn.inject.ComponentKeyResolver;
 import org.dockbox.hartshorn.inject.targets.InjectionPoint;
 import org.dockbox.hartshorn.inject.targets.RequireInjectionPointRule;
 import org.dockbox.hartshorn.util.ContextualInitializer;
@@ -36,6 +34,8 @@ import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.LazyStreamableConfigurer;
 import org.dockbox.hartshorn.util.StreamableConfigurer;
 import org.dockbox.hartshorn.util.introspect.convert.ConversionService;
+
+import java.util.Set;
 
 /**
  * A {@link ComponentPopulationStrategy} which populates components with other components. This provides basic support for
@@ -148,7 +148,9 @@ public class InjectPopulationStrategy extends AbstractComponentPopulationStrateg
     }
 
     /**
-     * TODO: #1060 Add documentation
+     * Configurer for the {@link InjectPopulationStrategy}, that allows for the configuration of rules to determine
+     * how additional injection parameter values are resolved, and whether a specific injection point is required
+     * to be resolved for a component to be considered valid.
      *
      * @since 0.6.0
      *
