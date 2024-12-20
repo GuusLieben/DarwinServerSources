@@ -476,6 +476,15 @@
                     -->
                     <excludeProperties>plugin.kotlin.version,plugin.errorprone.version</excludeProperties>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>version-update</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>update-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Standard build configurations -->
