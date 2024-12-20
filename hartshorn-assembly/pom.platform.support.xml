@@ -39,14 +39,14 @@
         <!-- Maven plugin versions, in alphabetical order -->
         <plugin.antora.version>1.0.0-alpha.4</plugin.antora.version>
         <plugin.checkstyle.version>3.6.0</plugin.checkstyle.version>
-        <plugin.versions.version>2.17.1</plugin.versions.version>
+        <plugin.versions.version>2.18.0</plugin.versions.version>
         <plugin.jacoco.version>0.8.12</plugin.jacoco.version>
-        <plugin.license.version>4.5</plugin.license.version>
-        <plugin.owasp.version>10.0.3</plugin.owasp.version>
+        <plugin.license.version>4.6</plugin.license.version>
+        <plugin.owasp.version>11.1.1</plugin.owasp.version>
         <plugin.errorprone.version>2.28.0</plugin.errorprone.version>
 
         <!-- Maven plugin dependency versions, in alphabetical order -->
-        <checkstyle.version>10.18.2</checkstyle.version>
+        <checkstyle.version>10.21.0</checkstyle.version>
 
         <!-- Antora playbook for documentation build. Set to playbook-local.yml for local builds -->
         <antora.playbook>playbook-release.yml</antora.playbook>
