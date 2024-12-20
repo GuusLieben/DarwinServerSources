@@ -5,9 +5,9 @@
 
     <parent>
         <groupId>org.dockbox.hartshorn</groupId>
-        <artifactId>hartshorn-staging</artifactId>
+        <artifactId>hartshorn-platform-updates</artifactId>
         <version>${revision}</version>
-        <relativePath>../hartshorn-assembly/pom.staging.xml</relativePath>
+        <relativePath>../hartshorn-assembly/pom.platform.updates.xml</relativePath>
     </parent>
 
     <name>Hartshorn common BOM</name>

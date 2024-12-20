@@ -5,9 +5,9 @@
 
     <parent>
         <groupId>org.dockbox.hartshorn</groupId>
-        <artifactId>hartshorn-staging</artifactId>
+        <artifactId>hartshorn-platform-updates</artifactId>
         <version>${revision}</version>
-        <relativePath>pom.staging.xml</relativePath>
+        <relativePath>pom.platform.updates.xml</relativePath>
     </parent>
 
     <artifactId>hartshorn-platform-support</artifactId>
@@ -292,11 +292,6 @@
             <!-- Plugin management, in alphabetical order of version property -->
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>${plugin.versions.version}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${plugin.checkstyle.version}</version>
@@ -456,32 +451,6 @@
                         <phase>site</phase>
                         <goals>
                             <goal>antora</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Dependency version upgrades -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <configuration>
-                    <skip>${execution.updates.skip}</skip>
-                    <ignoredVersions>.*[-_\.](alpha|Alpha|ALPHA|b|beta|Beta|BETA|rc|RC|M|MR|EA)[-_\.]?[0-9]*</ignoredVersions>
-                    <generateBackupPoms>false</generateBackupPoms>
-
-                    <!--
-                    Exclude Kotlin plugin version from being updated, as this should always reference the kotlin.version property
-                    instead of being directly updated by the versions plugin.
-                    -->
-                    <excludeProperties>plugin.kotlin.version,plugin.errorprone.version</excludeProperties>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>version-update</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>update-properties</goal>
                         </goals>
                     </execution>
                 </executions>

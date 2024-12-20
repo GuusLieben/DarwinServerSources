@@ -20,7 +20,6 @@
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
         <execution.jacoco.skip>false</execution.jacoco.skip>
-
         <plugin.jacoco.version>0.8.12</plugin.jacoco.version>
     </properties>
 

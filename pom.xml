@@ -18,6 +18,7 @@
         <!-- Platform and base modules -->
         <module>hartshorn-assembly/pom.platform.build.xml</module>
         <module>hartshorn-assembly/pom.staging.xml</module>
+        <module>hartshorn-assembly/pom.platform.updates.xml</module>
         <module>hartshorn-bom</module>
         <module>hartshorn-assembly/pom.platform.support.xml</module>
 
