@@ -22,16 +22,19 @@
         <path.assembly>${maven.multiModuleProjectDirectory}/hartshorn-assembly</path.assembly>
 
         <!--
-        Feature toggles for CI, defaults to opt-out behavior.
+        Feature toggles for CI, most default to opt-out behavior.
         Use the 'ci' profile to disable by default, making this opt-in instead.
         -->
-        <checkstyle.skip>false</checkstyle.skip>
-        <javadoc.skip>false</javadoc.skip>
-        <owasp.skip>false</owasp.skip>
-        <jacoco.skip>false</jacoco.skip>
-        <errorprone.skip>false</errorprone.skip>
-        <coverage.skip>false</coverage.skip>
-        <antora.skip>false</antora.skip>
+        <execution.checkstyle.skip>false</execution.checkstyle.skip>
+        <execution.javadoc.skip>false</execution.javadoc.skip>
+        <execution.owasp.skip>false</execution.owasp.skip>
+        <execution.jacoco.skip>false</execution.jacoco.skip>
+        <execution.license.check.skip>false</execution.license.check.skip>
+        <execution.license.format.skip>false</execution.license.format.skip>
+        <execution.errorprone.skip>false</execution.errorprone.skip>
+        <execution.coverage.skip>false</execution.coverage.skip>
+        <execution.antora.skip>false</execution.antora.skip>
+        <execution.updates.skip>true</execution.updates.skip> <!-- Only for manual execution -->
 
         <!-- Maven plugin versions, in alphabetical order -->
         <plugin.antora.version>1.0.0-alpha.4</plugin.antora.version>
@@ -196,13 +199,16 @@
             <!-- CI profile, so we can opt-in to goals, instead of having to opt-out -->
             <id>ci</id>
             <properties>
-                <checkstyle.skip>true</checkstyle.skip>
-                <javadoc.skip>true</javadoc.skip>
-                <owasp.skip>true</owasp.skip>
-                <jacoco.skip>true</jacoco.skip>
-                <errorprone.skip>true</errorprone.skip>
-                <coverage.skip>true</coverage.skip>
-                <antora.skip>true</antora.skip>
+                <execution.checkstyle.skip>true</execution.checkstyle.skip>
+                <execution.javadoc.skip>true</execution.javadoc.skip>
+                <execution.owasp.skip>true</execution.owasp.skip>
+                <execution.jacoco.skip>true</execution.jacoco.skip>
+                <execution.license.check.skip>true</execution.license.check.skip>
+                <execution.license.format.skip>true</execution.license.format.skip>
+                <execution.errorprone.skip>true</execution.errorprone.skip>
+                <execution.coverage.skip>true</execution.coverage.skip>
+                <execution.antora.skip>true</execution.antora.skip>
+                <execution.updates.skip>true</execution.updates.skip>
             </properties>
         </profile>
     </profiles>
@@ -350,6 +356,28 @@
                         <version>${plugin.license.version}</version>
                     </dependency>
                 </dependencies>
+                <executions>
+                    <execution>
+                        <id>license-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${execution.license.check.skip}</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>license-format</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${execution.license.format.skip}</skip>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- OWASP Dependency check, to ensure no vulnerabilities are present in the dependencies -->
@@ -357,7 +385,7 @@
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
                 <configuration>
-                    <skip>${owasp.skip}</skip>
+                    <skip>${execution.owasp.skip}</skip>
                     <failBuildOnCVSS>1</failBuildOnCVSS>
                     <suppressionFiles>
                         <suppressionFile>${path.assembly}/dependency-check/dependency-check-suppressions.xml</suppressionFile>
@@ -366,6 +394,8 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>dependency-check</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -378,7 +408,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
-                    <skip>${checkstyle.skip}</skip>
+                    <skip>${execution.checkstyle.skip}</skip>
                     <configLocation>src/checkstyle/checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
@@ -398,8 +428,8 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
+                        <id>checkstyle-check</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -412,7 +442,7 @@
                 <groupId>org.antora</groupId>
                 <artifactId>antora-maven-plugin</artifactId>
                 <configuration>
-                    <skip>${antora.skip}</skip>
+                    <skip>${execution.antora.skip}</skip>
                     <playbookFile>${path.assembly}/antora/${antora.playbook}</playbookFile>
                     <packages>
                         <package>@antora/lunr-extension</package>
@@ -420,6 +450,15 @@
                         <package>asciidoctor-interdoc-reftext</package>
                     </packages>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>antora-site</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>antora</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Dependency version upgrades -->
@@ -427,6 +466,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <configuration>
+                    <skip>${execution.updates.skip}</skip>
                     <ignoredVersions>.*[-_\.](alpha|Alpha|ALPHA|b|beta|Beta|BETA|rc|RC|M|MR|EA)[-_\.]?[0-9]*</ignoredVersions>
                     <generateBackupPoms>false</generateBackupPoms>
 
@@ -444,7 +484,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <release>${java.version}</release>
-                    <skip>${errorprone.skip}</skip>
+                    <skip>${execution.errorprone.skip}</skip>
                     <fork>false</fork>
                     <encoding>UTF-8</encoding>
                     <compilerArgs>
@@ -468,7 +508,7 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
-                    <skip>${jacoco.skip}</skip>
+                    <skip>${execution.jacoco.skip}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -491,7 +531,7 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <skip>${coverage.skip}</skip>
+                            <skip>${execution.coverage.skip}</skip>
                             <rules>
                                 <rule>
                                     <element>BUNDLE</element>
@@ -515,8 +555,17 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <!-- Remaining configuration present in Platform Build POM, this is purely for the CI toggle -->
-                    <skip>${javadoc.skip}</skip>
+                    <skip>${execution.javadoc.skip}</skip>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>javadoc-site</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
