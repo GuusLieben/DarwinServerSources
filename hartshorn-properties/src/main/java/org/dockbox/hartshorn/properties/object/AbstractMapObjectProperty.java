@@ -16,32 +16,43 @@
 
 package org.dockbox.hartshorn.properties.object;
 
-import org.dockbox.hartshorn.properties.ListProperty;
 import org.dockbox.hartshorn.properties.ObjectProperty;
-import org.dockbox.hartshorn.properties.Property;
-import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.util.option.Option;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SimpleObjectProperty extends AbstractMapObjectProperty<Property> {
+public abstract class AbstractMapObjectProperty<T> implements ObjectProperty {
 
-    public SimpleObjectProperty(String name, Map<String, Property> properties) {
-        super(name, properties);
+    private final String name;
+    private final Map<String, T> properties;
+
+    protected AbstractMapObjectProperty(String name, Map<String, T> properties) {
+        this.name = name;
+        this.properties = new HashMap<>(properties);
     }
 
     @Override
-    public Option<ValueProperty> get(String name) {
-        return Option.of(this.properties().get(name)).ofType(ValueProperty.class);
+    public List<String> keys() {
+        return List.copyOf(this.properties.keySet());
     }
 
     @Override
-    public Option<ObjectProperty> object(String name) {
-        return Option.of(this.properties().get(name)).ofType(ObjectProperty.class);
+    public <T> Option<T> parse(ObjectPropertyParser<T> parser) {
+        return parser.parse(this);
     }
 
     @Override
-    public Option<ListProperty> list(String name) {
-        return Option.of(this.properties().get(name)).ofType(ListProperty.class);
+    public String name() {
+        return this.name;
+    }
+
+    protected Option<T> property(String name) {
+        return Option.of(this.properties.get(name));
+    }
+
+    protected Map<String, T> properties() {
+        return this.properties;
     }
 }

@@ -32,13 +32,13 @@ import org.dockbox.hartshorn.util.CollectionUtilities;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class EnvironmentPropertyRegistryFactory {
 
-    public PropertyRegistry createRegistry(List<PropertySourceResolver> propertySourceResolvers, ResourceLookup resourceLookup) {
+    public PropertyRegistry createRegistry(Collection<PropertySourceResolver> propertySourceResolvers, ResourceLookup resourceLookup) {
         Set<PropertyRegistryLoader> propertyRegistryLoaders = this.resolveRegistryLoaders();
         PropertyRegistryLoader propertyRegistryLoader = this.createRegistryLoader(propertyRegistryLoaders);
         PropertyRegistryFactory propertyRegistryFactory = new InstantLoadingPropertyRegistryFactory(propertyRegistryLoader);
@@ -51,7 +51,7 @@ public class EnvironmentPropertyRegistryFactory {
         }
     }
 
-    private Set<URI> resolveResources(List<PropertySourceResolver> propertySourceResolvers, ResourceLookup resourceLookup) {
+    private Set<URI> resolveResources(Collection<PropertySourceResolver> propertySourceResolvers, ResourceLookup resourceLookup) {
         Set<String> sources = propertySourceResolvers.stream()
                 .flatMap(resolver -> resolver.resolve().stream())
                 .collect(Collectors.toSet());
@@ -71,7 +71,7 @@ public class EnvironmentPropertyRegistryFactory {
         return propertyRegistryLoaders;
     }
 
-    private PropertyRegistryLoader createRegistryLoader(Set<PropertyRegistryLoader> propertyRegistryLoaders) {
+    private PropertyRegistryLoader createRegistryLoader(Collection<PropertyRegistryLoader> propertyRegistryLoaders) {
         PropertyRegistryLoader propertyRegistryLoader;
         if (propertyRegistryLoaders.size() == 1) {
             propertyRegistryLoader = CollectionUtilities.first(propertyRegistryLoaders);

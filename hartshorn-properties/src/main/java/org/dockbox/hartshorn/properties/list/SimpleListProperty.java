@@ -16,17 +16,40 @@
 
 package org.dockbox.hartshorn.properties.list;
 
+import org.dockbox.hartshorn.properties.ListProperty;
+import org.dockbox.hartshorn.properties.ObjectProperty;
+import org.dockbox.hartshorn.properties.Property;
+import org.dockbox.hartshorn.properties.ValueProperty;
+import org.dockbox.hartshorn.util.option.Option;
+
 import java.util.Collection;
 import java.util.List;
-
-import org.dockbox.hartshorn.properties.ListProperty;
-import org.dockbox.hartshorn.properties.Property;
 
 public record SimpleListProperty(String name, List<Property> elements) implements ListProperty {
 
     @Override
     public List<Property> elements() {
         return List.copyOf(this.elements);
+    }
+
+    @Override
+    public int size() {
+        return this.elements().size();
+    }
+
+    @Override
+    public Option<ValueProperty> get(int index) {
+        return Option.of(this.elements().get(index)).ofType(ValueProperty.class);
+    }
+
+    @Override
+    public Option<ObjectProperty> object(int index) {
+        return Option.of(this.elements().get(index)).ofType(ObjectProperty.class);
+    }
+
+    @Override
+    public Option<ListProperty> list(int index) {
+        return Option.of(this.elements().get(index)).ofType(ListProperty.class);
     }
 
     @Override

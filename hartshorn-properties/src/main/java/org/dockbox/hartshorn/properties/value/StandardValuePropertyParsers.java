@@ -20,9 +20,9 @@ import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.properties.value.support.GenericConverterValuePropertyParser;
 import org.dockbox.hartshorn.util.introspect.convert.support.StringToArrayConverter;
 
-public final class StandardPropertyParsers {
+public final class StandardValuePropertyParsers {
 
-    private StandardPropertyParsers() {
+    private StandardValuePropertyParsers() {
         // Static access only
     }
 

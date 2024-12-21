@@ -16,14 +16,20 @@
 
 package org.dockbox.hartshorn.properties;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.dockbox.hartshorn.properties.list.ListPropertyParser;
+import org.dockbox.hartshorn.util.option.Option;
+
+import java.util.Collection;
 
 public non-sealed interface ListProperty extends Property {
 
-    List<Property> elements();
+    int size();
+
+    Option<ValueProperty> get(int index);
+
+    Option<ObjectProperty> object(int index);
+
+    Option<ListProperty> list(int index);
 
     <T> Collection<T> parse(ListPropertyParser<T> parser);
 }

@@ -17,20 +17,18 @@
 package org.dockbox.hartshorn.properties.parse.support;
 
 import org.dockbox.hartshorn.properties.ConfiguredProperty;
+import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.properties.parse.ConfiguredPropertyParser;
-import org.dockbox.hartshorn.util.introspect.convert.Converter;
+import org.dockbox.hartshorn.properties.value.SimpleValueProperty;
 import org.dockbox.hartshorn.util.option.Option;
 
-public class ConverterConfiguredPropertyParser<T> implements ConfiguredPropertyParser<T> {
+public class ValueConfiguredPropertyParser implements ConfiguredPropertyParser<ValueProperty> {
 
-    private final Converter<String, T> converter;
-
-    public ConverterConfiguredPropertyParser(Converter<String, T> converter) {
-        this.converter = converter;
-    }
+    public static final ValueConfiguredPropertyParser INSTANCE = new ValueConfiguredPropertyParser();
 
     @Override
-    public Option<T> parse(ConfiguredProperty property) {
-        return property.value().map(this.converter::convert);
+    public Option<ValueProperty> parse(ConfiguredProperty property) {
+        return property.value()
+                .map(value -> new SimpleValueProperty(property.name(), value));
     }
 }

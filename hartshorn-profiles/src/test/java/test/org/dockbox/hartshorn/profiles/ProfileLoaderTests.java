@@ -16,19 +16,20 @@
 
 package test.org.dockbox.hartshorn.profiles;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Path;
-import java.util.Set;
-
 import org.dockbox.hartshorn.profiles.ConfigurationProfileRegistryFactory;
+import org.dockbox.hartshorn.profiles.ProfileRegistryFactory;
 import org.dockbox.hartshorn.properties.MapPropertyRegistry;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.properties.loader.support.CompositePredicatePropertyRegistryLoader;
 import org.dockbox.hartshorn.properties.loader.support.JacksonJavaPropsPropertyRegistryLoader;
 import org.dockbox.hartshorn.properties.loader.support.JacksonYamlPropertyRegistryLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Set;
 
 public class ProfileLoaderTests {
 
@@ -38,13 +39,13 @@ public class ProfileLoaderTests {
         propertyRegistryLoader.addLoader(new JacksonYamlPropertyRegistryLoader());
         propertyRegistryLoader.addLoader(new JacksonJavaPropsPropertyRegistryLoader());
 
-        var profileRegistryFactory = new ConfigurationProfileRegistryFactory(propertyRegistryLoader, name -> {
+        ProfileRegistryFactory profileRegistryFactory = new ConfigurationProfileRegistryFactory(propertyRegistryLoader, name -> {
             return Set.of(
                     new File("C:\\Projects\\Temp\\Hartshorn\\hartshorn-profiles\\src\\test\\resources\\application-%s.yml".formatted(name)).toURI()
             );
         }, MapPropertyRegistry::new);
 
-        var rootRegistry = new MapPropertyRegistry();
+        PropertyRegistry rootRegistry = new MapPropertyRegistry();
         propertyRegistryLoader.loadRegistry(rootRegistry, Path.of("C:\\Projects\\Temp\\Hartshorn\\hartshorn-profiles\\src\\test\\resources\\application.yml"));
         var profileRegistry = profileRegistryFactory.create(rootRegistry);
         var profilesInOrder = profileRegistry.profiles();

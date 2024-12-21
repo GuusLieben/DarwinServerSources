@@ -310,19 +310,19 @@ public final class ContextualApplicationEnvironment implements ObservableApplica
             throw new IllegalArgumentException("type cannot be null");
         }
 
-        Set<T> observers = new HashSet<>();
+        Set<T> allObservers = new HashSet<>();
         this.observers.stream()
                 .filter(type::isInstance)
                 .map(type::cast)
-                .forEach(observers::add);
+                .forEach(allObservers::add);
 
         this.lazyObservers.stream()
                 .filter(type::isAssignableFrom)
                 .map(this.applicationContext::get)
                 .map(type::cast)
-                .forEach(observers::add);
+                .forEach(allObservers::add);
 
-        return observers;
+        return allObservers;
     }
 
     private void printBanner(Class<?> mainClass) {

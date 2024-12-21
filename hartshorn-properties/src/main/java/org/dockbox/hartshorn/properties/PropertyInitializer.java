@@ -17,7 +17,7 @@
 package org.dockbox.hartshorn.properties;
 
 import org.dockbox.hartshorn.properties.value.ValuePropertyParser;
-import org.dockbox.hartshorn.properties.value.StandardPropertyParsers;
+import org.dockbox.hartshorn.properties.value.StandardValuePropertyParsers;
 import org.dockbox.hartshorn.properties.value.support.EnumValuePropertyParser;
 import org.dockbox.hartshorn.util.OptionInitializer;
 import org.dockbox.hartshorn.util.SingleElementContext;
@@ -38,39 +38,39 @@ public class PropertyInitializer<T> implements OptionInitializer<PropertyRegistr
     }
 
     public static PropertyInitializer<Boolean> booleanProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.BOOLEAN);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.BOOLEAN);
     }
 
     public static PropertyInitializer<Integer> integerProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.INTEGER);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.INTEGER);
     }
 
     public static PropertyInitializer<Long> longProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.LONG);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.LONG);
     }
 
     public static PropertyInitializer<Double> doubleProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.DOUBLE);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.DOUBLE);
     }
 
     public static PropertyInitializer<Float> floatProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.FLOAT);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.FLOAT);
     }
 
     public static PropertyInitializer<String> stringProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.STRING);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.STRING);
     }
 
     public static PropertyInitializer<Character> charProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.CHARACTER);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.CHARACTER);
     }
 
     public static PropertyInitializer<Short> shortProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.SHORT);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.SHORT);
     }
 
     public static PropertyInitializer<Byte> byteProperty(String property) {
-        return new PropertyInitializer<>(property, StandardPropertyParsers.BYTE);
+        return new PropertyInitializer<>(property, StandardValuePropertyParsers.BYTE);
     }
 
     public static <E extends Enum<E>> PropertyInitializer<E> enumProperty(String property, Class<E> type) {

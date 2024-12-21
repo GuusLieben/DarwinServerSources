@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
-import org.dockbox.hartshorn.properties.value.StandardPropertyParsers;
+import org.dockbox.hartshorn.properties.value.StandardValuePropertyParsers;
 import org.dockbox.hartshorn.util.ApplicationRuntimeException;
 
 public class ConfigurationProfileRegistryFactory implements ProfileRegistryFactory {
@@ -52,7 +52,7 @@ public class ConfigurationProfileRegistryFactory implements ProfileRegistryFacto
         profileRegistry.register(0, defaultProfile);
 
         // TODO: Complex parser using predicate matching
-        List<EnvironmentProfile> additionalProfiles = rootRegistry.value("hartshorn.profiles", StandardPropertyParsers.STRING_LIST)
+        List<EnvironmentProfile> additionalProfiles = rootRegistry.value("hartshorn.profiles", StandardValuePropertyParsers.STRING_LIST)
                 .map(this::profiles)
                 .orElseGet(List::of);
 

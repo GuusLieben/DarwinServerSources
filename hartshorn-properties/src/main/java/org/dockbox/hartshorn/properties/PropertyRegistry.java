@@ -16,24 +16,20 @@
 
 package org.dockbox.hartshorn.properties;
 
-import java.util.List;
-import java.util.function.Function;
-
 import org.dockbox.hartshorn.properties.value.ValuePropertyParser;
 import org.dockbox.hartshorn.util.option.Option;
 
-public interface PropertyRegistry {
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-    List<String> keys();
-
-    Option<ValueProperty> get(String name);
-
-    Option<ObjectProperty> object(String name);
-
-    Option<ListProperty> list(String name);
+public interface PropertyRegistry extends ObjectProperty {
 
     // mapper used if value is (e.g.) a,b,c instead of 'proper' list
     Option<ListProperty> list(String name, Function<ValueProperty, ListProperty> singleValueMapper);
+
+    List<ConfiguredProperty> find(Predicate<ConfiguredProperty> predicate);
 
     default Option<String> value(String name) {
         return this.get(name).flatMap(ValueProperty::value);
@@ -43,7 +39,9 @@ public interface PropertyRegistry {
         return this.get(name).flatMap(parser::parse);
     }
 
-    void register(ValueProperty property);
+    void register(ConfiguredProperty property);
+
+    void registerAll(Map<String, ConfiguredProperty> properties);
 
     void unregister(String name);
 

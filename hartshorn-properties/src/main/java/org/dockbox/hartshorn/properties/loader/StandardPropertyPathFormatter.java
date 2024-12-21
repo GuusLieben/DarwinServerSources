@@ -33,11 +33,11 @@ public class StandardPropertyPathFormatter implements PropertyPathFormatter {
     private String formatPath(PropertyPathNode pathNode, StringBuilder builder) {
         return switch(pathNode) {
             case PropertyFieldPathNode fieldPathNode -> {
-                builder.insert(0, formatField(fieldPathNode));
+                builder.insert(0, this.formatField(fieldPathNode));
                 yield this.formatPath(fieldPathNode.parent(), builder);
             }
             case PropertyIndexPathNode indexPathNode -> {
-                builder.insert(0, formatIndex(indexPathNode));
+                builder.insert(0, this.formatIndex(indexPathNode));
                 yield this.formatPath(indexPathNode.parent(), builder);
             }
             case PropertyRootPathNode ignored -> builder.toString();

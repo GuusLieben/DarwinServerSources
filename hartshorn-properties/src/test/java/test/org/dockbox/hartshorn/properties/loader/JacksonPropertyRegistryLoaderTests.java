@@ -16,26 +16,26 @@
 
 package test.org.dockbox.hartshorn.properties.loader;
 
+import org.dockbox.hartshorn.properties.MapPropertyRegistry;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
+import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
+import org.dockbox.hartshorn.properties.loader.StandardPropertyPathFormatter;
+import org.dockbox.hartshorn.properties.loader.support.JacksonYamlPropertyRegistryLoader;
+import org.dockbox.hartshorn.properties.value.StandardValuePropertyParsers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
-
-import org.dockbox.hartshorn.properties.MapPropertyRegistry;
-import org.dockbox.hartshorn.properties.PropertyRegistry;
-import org.dockbox.hartshorn.properties.loader.support.JacksonPropertyRegistryLoader;
-import org.dockbox.hartshorn.properties.loader.support.JacksonYamlPropertyRegistryLoader;
-import org.dockbox.hartshorn.properties.loader.StandardPropertyPathFormatter;
-import org.dockbox.hartshorn.properties.value.StandardPropertyParsers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class JacksonPropertyRegistryLoaderTests {
 
     @Test
     void testComplexYamlConfigurationCanBeLoaded() throws IOException {
         // Given
-        JacksonPropertyRegistryLoader loader = new JacksonYamlPropertyRegistryLoader(new StandardPropertyPathFormatter());
+        PropertyRegistryLoader loader = new JacksonYamlPropertyRegistryLoader(new StandardPropertyPathFormatter());
         Path path = Path.of("src/test/resources/complex-configuration.yml");
 
         // When: Loading registry
@@ -48,18 +48,18 @@ public class JacksonPropertyRegistryLoaderTests {
 
         // Then: Keys should be ordered
         Iterator<String> iterator = keys.iterator();
-        Assertions.assertEquals(iterator.next(), "sample.complex.configuration[0].name");
-        Assertions.assertEquals(iterator.next(), "sample.complex.configuration[0].value");
-        Assertions.assertEquals(iterator.next(), "sample.complex.configuration[1].name");
-        Assertions.assertEquals(iterator.next(), "sample.complex.configuration[1].value");
-        Assertions.assertEquals(iterator.next(), "sample.complex.configuration[2].name");
-        Assertions.assertEquals(iterator.next(), "sample.complex.configuration[2].value");
-        Assertions.assertEquals(iterator.next(), "sample.complex.flat");
-        Assertions.assertEquals(iterator.next(), "sample.complex.list[0].name");
-        Assertions.assertEquals(iterator.next(), "sample.complex.list[0].value");
-        Assertions.assertEquals(iterator.next(), "sample.complex.list[1].name");
-        Assertions.assertEquals(iterator.next(), "sample.complex.list[1].value");
-        Assertions.assertEquals(iterator.next(), "sample.complex.values");
+        Assertions.assertEquals("sample.complex.configuration[0].name", iterator.next());
+        Assertions.assertEquals("sample.complex.configuration[0].value", iterator.next());
+        Assertions.assertEquals("sample.complex.configuration[1].name", iterator.next());
+        Assertions.assertEquals("sample.complex.configuration[1].value", iterator.next());
+        Assertions.assertEquals("sample.complex.configuration[2].name", iterator.next());
+        Assertions.assertEquals("sample.complex.configuration[2].value", iterator.next());
+        Assertions.assertEquals("sample.complex.flat", iterator.next());
+        Assertions.assertEquals("sample.complex.list[0].name", iterator.next());
+        Assertions.assertEquals("sample.complex.list[0].value", iterator.next());
+        Assertions.assertEquals("sample.complex.list[1].name", iterator.next());
+        Assertions.assertEquals("sample.complex.list[1].value", iterator.next());
+        Assertions.assertEquals("sample.complex.values", iterator.next());
 
         // Then: Property values should be loaded correctly
         registry.value("sample.complex.configuration[0].name")
@@ -83,7 +83,7 @@ public class JacksonPropertyRegistryLoaderTests {
                 .peek(value -> Assertions.assertEquals("value3", value))
                 .orElseThrow(() -> new AssertionError("Property not found"));
 
-        registry.value("sample.complex.values", StandardPropertyParsers.STRING_LIST)
+        registry.value("sample.complex.values", StandardValuePropertyParsers.STRING_LIST)
                 .peek(values -> {
                     Assertions.assertEquals(3, values.length);
                     Assertions.assertEquals("value1", values[0]);

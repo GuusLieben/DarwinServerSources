@@ -16,19 +16,6 @@
 
 package org.dockbox.hartshorn.properties.loader.support;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.dockbox.hartshorn.properties.ValueProperty;
-import org.dockbox.hartshorn.properties.PropertyRegistry;
-import org.dockbox.hartshorn.properties.loader.PredicatePropertyRegistryLoader;
-import org.dockbox.hartshorn.properties.loader.path.PropertyPathFormatter;
-import org.dockbox.hartshorn.properties.loader.path.PropertyPathNode;
-import org.dockbox.hartshorn.properties.loader.path.PropertyRootPathNode;
-import org.dockbox.hartshorn.util.CollectionUtilities;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -36,9 +23,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 
 import org.dockbox.hartshorn.properties.ConfiguredProperty;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.properties.SingleConfiguredProperty;
+import org.dockbox.hartshorn.properties.loader.PredicatePropertyRegistryLoader;
+import org.dockbox.hartshorn.properties.loader.path.PropertyPathFormatter;
+import org.dockbox.hartshorn.properties.loader.path.PropertyPathNode;
+import org.dockbox.hartshorn.properties.loader.path.PropertyRootPathNode;
+import org.dockbox.hartshorn.util.CollectionUtilities;
 import org.dockbox.hartshorn.util.FileUtilities;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public abstract class JacksonPropertyRegistryLoader implements PredicatePropertyRegistryLoader {
@@ -74,19 +71,18 @@ public abstract class JacksonPropertyRegistryLoader implements PredicateProperty
         }
     }
 
-    protected PropertyRegistry loadRegistry(PropertyRegistry registry, JsonNode node) {
+    protected void loadRegistry(PropertyRegistry registry, JsonNode node) {
         List<ConfiguredProperty> properties = this.loadProperties(node);
         for(ConfiguredProperty property : properties) {
             registry.register(property);
         }
-        return registry;
     }
 
     protected List<ConfiguredProperty> loadProperties(JsonNode node) {
         return this.loadProperties(new PropertyRootPathNode(), node);
     }
 
-    protected List<ValueProperty> loadProperties(PropertyPathNode path, JsonNode node) {
+    protected List<ConfiguredProperty> loadProperties(PropertyPathNode path, JsonNode node) {
         return switch(node) {
             case ArrayNode arrayNode -> this.loadArrayProperties(path, arrayNode);
             case ObjectNode objectNode -> this.loadObjectProperties(path, objectNode);
@@ -100,8 +96,8 @@ public abstract class JacksonPropertyRegistryLoader implements PredicateProperty
         return new SingleConfiguredProperty(propertyPath, valueNode.asText());
     }
 
-    protected List<ValueProperty> loadArrayProperties(PropertyPathNode path, ArrayNode arrayNode) {
-        List<ValueProperty> properties = new ArrayList<>();
+    protected List<ConfiguredProperty> loadArrayProperties(PropertyPathNode path, ArrayNode arrayNode) {
+        List<ConfiguredProperty> properties = new ArrayList<>();
         CollectionUtilities.indexed(arrayNode.elements(), (index, element) -> {
             PropertyPathNode nextPath = path.index(index);
             properties.addAll(this.loadProperties(nextPath, element));
@@ -109,8 +105,8 @@ public abstract class JacksonPropertyRegistryLoader implements PredicateProperty
         return properties;
     }
 
-    protected List<ValueProperty> loadObjectProperties(PropertyPathNode path, ObjectNode objectNode) {
-        List<ValueProperty> properties = new ArrayList<>();
+    protected List<ConfiguredProperty> loadObjectProperties(PropertyPathNode path, ObjectNode objectNode) {
+        List<ConfiguredProperty> properties = new ArrayList<>();
         CollectionUtilities.iterateEntries(objectNode.fields(), (name, value) -> {
             PropertyPathNode nextPath = path.property(name);
             properties.addAll(this.loadProperties(nextPath, value));
