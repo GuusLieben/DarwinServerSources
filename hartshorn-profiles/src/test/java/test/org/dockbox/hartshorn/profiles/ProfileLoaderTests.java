@@ -26,7 +26,6 @@ import org.dockbox.hartshorn.properties.loader.support.JacksonYamlPropertyRegist
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
@@ -41,12 +40,12 @@ public class ProfileLoaderTests {
 
         ProfileRegistryFactory profileRegistryFactory = new ConfigurationProfileRegistryFactory(propertyRegistryLoader, name -> {
             return Set.of(
-                    new File("C:\\Projects\\Temp\\Hartshorn\\hartshorn-profiles\\src\\test\\resources\\application-%s.yml".formatted(name)).toURI()
+                    Path.of("src/test/resources/application-%s.yml".formatted(name)).toUri()
             );
         }, MapPropertyRegistry::new);
 
         PropertyRegistry rootRegistry = new MapPropertyRegistry();
-        propertyRegistryLoader.loadRegistry(rootRegistry, Path.of("C:\\Projects\\Temp\\Hartshorn\\hartshorn-profiles\\src\\test\\resources\\application.yml"));
+        propertyRegistryLoader.loadRegistry(rootRegistry, Path.of("src/test/resources/application.yml"));
         var profileRegistry = profileRegistryFactory.create(rootRegistry);
         var profilesInOrder = profileRegistry.profiles();
         Assertions.assertEquals(3, profilesInOrder.size());

@@ -169,7 +169,7 @@ public abstract class AbstractMapProperty<T> {
      * @return the property with the given key
      */
     public Option<ListProperty> list(T key, Function<ValueProperty, ListProperty> singleValueMapper) {
-        if (this.contains(key)) {
+        if (this.properties().containsKey(this.valueAccessor(key))) {
             return this.get(key).map(singleValueMapper);
         } else {
             Map<String, ConfiguredProperty> propertyMap = this.collectToMap(key, (name, property) -> {
