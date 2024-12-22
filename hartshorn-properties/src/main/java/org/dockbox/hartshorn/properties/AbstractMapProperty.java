@@ -120,7 +120,7 @@ public abstract class AbstractMapProperty<T> {
      */
     public Option<ObjectProperty> object(T key) {
         Map<String, ConfiguredProperty> propertyMap = this.collectToMap(key, (name, property) -> {
-            return name.startsWith(this.accessor(key) + ".");
+            return name.startsWith(this.valueAccessor(key) + ".");
         }).entrySet().stream().collect(Collectors.toMap(
                 // Strip trailing . from key
                 entry -> entry.getKey().substring(1),
@@ -173,7 +173,7 @@ public abstract class AbstractMapProperty<T> {
             return this.get(key).map(singleValueMapper);
         } else {
             Map<String, ConfiguredProperty> propertyMap = this.collectToMap(key, (name, property) -> {
-                return name.startsWith(key + "[");
+                return name.startsWith(this.valueAccessor(key) + "[");
             });
             ListProperty property = new MapListProperty(this.name() + this.accessor(key), propertyMap, this.pathStyle);
             return Option.of(property);
