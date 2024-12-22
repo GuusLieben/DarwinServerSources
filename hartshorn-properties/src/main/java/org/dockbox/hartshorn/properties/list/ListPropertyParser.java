@@ -16,11 +16,28 @@
 
 package org.dockbox.hartshorn.properties.list;
 
-import java.util.Collection;
-
 import org.dockbox.hartshorn.properties.ListProperty;
 
+import java.util.Collection;
+
+/**
+ * A parser to convert {@link ListProperty} instances to instances of a specific type.
+ *
+ * @param <T> the type to convert the value to
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+@FunctionalInterface
 public interface ListPropertyParser<T> {
 
+    /**
+     * Parses the given {@link ListProperty} to a collection of instances of the target type. If the conversion fails,
+     * an empty collection is returned.
+     *
+     * @param property the property to parse
+     * @return the parsed values
+     */
     Collection<T> parse(ListProperty property);
 }

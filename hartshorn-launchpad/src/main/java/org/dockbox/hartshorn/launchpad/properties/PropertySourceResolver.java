@@ -16,10 +16,20 @@
 
 package org.dockbox.hartshorn.launchpad.properties;
 
-import java.util.Set;
+import java.util.SequencedSet;
 
+/**
+ * A resolver to obtain property sources. This does not have to be a file, but can also be a database or any other
+ * source of properties.
+ */
 @FunctionalInterface
 public interface PropertySourceResolver {
 
-    Set<String> resolve();
+    /**
+     * Resolves the property sources. The returned values do not have to be absolute paths, but can be any kind of
+     * identifier that can be used to load the properties.
+     *
+     * @return the property sources
+     */
+    SequencedSet<String> resolve();
 }

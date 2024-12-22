@@ -16,18 +16,26 @@
 
 package org.dockbox.hartshorn.launchpad.properties;
 
-import java.util.Set;
+import java.util.Collections;
+import java.util.SequencedSet;
 
+/**
+ * Resolver which always returns the same set of property sources.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class PredefinedPropertySourceResolver implements PropertySourceResolver {
 
-    private final Set<String> sources;
+    private final SequencedSet<String> sources;
 
-    public PredefinedPropertySourceResolver(Set<String> sources) {
+    public PredefinedPropertySourceResolver(SequencedSet<String> sources) {
         this.sources = sources;
     }
 
     @Override
-    public Set<String> resolve() {
-        return Set.copyOf(this.sources);
+    public SequencedSet<String> resolve() {
+        return Collections.unmodifiableSequencedSet(this.sources);
     }
 }

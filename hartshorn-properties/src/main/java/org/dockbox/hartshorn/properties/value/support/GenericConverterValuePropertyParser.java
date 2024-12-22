@@ -21,6 +21,18 @@ import org.dockbox.hartshorn.properties.value.ValuePropertyParser;
 import org.dockbox.hartshorn.util.introspect.convert.GenericConverter;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A parser to convert single-value {@link ValueProperty} instances to instances of a specific type using a
+ * {@link GenericConverter}.
+ *
+ * @param converter the converter to use
+ * @param targetType the type to convert the value to
+ * @param <T> the type to convert the value to
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public record GenericConverterValuePropertyParser<T>(
         GenericConverter converter,
         Class<T> targetType
@@ -29,7 +41,7 @@ public record GenericConverterValuePropertyParser<T>(
     @Override
     public Option<T> parse(ValueProperty property) {
         return property.value()
-                .map(value -> converter.convert(value, String.class, this.targetType()))
+                .map(value -> this.converter.convert(value, String.class, this.targetType()))
                 .cast(this.targetType());
     }
 }

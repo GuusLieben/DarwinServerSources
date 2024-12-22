@@ -49,7 +49,6 @@ import org.dockbox.hartshorn.util.collections.MultiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
 import java.util.Set;
 import java.util.function.BiConsumer;
 

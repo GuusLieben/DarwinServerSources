@@ -37,7 +37,19 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-public class AbstractDelegateStream<T> implements Stream<T> {
+/**
+ * An abstract implementation of a {@link Stream} that delegates all calls to a wrapped {@link Stream}.
+ * This allows for easy extension of the {@link Stream} interface without having to implement all methods.
+ *
+ * @param <T> the type of the stream
+ *
+ * @see Stream
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public abstract class AbstractDelegateStream<T> implements Stream<T> {
 
     private Stream<T> delegate;
 

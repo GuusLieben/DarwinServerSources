@@ -18,13 +18,40 @@ package org.dockbox.hartshorn.util;
 
 import java.nio.file.Path;
 
+/**
+ * Utility class for file operations.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public final class FileUtilities {
 
+    private FileUtilities() {
+        // Utility class
+    }
+
+    /**
+     * Checks if the provided path has a file extension.
+     *
+     * @param path the path to check
+     * @return {@code true} if the path has a file extension, {@code false} otherwise
+     */
     public static boolean hasFileExtension(Path path) {
         return getFileExtension(path) != null;
     }
 
+    /**
+     * Returns the file extension of the provided path. If the path does not have a file extension, {@code null} is
+     * returned.
+     *
+     * @param path the path to check
+     * @return the file extension of the provided path, or {@code null} if the path does not have a file extension
+     */
     public static String getFileExtension(Path path) {
+        if (path.toFile().isDirectory()) {
+            return null;
+        }
         String fileName = path.getFileName().toString();
         int index = fileName.lastIndexOf('.');
         if (index == -1) {
@@ -33,6 +60,12 @@ public final class FileUtilities {
         return fileName.substring(index + 1);
     }
 
+    /**
+     * Checks if the provided path exists.
+     *
+     * @param path the path to check
+     * @return {@code true} if the path exists, {@code false} otherwise
+     */
     public static boolean exists(Path path) {
         return path.toFile().exists();
     }

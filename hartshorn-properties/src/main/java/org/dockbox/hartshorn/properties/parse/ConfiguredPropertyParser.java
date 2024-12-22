@@ -19,9 +19,25 @@ package org.dockbox.hartshorn.properties.parse;
 import org.dockbox.hartshorn.properties.ConfiguredProperty;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A parser for {@link ConfiguredProperty} instances. This parser is used to convert the value of a
+ * {@link ConfiguredProperty} to a specific type.
+ *
+ * @param <T> the type to convert the value to
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @FunctionalInterface
 public interface ConfiguredPropertyParser<T> {
 
+    /**
+     * Parses the value of the given {@link ConfiguredProperty} to the type of this parser. If the
+     * value cannot be parsed, an empty {@link Option} is returned.
+     *
+     * @param property the property to parse
+     * @return the parsed value, or an empty {@link Option}
+     */
     Option<T> parse(ConfiguredProperty property);
-
 }

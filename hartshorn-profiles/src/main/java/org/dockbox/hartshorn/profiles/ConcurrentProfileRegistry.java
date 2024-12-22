@@ -16,13 +16,20 @@
 
 package org.dockbox.hartshorn.profiles;
 
+import org.dockbox.hartshorn.util.option.Option;
+import org.dockbox.hartshorn.util.stream.EntryStream;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.dockbox.hartshorn.util.option.Option;
-import org.dockbox.hartshorn.util.stream.EntryStream;
-
+/**
+ * A concurrent implementation of the {@link ProfileRegistry} interface.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ConcurrentProfileRegistry implements ProfileRegistry {
 
     private final Map<Integer, EnvironmentProfile> prioritizedProfiles = new ConcurrentHashMap<>();

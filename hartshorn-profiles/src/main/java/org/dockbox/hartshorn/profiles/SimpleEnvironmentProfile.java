@@ -18,6 +18,16 @@ package org.dockbox.hartshorn.profiles;
 
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 
+/**
+ * A simple implementation of {@link EnvironmentProfile}.
+ *
+ * @param name the name of the profile
+ * @param propertyRegistry the property registry of the profile
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public record SimpleEnvironmentProfile(
         String name,
         PropertyRegistry propertyRegistry

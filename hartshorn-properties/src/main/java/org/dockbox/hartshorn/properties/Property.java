@@ -16,7 +16,27 @@
 
 package org.dockbox.hartshorn.properties;
 
+/**
+ * Represents a property within the application's configuration, typically exposed through {@link PropertyRegistry
+ * property registries}. Properties exist in three forms: {@link ValueProperty value properties}, {@link ListProperty
+ * list properties} and {@link ObjectProperty object properties}. Each of these types of properties can be used to
+ * represent different types of configuration values. As each form of property exposes data in a different way, there
+ * is no value in using this interface directly. Instead, use one of the three sub-interfaces.
+ *
+ * @see ValueProperty
+ * @see ListProperty
+ * @see ObjectProperty
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public sealed interface Property permits ValueProperty, ListProperty, ObjectProperty {
 
+    /**
+     * Returns the name of the property.
+     *
+     * @return The name of the property
+     */
     String name();
 }

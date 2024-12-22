@@ -16,9 +16,31 @@
 
 package org.dockbox.hartshorn.properties;
 
+import org.dockbox.hartshorn.properties.value.ValuePropertyParser;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * Represents a property that holds a single value. This is the most basic form of a property.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public non-sealed interface ValueProperty extends Property {
 
+    /**
+     * Returns the value of this property.
+     *
+     * @return the value
+     */
     Option<String> value();
+
+    /**
+     * Parses the value of this property using the provided parser.
+     *
+     * @param parser the parser to use
+     * @return the parsed value
+     * @param <T> the type to convert the value to
+     */
+    <T> Option<T> parse(ValuePropertyParser<T> parser);
 }

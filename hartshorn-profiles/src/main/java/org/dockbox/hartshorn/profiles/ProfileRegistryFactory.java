@@ -18,9 +18,24 @@ package org.dockbox.hartshorn.profiles;
 
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 
+/**
+ * Factory for creating {@link ProfileRegistry} instances.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @FunctionalInterface
 public interface ProfileRegistryFactory {
 
+    /**
+     * Creates a new {@link ProfileRegistry} instance. The given {@link PropertyRegistry} is used as the root
+     * source of properties for the registry. If additional profiles are initialized, they will take precedence
+     * over the root registry.
+     *
+     * @param rootRegistry the root registry to use
+     * @return the created registry
+     */
     ProfileRegistry create(PropertyRegistry rootRegistry);
 
 }

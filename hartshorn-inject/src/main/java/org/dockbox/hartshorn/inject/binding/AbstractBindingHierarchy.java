@@ -16,7 +16,16 @@
 
 package org.dockbox.hartshorn.inject.binding;
 
-import java.util.ArrayList;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.dockbox.hartshorn.inject.ComponentKey;
+import org.dockbox.hartshorn.inject.CompositeQualifier;
+import org.dockbox.hartshorn.inject.provider.InstantiationStrategy;
+import org.dockbox.hartshorn.inject.provider.TypeAwareInstantiationStrategy;
+import org.dockbox.hartshorn.util.option.Option;
+import org.dockbox.hartshorn.util.stream.EntryStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -27,16 +36,6 @@ import java.util.NavigableSet;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.dockbox.hartshorn.inject.ComponentKey;
-import org.dockbox.hartshorn.inject.CompositeQualifier;
-import org.dockbox.hartshorn.inject.provider.InstantiationStrategy;
-import org.dockbox.hartshorn.inject.provider.TypeAwareInstantiationStrategy;
-import org.dockbox.hartshorn.util.option.Option;
-import org.dockbox.hartshorn.util.stream.EntryStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A base implementation of a {@link BindingHierarchy}. This implementation tracks providers by priority, and allows

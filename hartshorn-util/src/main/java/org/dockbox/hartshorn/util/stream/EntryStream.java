@@ -26,9 +26,24 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+/**
+ * A stream of {@link Map.Entry} elements. This class provides additional functionality for working with
+ * {@link Map.Entry} elements in a stream, such as filtering, mapping, and sorting. This type is functionally
+ * equivalent to a {@link Stream} of {@link Map.Entry} elements, but provides additional methods that are specific to
+ * {@link Map.Entry} elements.
+ *
+ * @param <K> the key type
+ * @param <V> the value type
+ *
+ * @see Stream
+ * @see Map.Entry
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class EntryStream<K, V> extends AbstractDelegateStream<Entry<K, V>> {
 
     public static <K, V> EntryStream<K, V> of(Map.Entry<K, V> entry) {
@@ -153,7 +168,7 @@ public class EntryStream<K, V> extends AbstractDelegateStream<Entry<K, V>> {
 
     public EntryStream<K, V> sorted(BiComparator<K, V> comparator) {
         return EntryStream.of(this.sorted((entry1, entry2) -> {
-            int result = comparator.compare(entry1.getKey(), entry1.getValue(), entry2.getKey(), entry2.getValue());
+            int result = comparator.compare(entry1, entry2);
             if (result == 0) {
                 return entry1.getKey().hashCode() - entry2.getKey().hashCode();
             }

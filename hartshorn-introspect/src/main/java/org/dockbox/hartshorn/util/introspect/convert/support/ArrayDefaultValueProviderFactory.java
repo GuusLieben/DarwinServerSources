@@ -16,13 +16,20 @@
 
 package org.dockbox.hartshorn.util.introspect.convert.support;
 
-import java.lang.reflect.Array;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.dockbox.hartshorn.util.TypeUtils;
 import org.dockbox.hartshorn.util.introspect.convert.DefaultValueProvider;
 import org.dockbox.hartshorn.util.introspect.convert.DefaultValueProviderFactory;
 
+import java.lang.reflect.Array;
+
+/**
+ * Provides default values for array types.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ArrayDefaultValueProviderFactory implements DefaultValueProviderFactory<Object> {
 
     @Override
@@ -35,6 +42,17 @@ public class ArrayDefaultValueProviderFactory implements DefaultValueProviderFac
         return TypeUtils.unchecked(provider, DefaultValueProvider.class);
     }
 
+    /**
+     * Provides a default value for an array type.
+     *
+     * @param <O> the type of the array elements
+     *
+     * @see Array#newInstance(Class, int)
+     *
+     * @since 0.7.0
+     *
+     * @author Guus Lieben
+     */
     public static class ArrayDefaultValueProvider<O> implements DefaultValueProvider<O[]> {
 
         private final Class<O> elementType;

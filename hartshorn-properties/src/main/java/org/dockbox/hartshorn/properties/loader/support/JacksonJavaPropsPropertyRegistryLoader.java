@@ -19,18 +19,26 @@ package org.dockbox.hartshorn.properties.loader.support;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 
-import org.dockbox.hartshorn.properties.loader.StandardPropertyPathFormatter;
+import org.dockbox.hartshorn.properties.loader.StylePropertyPathFormatter;
 import org.dockbox.hartshorn.properties.loader.path.PropertyPathFormatter;
 import org.dockbox.hartshorn.util.Customizer;
 
 import java.util.Set;
 
+/**
+ * A {@link JacksonPropertyRegistryLoader} that loads properties from Java properties files. This loader uses a
+ * {@link JavaPropsMapper} to read the properties from the file.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class JacksonJavaPropsPropertyRegistryLoader extends JacksonPropertyRegistryLoader {
 
     private final Customizer<JavaPropsMapper.Builder> customizer;
 
     public JacksonJavaPropsPropertyRegistryLoader() {
-        this(new StandardPropertyPathFormatter());
+        this(new StylePropertyPathFormatter());
     }
 
     public JacksonJavaPropsPropertyRegistryLoader(PropertyPathFormatter formatter) {

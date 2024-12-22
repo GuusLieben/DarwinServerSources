@@ -19,8 +19,23 @@ package org.dockbox.hartshorn.properties.value;
 import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A parser to convert single-value {@link ValueProperty} instances to instances of a specific type.
+ *
+ * @param <T> the type to convert the value to
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @FunctionalInterface
 public interface ValuePropertyParser<T> {
 
+    /**
+     * Parses the given {@link ValueProperty} to an instance of the type {@link T}.
+     *
+     * @param property the property to parse
+     * @return an {@link Option} containing the parsed value, or an empty {@link Option}
+     */
     Option<T> parse(ValueProperty property);
 }

@@ -16,13 +16,28 @@
 
 package org.dockbox.hartshorn.properties.loader;
 
+import org.dockbox.hartshorn.properties.PropertyRegistry;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
-import org.dockbox.hartshorn.properties.PropertyRegistry;
-
+/**
+ * A loader for {@link PropertyRegistry} instances. This loader is used to populate a registry with
+ * properties from a specific source.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @FunctionalInterface
 public interface PropertyRegistryLoader {
 
+    /**
+     * Loads the given {@link PropertyRegistry} with properties from the given {@link Path}.
+     *
+     * @param registry the registry to load
+     * @param path the path to load properties from
+     * @throws IOException if an error occurs while loading the properties
+     */
     void loadRegistry(PropertyRegistry registry, Path path) throws IOException;
 }

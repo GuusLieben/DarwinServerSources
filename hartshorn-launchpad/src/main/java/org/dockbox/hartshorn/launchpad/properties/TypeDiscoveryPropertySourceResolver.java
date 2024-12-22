@@ -20,10 +20,21 @@ import org.dockbox.hartshorn.inject.component.ComponentContainer;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.SequencedSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Property source resolver that discovers property sources based on the {@link PropertiesSource} annotation on
+ * components within the application environment.
+ *
+ * @see PropertiesSource
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class TypeDiscoveryPropertySourceResolver implements PropertySourceResolver {
 
     private final ApplicationEnvironment environment;
@@ -33,12 +44,12 @@ public class TypeDiscoveryPropertySourceResolver implements PropertySourceResolv
     }
 
     @Override
-    public Set<String> resolve() {
+    public SequencedSet<String> resolve() {
         Collection<ComponentContainer<?>> containers = this.environment.componentRegistry().containers();
         return containers.stream()
                 .map(ComponentContainer::type)
                 .flatMap(type -> type.annotations().get(PropertiesSource.class).stream())
                 .flatMap(source -> Stream.of(source.value()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

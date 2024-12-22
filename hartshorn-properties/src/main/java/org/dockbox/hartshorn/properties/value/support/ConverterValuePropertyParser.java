@@ -21,6 +21,16 @@ import org.dockbox.hartshorn.properties.value.ValuePropertyParser;
 import org.dockbox.hartshorn.util.introspect.convert.Converter;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A parser to convert single-value {@link ValueProperty} instances to instances of a specific type using a
+ * {@link Converter}.
+ *
+ * @param <T> the type to convert the value to
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ConverterValuePropertyParser<T> implements ValuePropertyParser<T> {
 
     private final Converter<String, T> converter;
@@ -31,6 +41,6 @@ public class ConverterValuePropertyParser<T> implements ValuePropertyParser<T> {
 
     @Override
     public Option<T> parse(ValueProperty property) {
-        return property.value().map(converter::convert);
+        return property.value().map(this.converter::convert);
     }
 }

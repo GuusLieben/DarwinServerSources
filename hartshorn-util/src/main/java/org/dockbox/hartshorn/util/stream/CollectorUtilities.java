@@ -16,6 +16,9 @@
 
 package org.dockbox.hartshorn.util.stream;
 
+import org.dockbox.hartshorn.util.collections.ArrayListMultiMap;
+import org.dockbox.hartshorn.util.collections.MultiMap;
+
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,36 +29,47 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 
-import org.dockbox.hartshorn.util.collections.ArrayListMultiMap;
-import org.dockbox.hartshorn.util.collections.MultiMap;
+/**
+ * A utility class for custom collectors which target custom collection types.
+ *
+ * @see Collector
+ * @see MultiMap
+ * @see EntryStream
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public final class CollectorUtilities {
 
-public record CollectorUtilities<T, A, R>(
-        Supplier<A> supplier,
-        BiConsumer<A, T> accumulator,
-        BinaryOperator<A> combiner,
-        Function<A, R> finisher,
-        Set<Characteristics> characteristics
-) implements Collector<T, A, R> {
-
-    CollectorUtilities(
-            Supplier<A> supplier,
-            BiConsumer<A, T> accumulator,
-            BinaryOperator<A> combiner
-    ) {
-        this(
-                supplier,
-                accumulator,
-                combiner,
-                a -> (R) a,
-                EnumSet.of(Characteristics.IDENTITY_FINISH)
-        );
-    }
-
+    /**
+     * A collector that collects entries into a {@link MultiMap}. The default implementation is an
+     * {@link ArrayListMultiMap}.
+     *
+     * @param <K> the key type
+     * @param <V> the value type
+     *
+     * @return a collector that collects entries into a {@link MultiMap}
+     */
     public static <K, V> Collector<Entry<K, V>, ?, MultiMap<K, V>> toMultiMap() {
         return toMultiMap(ArrayListMultiMap::new, Entry::getKey, Entry::getValue);
     }
 
+    /**
+     * A collector that collects entries into a {@link MultiMap}. The default implementation is an
+     * {@link ArrayListMultiMap}.
+     *
+     * @param keyMapper the function to map the key
+     * @param valueMapper the function to map the value
+     *
+     * @param <T> the type of the stream
+     * @param <K> the key type
+     * @param <V> the value type
+     *
+     * @return a collector that collects entries into a {@link MultiMap}
+     */
     public static <T, K, V> Collector<T, ?, MultiMap<K, V>> toMultiMap(
             Function<? super T, ? extends K> keyMapper,
             Function<? super T, ? extends V> valueMapper
@@ -63,12 +77,26 @@ public record CollectorUtilities<T, A, R>(
         return toMultiMap(ArrayListMultiMap::new, keyMapper, valueMapper);
     }
 
+    /**
+     * A collector that collects entries into a {@link MultiMap}. The given supplier is used to create the map.
+     *
+     * @param supplier the supplier to create the map
+     * @param keyMapper the function to map the key
+     * @param valueMapper the function to map the value
+     *
+     * @param <T> the type of the stream
+     * @param <K> the key type
+     * @param <V> the value type
+     * @param <M> the type of the map
+     *
+     * @return a collector that collects entries into a {@link MultiMap}
+     */
     public static <T, K, V, M extends MultiMap<K, V>> Collector<T, ?, M> toMultiMap(
             Supplier<M> supplier,
             Function<? super T, ? extends K> keyMapper,
             Function<? super T, ? extends V> valueMapper
     ) {
-        return new CollectorUtilities<>(
+        return new RecordCollector<>(
                 supplier,
                 (map, next) -> map.put(keyMapper.apply(next), valueMapper.apply(next)),
                 (left, right) -> {
@@ -77,11 +105,30 @@ public record CollectorUtilities<T, A, R>(
                 });
     }
 
-    // TODO: Documentation. Bit of a hack while we wait for JEP 473 (Stream gatherers) to be released.
+    /**
+     * A collector that collects {@link Map.Entry entries} into an {@link EntryStream}.
+     *
+     * @param <K> the key type
+     * @param <V> the value type
+     *
+     * @return a collector that collects entries into an {@link EntryStream}
+     */
     public static <K, V> Collector<Entry<K, V>, ?, EntryStream<K, V>> toEntryStream() {
         return toEntryStream(HashMap::new, Entry::getKey, Entry::getValue);
     }
 
+    /**
+     * A collector that collects entries into an {@link EntryStream}.
+     *
+     * @param keyMapper the function to map the key
+     * @param valueMapper the function to map the value
+     *
+     * @param <T> the type of the stream
+     * @param <K> the key type
+     * @param <V> the value type
+     *
+     * @return a collector that collects entries into an {@link EntryStream}
+     */
     public static <T, K, V> Collector<T, ?, EntryStream<K, V>> toEntryStream(
             Function<? super T, ? extends K> keyMapper,
             Function<? super T, ? extends V> valueMapper
@@ -89,12 +136,26 @@ public record CollectorUtilities<T, A, R>(
         return toEntryStream(HashMap::new, keyMapper, valueMapper);
     }
 
+    /**
+     * A collector that collects entries into an {@link EntryStream}. The given supplier is used to create the map
+     * that is used to collect the entries in intermediate steps. The map is discarded once the collector is finished.
+     *
+     * @param mapSupplier the supplier to create the map
+     * @param keyMapper the function to map the key
+     * @param valueMapper the function to map the value
+     *
+     * @param <T> the type of the stream
+     * @param <K> the key type
+     * @param <V> the value type
+     *
+     * @return a collector that collects entries into an {@link EntryStream}
+     */
     public static <T, K, V> Collector<T, ?, EntryStream<K, V>> toEntryStream(
             Supplier<Map<K, V>> mapSupplier,
             Function<? super T, ? extends K> keyMapper,
             Function<? super T, ? extends V> valueMapper
     ) {
-        return new CollectorUtilities<>(
+        return new RecordCollector<>(
                 mapSupplier,
                 (map, next) -> map.put(keyMapper.apply(next), valueMapper.apply(next)),
                 (left, right) -> {
@@ -104,5 +165,46 @@ public record CollectorUtilities<T, A, R>(
                 EntryStream::of,
                 EnumSet.of(Characteristics.IDENTITY_FINISH)
         );
+    }
+
+    /**
+     * Simple record implementation of a {@link Collector}.
+     *
+     * @param supplier the supplier to create the accumulator
+     * @param accumulator the function to accumulate the elements
+     * @param combiner the function to combine the accumulators
+     * @param finisher the function to finish the collection
+     * @param characteristics the characteristics of the collector
+     * @param <T> the type of the stream
+     * @param <A> the type of the accumulator
+     * @param <R> the type of the result
+     *
+     * @see Collector
+     *
+     * @since 0.7.0
+     *
+     * @author Guus Lieben
+     */
+    public record RecordCollector<T, A, R>(
+            Supplier<A> supplier,
+            BiConsumer<A, T> accumulator,
+            BinaryOperator<A> combiner,
+            Function<A, R> finisher,
+            Set<Characteristics> characteristics
+    ) implements Collector<T, A, R> {
+
+        RecordCollector(
+                Supplier<A> supplier,
+                BiConsumer<A, T> accumulator,
+                BinaryOperator<A> combiner
+        ) {
+            this(
+                    supplier,
+                    accumulator,
+                    combiner,
+                    a -> (R) a,
+                    EnumSet.of(Characteristics.IDENTITY_FINISH)
+            );
+        }
     }
 }

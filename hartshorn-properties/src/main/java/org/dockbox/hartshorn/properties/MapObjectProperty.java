@@ -16,16 +16,26 @@
 
 package org.dockbox.hartshorn.properties;
 
+import org.dockbox.hartshorn.properties.loader.path.PropertyPathStyle;
 import org.dockbox.hartshorn.properties.object.ObjectPropertyParser;
 import org.dockbox.hartshorn.util.option.Option;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Basic implementation of {@link ObjectProperty} that uses a map to store {@link ConfiguredProperty properties}.
+ * When values are requested in a specific form (e.g. as a list or object), the implementation will attempt to
+ * parse the value into the requested type.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class MapObjectProperty extends AbstractMapProperty<String> implements ObjectProperty {
 
-    public MapObjectProperty(String name, Map<String, ConfiguredProperty> properties) {
-        super(name, properties);
+    public MapObjectProperty(String name, Map<String, ConfiguredProperty> properties, PropertyPathStyle pathStyle) {
+        super(name, properties, pathStyle);
     }
 
     @Override
@@ -35,9 +45,7 @@ public class MapObjectProperty extends AbstractMapProperty<String> implements Ob
 
     @Override
     protected String accessor(String key) {
-        return this.name().isBlank()
-                ? key
-                : "." + key;
+        return this.name().isBlank() ? key : this.pathStyle().field(key);
     }
 
     @Override
@@ -49,7 +57,7 @@ public class MapObjectProperty extends AbstractMapProperty<String> implements Ob
     @Override
     public List<String> keys() {
         return this.properties().keySet().stream()
-                .map(key -> key.split("\\.")[0])
+                .map(key -> this.pathStyle().resolveFields(key)[0])
                 .distinct()
                 .toList();
     }

@@ -21,9 +21,27 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation to specify the property sources to load. This annotation can be used on any class that is managed by the
+ * IoC container.
+ *
+ * <p>Property sources do not have to be files, but can be any kind of source that can be used to load properties. Paths
+ * can be absolute or relative, or an identifier that can be used to load the properties.
+ *
+ * <p>When multiple sources are specified, the order in which they are specified is the order in which they are loaded.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface PropertiesSource {
 
+    /**
+     * The property sources to load. The order in which they are specified is the order in which they are loaded.
+     *
+     * @return the property sources
+     */
     String[] value();
 }

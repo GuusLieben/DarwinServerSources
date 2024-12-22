@@ -19,18 +19,26 @@ package org.dockbox.hartshorn.properties.loader.support;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
-import org.dockbox.hartshorn.properties.loader.StandardPropertyPathFormatter;
+import org.dockbox.hartshorn.properties.loader.StylePropertyPathFormatter;
 import org.dockbox.hartshorn.properties.loader.path.PropertyPathFormatter;
 import org.dockbox.hartshorn.util.Customizer;
 
 import java.util.Set;
 
+/**
+ * A {@link JacksonPropertyRegistryLoader} that loads properties from YAML files. This loader uses a
+ * {@link YAMLMapper} to read the properties from the file.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class JacksonYamlPropertyRegistryLoader extends JacksonPropertyRegistryLoader {
 
     private final Customizer<YAMLMapper.Builder> customizer;
 
     public JacksonYamlPropertyRegistryLoader() {
-        this(new StandardPropertyPathFormatter());
+        this(new StylePropertyPathFormatter());
     }
 
     public JacksonYamlPropertyRegistryLoader(PropertyPathFormatter formatter) {

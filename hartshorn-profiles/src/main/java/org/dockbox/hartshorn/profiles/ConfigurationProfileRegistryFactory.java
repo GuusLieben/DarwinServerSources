@@ -16,19 +16,33 @@
 
 package org.dockbox.hartshorn.profiles;
 
+import org.dockbox.hartshorn.properties.PropertyRegistry;
+import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
+import org.dockbox.hartshorn.util.ApplicationRuntimeException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.dockbox.hartshorn.properties.PropertyRegistry;
-import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
-import org.dockbox.hartshorn.properties.value.StandardValuePropertyParsers;
-import org.dockbox.hartshorn.util.ApplicationRuntimeException;
-
+/**
+ * Standard implementation of {@link ProfileRegistryFactory} that creates a {@link ProfileRegistry} based on
+ * a root {@link PropertyRegistry} and additional profiles defined in the root registry. Additional profiles
+ * should be defined in a property list with the key {@value #PROFILES_PROPERTY}.
+ *
+ * <p>For example, if the root registry contains a property list with the key {@value #PROFILES_PROPERTY} and
+ * the value {@code ["profile1", "profile2"]}, this factory will create a registry with three profiles:
+ * {@value #DEFAULT_PROFILE_NAME}, {@code profile1} and {@code profile2}.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ConfigurationProfileRegistryFactory implements ProfileRegistryFactory {
+
+    private static final String PROFILES_PROPERTY = "hartshorn.profiles";
+    private static final String DEFAULT_PROFILE_NAME = "default";
 
     private final PropertyRegistryLoader propertyRegistryLoader;
     private final ProfileResourceResolver resourceResolver;
@@ -48,13 +62,14 @@ public class ConfigurationProfileRegistryFactory implements ProfileRegistryFacto
     public ProfileRegistry create(PropertyRegistry rootRegistry) {
         ProfileRegistry profileRegistry = new ConcurrentProfileRegistry();
 
-        SimpleEnvironmentProfile defaultProfile = new SimpleEnvironmentProfile("default", rootRegistry);
+        EnvironmentProfile defaultProfile = new SimpleEnvironmentProfile(DEFAULT_PROFILE_NAME, rootRegistry);
         profileRegistry.register(0, defaultProfile);
 
-        // TODO: Complex parser using predicate matching
-        List<EnvironmentProfile> additionalProfiles = rootRegistry.value("hartshorn.profiles", StandardValuePropertyParsers.STRING_LIST)
-                .map(this::profiles)
-                .orElseGet(List::of);
+        List<EnvironmentProfile> additionalProfiles = rootRegistry.list(PROFILES_PROPERTY)
+                .stream(list -> list.values().stream())
+                .flatMap(property -> property.value().stream())
+                .map(this::resolveProfile)
+                .toList();
 
         for(int i = 0; i < additionalProfiles.size(); i++) {
             EnvironmentProfile profile = additionalProfiles.get(i);
@@ -64,22 +79,18 @@ public class ConfigurationProfileRegistryFactory implements ProfileRegistryFacto
         return profileRegistry;
     }
 
-    protected List<EnvironmentProfile> profiles(String[] profileNames) {
-        List<EnvironmentProfile> profiles = new ArrayList<>();
-        for(String profileName : profileNames) {
-            Set<URI> resources = resourceResolver.resolve(profileName);
-            PropertyRegistry registry = registrySupplier.get();
-            for(URI resource : resources) {
-                try {
-                    propertyRegistryLoader.loadRegistry(registry, Path.of(resource));
-                }
-                catch(IOException e) {
-                    // TODO: Better exception type
-                    throw new ApplicationRuntimeException("Failed to load profile " + profileName, e);
-                }
+    private EnvironmentProfile resolveProfile(String profileName) {
+        Set<URI> resources = this.resourceResolver.resolve(profileName);
+        PropertyRegistry registry = this.registrySupplier.get();
+        for(URI resource : resources) {
+            try {
+                this.propertyRegistryLoader.loadRegistry(registry, Path.of(resource));
             }
-            profiles.add(new SimpleEnvironmentProfile(profileName, registry));
+            catch(IOException e) {
+                // TODO: Better exception type
+                throw new ApplicationRuntimeException("Failed to load profile " + profileName, e);
+            }
         }
-        return profiles;
+        return new SimpleEnvironmentProfile(profileName, registry);
     }
 }

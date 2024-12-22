@@ -50,6 +50,7 @@ import org.dockbox.hartshorn.proxy.ProxyOrchestrator;
 import org.dockbox.hartshorn.spi.DiscoveryService;
 import org.dockbox.hartshorn.spi.ServiceDiscoveryException;
 import org.dockbox.hartshorn.util.ApplicationRuntimeException;
+import org.dockbox.hartshorn.util.CollectionUtilities;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.Initializer;
@@ -376,7 +377,7 @@ public final class ContextualApplicationEnvironment implements ObservableApplica
 
         private final LazyStreamableConfigurer<ApplicationEnvironment, PropertySourceResolver> propertySourceResolvers = LazyStreamableConfigurer.of(customizer -> {
             customizer.add(ContextualInitializer.of(TypeDiscoveryPropertySourceResolver::new));
-            customizer.add(new PredefinedPropertySourceResolver(Set.of(
+            customizer.add(new PredefinedPropertySourceResolver(CollectionUtilities.sequencedSet(
                     FileSystemLookupStrategy.NAME + ":application",
                     ClassPathResourceLookupStrategy.NAME + ":application"
             )));

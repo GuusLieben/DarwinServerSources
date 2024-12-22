@@ -17,35 +17,39 @@
 package org.dockbox.hartshorn.properties.value;
 
 import org.dockbox.hartshorn.properties.ValueProperty;
+import org.dockbox.hartshorn.properties.value.support.ConverterValuePropertyParser;
 import org.dockbox.hartshorn.properties.value.support.GenericConverterValuePropertyParser;
 import org.dockbox.hartshorn.util.introspect.convert.support.StringToArrayConverter;
+import org.dockbox.hartshorn.util.introspect.convert.support.StringToBooleanConverter;
+import org.dockbox.hartshorn.util.introspect.convert.support.StringToCharacterConverter;
+import org.dockbox.hartshorn.util.introspect.convert.support.StringToNumberConverterFactory;
 
+/**
+ * A collection of standard {@link ValuePropertyParser} instances for common types.
+ */
 public final class StandardValuePropertyParsers {
 
     private StandardValuePropertyParsers() {
         // Static access only
     }
 
-    public static final ValuePropertyParser<Boolean> BOOLEAN = property -> property.value().map(Boolean::parseBoolean);
+    public static final ValuePropertyParser<Boolean> BOOLEAN = new ConverterValuePropertyParser<>(new StringToBooleanConverter());
 
-    public static final ValuePropertyParser<Integer> INTEGER = property -> property.value().map(Integer::parseInt);
+    public static final ValuePropertyParser<Integer> INTEGER = new ConverterValuePropertyParser<>(new StringToNumberConverterFactory().create(Integer.class));
 
-    public static final ValuePropertyParser<Long> LONG = property -> property.value().map(Long::parseLong);
+    public static final ValuePropertyParser<Long> LONG = new ConverterValuePropertyParser<>(new StringToNumberConverterFactory().create(Long.class));
 
-    public static final ValuePropertyParser<Double> DOUBLE = property -> property.value().map(Double::parseDouble);
+    public static final ValuePropertyParser<Double> DOUBLE = new ConverterValuePropertyParser<>(new StringToNumberConverterFactory().create(Double.class));
 
-    public static final ValuePropertyParser<Float> FLOAT = property -> property.value().map(Float::parseFloat);
+    public static final ValuePropertyParser<Float> FLOAT = new ConverterValuePropertyParser<>(new StringToNumberConverterFactory().create(Float.class));
 
     public static final ValuePropertyParser<String> STRING = ValueProperty::value;
 
-    public static final ValuePropertyParser<Character> CHARACTER = property -> property.value().map(value -> value.charAt(0));
+    public static final ValuePropertyParser<Character> CHARACTER = new ConverterValuePropertyParser<>(new StringToCharacterConverter());
 
-    public static final ValuePropertyParser<Short> SHORT = property -> property.value().map(Short::parseShort);
+    public static final ValuePropertyParser<Short> SHORT = new ConverterValuePropertyParser<>(new StringToNumberConverterFactory().create(Short.class));
 
-    public static final ValuePropertyParser<Byte> BYTE = property -> property.value().map(Byte::parseByte);
+    public static final ValuePropertyParser<Byte> BYTE = new ConverterValuePropertyParser<>(new StringToNumberConverterFactory().create(Byte.class));
 
-    public static final ValuePropertyParser<Byte> HEX_BYTE = property -> property.value().map(value -> (byte) Integer.parseInt(value, 16));
-
-    public static final ValuePropertyParser<String[]> STRING_LIST = new GenericConverterValuePropertyParser<>(
-            new StringToArrayConverter(), String[].class);
+    public static final ValuePropertyParser<String[]> STRING_LIST = new GenericConverterValuePropertyParser<>(new StringToArrayConverter(), String[].class);
 }

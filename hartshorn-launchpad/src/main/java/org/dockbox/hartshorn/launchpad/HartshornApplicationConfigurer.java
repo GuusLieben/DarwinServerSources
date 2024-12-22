@@ -16,40 +16,39 @@
 
 package org.dockbox.hartshorn.launchpad;
 
-import java.lang.annotation.Annotation;
-import java.util.Properties;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.InjectorEnvironment;
 import org.dockbox.hartshorn.inject.annotations.Inject;
+import org.dockbox.hartshorn.inject.annotations.OnInitialized;
+import org.dockbox.hartshorn.inject.binding.Binder;
+import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurer;
+import org.dockbox.hartshorn.inject.condition.Condition;
+import org.dockbox.hartshorn.inject.processing.ComponentPopulatorPostProcessor;
+import org.dockbox.hartshorn.inject.processing.ComponentPostProcessor;
+import org.dockbox.hartshorn.inject.processing.ComponentPreProcessor;
 import org.dockbox.hartshorn.inject.processing.construction.AnnotatedMethodComponentPostConstructor;
+import org.dockbox.hartshorn.inject.provider.HierarchicalComponentProviderOrchestrator;
+import org.dockbox.hartshorn.inject.targets.MethodsAndFieldsInjectionPointResolver;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
+import org.dockbox.hartshorn.launchpad.annotations.UseLifecycleObservers;
+import org.dockbox.hartshorn.launchpad.annotations.UseProxying;
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
+import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.launch.ApplicationBootstrapContext;
 import org.dockbox.hartshorn.launchpad.launch.ApplicationBuildContext;
 import org.dockbox.hartshorn.launchpad.launch.StandardApplicationBuilder;
 import org.dockbox.hartshorn.launchpad.launch.StandardApplicationBuilder.Configurer;
 import org.dockbox.hartshorn.launchpad.launch.StandardApplicationContextFactory;
-import org.dockbox.hartshorn.launchpad.annotations.UseLifecycleObservers;
-import org.dockbox.hartshorn.inject.binding.DefaultBindingConfigurer;
-import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
-import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
-import org.dockbox.hartshorn.inject.annotations.OnInitialized;
-import org.dockbox.hartshorn.inject.provider.HierarchicalComponentProviderOrchestrator;
-import org.dockbox.hartshorn.launchpad.annotations.UseProxying;
-import org.dockbox.hartshorn.inject.condition.Condition;
-import org.dockbox.hartshorn.inject.targets.MethodsAndFieldsInjectionPointResolver;
-import org.dockbox.hartshorn.inject.processing.ComponentPopulatorPostProcessor;
-import org.dockbox.hartshorn.inject.processing.ComponentPostProcessor;
-import org.dockbox.hartshorn.inject.processing.ComponentPreProcessor;
-import org.dockbox.hartshorn.inject.binding.Binder;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.Initializer;
 import org.dockbox.hartshorn.util.StreamableConfigurer;
+
+import java.lang.annotation.Annotation;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * High-level application configurer and initializer for Hartshorn applications. This class provides a high-level

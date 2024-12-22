@@ -16,12 +16,15 @@
 
 package org.dockbox.hartshorn.util;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.SequencedCollection;
@@ -32,11 +35,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A collection of utility methods for working with collections. This class is not meant to be
@@ -315,5 +315,12 @@ public final class CollectionUtilities {
     public static <T, R> Stream<R> flatMapArray(Collection<T> collection, Function<T, R[]> function) {
         return collection.stream()
                 .flatMap(value -> Stream.of(function.apply(value)));
+    }
+
+    @SafeVarargs
+    public static <T> SequencedSet<T> sequencedSet(T... values) {
+        SequencedSet<T> set = new LinkedHashSet<>();
+        Collections.addAll(set, values);
+        return Collections.unmodifiableSequencedSet(set);
     }
 }

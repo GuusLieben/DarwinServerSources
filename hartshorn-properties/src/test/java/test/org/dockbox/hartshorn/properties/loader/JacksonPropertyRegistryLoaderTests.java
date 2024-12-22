@@ -19,7 +19,7 @@ package test.org.dockbox.hartshorn.properties.loader;
 import org.dockbox.hartshorn.properties.MapPropertyRegistry;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
-import org.dockbox.hartshorn.properties.loader.StandardPropertyPathFormatter;
+import org.dockbox.hartshorn.properties.loader.StylePropertyPathFormatter;
 import org.dockbox.hartshorn.properties.loader.support.JacksonYamlPropertyRegistryLoader;
 import org.dockbox.hartshorn.properties.value.StandardValuePropertyParsers;
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +35,7 @@ public class JacksonPropertyRegistryLoaderTests {
     @Test
     void testComplexYamlConfigurationCanBeLoaded() throws IOException {
         // Given
-        PropertyRegistryLoader loader = new JacksonYamlPropertyRegistryLoader(new StandardPropertyPathFormatter());
+        PropertyRegistryLoader loader = new JacksonYamlPropertyRegistryLoader(new StylePropertyPathFormatter());
         Path path = Path.of("src/test/resources/complex-configuration.yml");
 
         // When: Loading registry

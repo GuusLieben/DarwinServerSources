@@ -23,8 +23,16 @@ import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.Set;
+import java.util.SequencedSet;
 
+/**
+ * Factory for creating {@link PropertyRegistry} instances that are loaded immediately after the registry is created,
+ * and thus before it is released to the caller.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class InstantLoadingPropertyRegistryFactory implements PropertyRegistryFactory {
 
     private final PropertyRegistryLoader propertyRegistryLoader;
@@ -33,12 +41,17 @@ public class InstantLoadingPropertyRegistryFactory implements PropertyRegistryFa
         this.propertyRegistryLoader = propertyRegistryLoader;
     }
 
+    /**
+     * Creates a new {@link PropertyRegistry} instance.
+     *
+     * @return the created registry
+     */
     protected PropertyRegistry createRegistry() {
         return new MapPropertyRegistry();
     }
 
     @Override
-    public PropertyRegistry createRegistry(Set<URI> sources) throws IOException {
+    public PropertyRegistry createRegistry(SequencedSet<URI> sources) throws IOException {
         PropertyRegistry propertyRegistry = this.createRegistry();
         for(URI resource : sources) {
             this.propertyRegistryLoader.loadRegistry(propertyRegistry, Path.of(resource));

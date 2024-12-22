@@ -16,6 +16,16 @@
 
 package org.dockbox.hartshorn.properties.loader.path;
 
+/**
+ * Represents a node in a property path that is an index.
+ *
+ * @param index the index of the node
+ * @param parent the parent node
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public record PropertyIndexPathNode(int index, PropertyPathNode parent) implements PropertyPathNode {
 
     @Override

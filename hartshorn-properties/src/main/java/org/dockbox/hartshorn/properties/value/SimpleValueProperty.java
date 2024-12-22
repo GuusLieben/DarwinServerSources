@@ -19,6 +19,15 @@ package org.dockbox.hartshorn.properties.value;
 import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A simple implementation of a {@link ValueProperty}.
+ *
+ * @see ValueProperty
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class SimpleValueProperty implements ValueProperty {
 
     private final String name;
@@ -39,6 +48,7 @@ public class SimpleValueProperty implements ValueProperty {
         return Option.of(this.value);
     }
 
+    @Override
     public <T> Option<T> parse(ValuePropertyParser<T> parser) {
         return parser.parse(this);
     }

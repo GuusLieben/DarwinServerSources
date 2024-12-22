@@ -17,11 +17,22 @@
 package org.dockbox.hartshorn.properties.list;
 
 import org.dockbox.hartshorn.properties.ListProperty;
+import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.properties.value.ValuePropertyParser;
+import org.dockbox.hartshorn.util.option.Option;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * A parser to convert all single values in a {@link ListProperty} to instances of a specific type. This
+ * requires all elements in the list to be compatible single-value {@link ValueProperty} instances.
+ *
+ * @param <T> the type to convert the value to
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class ValueListPropertyParser<T> implements ListPropertyParser<T> {
 
     private final ValuePropertyParser<T> delegate;
@@ -32,13 +43,9 @@ public class ValueListPropertyParser<T> implements ListPropertyParser<T> {
 
     @Override
     public Collection<T> parse(ListProperty property) {
-        Collection<T> values = new ArrayList<>();
-        for (int i = 0; i < property.size(); i++) {
-            property.get(i)
-                    .peek(value -> {
-                        values.add(this.delegate.parse(value).orNull());
-                    });
-        }
-        return values;
+        return property.values().stream()
+                .map(this.delegate::parse)
+                .flatMap(Option::stream)
+                .toList();
     }
 }

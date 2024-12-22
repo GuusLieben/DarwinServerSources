@@ -23,6 +23,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Abstract implementation of {@link ObjectProperty} that uses a map to store generic properties. It remains up to the
+ * implementation to determine the type of the properties.
+ *
+ * @param <T> the type of the properties
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public abstract class AbstractMapObjectProperty<T> implements ObjectProperty {
 
     private final String name;
@@ -39,7 +49,7 @@ public abstract class AbstractMapObjectProperty<T> implements ObjectProperty {
     }
 
     @Override
-    public <T> Option<T> parse(ObjectPropertyParser<T> parser) {
+    public <R> Option<R> parse(ObjectPropertyParser<R> parser) {
         return parser.parse(this);
     }
 
@@ -48,10 +58,21 @@ public abstract class AbstractMapObjectProperty<T> implements ObjectProperty {
         return this.name;
     }
 
+    /**
+     * Returns the property with the given name. If the property does not exist, an empty {@link Option} is returned.
+     *
+     * @param name the name of the property to retrieve
+     * @return the property with the given name, or an empty {@link Option}
+     */
     protected Option<T> property(String name) {
         return Option.of(this.properties.get(name));
     }
 
+    /**
+     * Returns the properties stored in this object property.
+     *
+     * @return the properties stored in this object property
+     */
     protected Map<String, T> properties() {
         return this.properties;
     }

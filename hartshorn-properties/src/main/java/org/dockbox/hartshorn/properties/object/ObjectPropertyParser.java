@@ -19,8 +19,24 @@ package org.dockbox.hartshorn.properties.object;
 import org.dockbox.hartshorn.properties.ObjectProperty;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A parser to convert {@link ObjectProperty} instances to instances of a specific type.
+ *
+ * @param <T> the type to convert the value to
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 @FunctionalInterface
 public interface ObjectPropertyParser<T> {
 
+    /**
+     * Parses the given {@link ObjectProperty} to an instance of the target type. If the conversion fails, an empty
+     * {@link Option} is returned.
+     *
+     * @param property the property to parse
+     * @return the parsed value, or an empty {@link Option}
+     */
     Option<T> parse(ObjectProperty property);
 }

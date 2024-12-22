@@ -18,9 +18,26 @@ package org.dockbox.hartshorn.profiles;
 
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 
+/**
+ * Represents a profile that can be used to configure an application based on the environment it is running in.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public interface EnvironmentProfile {
 
+    /**
+     * The name of the profile.
+     *
+     * @return the name of the profile
+     */
     String name();
 
+    /**
+     * The property registry of the profile.
+     *
+     * @return the property registry of the profile
+     */
     PropertyRegistry propertyRegistry();
 }

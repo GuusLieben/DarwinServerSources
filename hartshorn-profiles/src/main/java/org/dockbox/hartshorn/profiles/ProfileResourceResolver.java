@@ -19,8 +19,21 @@ package org.dockbox.hartshorn.profiles;
 import java.net.URI;
 import java.util.Set;
 
+/**
+ * Resolver to obtain resources for a specific profile. This can be used to load configuration files, for example.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+@FunctionalInterface
 public interface ProfileResourceResolver {
 
+    /**
+     * Resolves the resources for the given profile name.
+     *
+     * @param profileName the name of the profile
+     * @return the resources for the profile
+     */
     Set<URI> resolve(String profileName);
-
 }

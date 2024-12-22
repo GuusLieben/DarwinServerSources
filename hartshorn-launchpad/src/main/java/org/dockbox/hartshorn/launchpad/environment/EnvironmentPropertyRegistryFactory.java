@@ -33,9 +33,27 @@ import org.dockbox.hartshorn.util.CollectionUtilities;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.SequencedSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Factory for creating {@link PropertyRegistry} instances based on a collection of {@link PropertySourceResolver}s. The
+ * sources are resolved and loaded into the registry using a {@link PropertyRegistryLoader}, which may be composed of
+ * multiple loaders. The {@link PropertyRegistryLoader} instances are resolved from SPI providers, allowing for
+ * extensibility.
+ *
+ * @see PropertyRegistryLoader
+ * @see PropertySourceResolver
+ * @see ResourceLookup
+ * @see PropertyRegistry
+ * @see InstantLoadingPropertyRegistryFactory
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class EnvironmentPropertyRegistryFactory {
 
     public PropertyRegistry createRegistry(Collection<PropertySourceResolver> propertySourceResolvers, ResourceLookup resourceLookup) {
@@ -43,7 +61,7 @@ public class EnvironmentPropertyRegistryFactory {
         PropertyRegistryLoader propertyRegistryLoader = this.createRegistryLoader(propertyRegistryLoaders);
         PropertyRegistryFactory propertyRegistryFactory = new InstantLoadingPropertyRegistryFactory(propertyRegistryLoader);
         try {
-            Set<URI> resources = this.resolveResources(propertySourceResolvers, resourceLookup);
+            SequencedSet<URI> resources = this.resolveResources(propertySourceResolvers, resourceLookup);
             return propertyRegistryFactory.createRegistry(resources);
         }
         catch(IOException e) {
@@ -51,13 +69,11 @@ public class EnvironmentPropertyRegistryFactory {
         }
     }
 
-    private Set<URI> resolveResources(Collection<PropertySourceResolver> propertySourceResolvers, ResourceLookup resourceLookup) {
-        Set<String> sources = propertySourceResolvers.stream()
+    private SequencedSet<URI> resolveResources(Collection<PropertySourceResolver> propertySourceResolvers, ResourceLookup resourceLookup) {
+        return propertySourceResolvers.stream()
                 .flatMap(resolver -> resolver.resolve().stream())
-                .collect(Collectors.toSet());
-        return sources.stream()
                 .flatMap(source -> resourceLookup.lookup(source).stream())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Set<PropertyRegistryLoader> resolveRegistryLoaders() {

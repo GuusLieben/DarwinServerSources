@@ -16,10 +16,18 @@
 
 package org.dockbox.hartshorn.profiles;
 
-import java.util.function.Supplier;
-
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 
+import java.util.function.Supplier;
+
+/**
+ * Supplier utility for {@link PropertyRegistry} instances.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+@FunctionalInterface
 public interface PropertyRegistrySupplier extends Supplier<PropertyRegistry> {
 
 }

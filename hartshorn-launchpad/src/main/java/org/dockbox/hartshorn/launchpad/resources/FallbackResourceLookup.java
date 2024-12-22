@@ -19,7 +19,6 @@ package org.dockbox.hartshorn.launchpad.resources;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.util.ContextualInitializer;
 import org.dockbox.hartshorn.util.Customizer;
-import org.dockbox.hartshorn.util.Initializer;
 import org.dockbox.hartshorn.util.LazyStreamableConfigurer;
 import org.dockbox.hartshorn.util.StreamableConfigurer;
 
@@ -129,6 +128,13 @@ public class FallbackResourceLookup implements ResourceLookup {
         };
     }
 
+    /**
+     * A {@link Configurer} that allows for the configuration of the strategies used by the lookup.
+     *
+     * @since 0.7.0
+     *
+     * @author Guus Lieben
+     */
     public static class Configurer {
 
         private final LazyStreamableConfigurer<ApplicationEnvironment, ResourceLookupStrategy> strategies = LazyStreamableConfigurer.of(

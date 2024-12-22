@@ -16,6 +16,12 @@
 
 package org.dockbox.hartshorn.properties.loader.path;
 
+/**
+ * Represents a node in a property path that is a field.
+ *
+ * @param name the name of the field
+ * @param parent the parent node
+ */
 public record PropertyFieldPathNode(String name, PropertyPathNode parent) implements PropertyPathNode {
 
 }

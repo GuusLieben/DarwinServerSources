@@ -16,20 +16,64 @@
 
 package org.dockbox.hartshorn.properties;
 
-import java.util.List;
-
 import org.dockbox.hartshorn.properties.object.ObjectPropertyParser;
 import org.dockbox.hartshorn.util.option.Option;
 
+import java.util.List;
+
+/**
+ * Represents a property that contains other properties, accessed by a key.
+ *
+ * @see Property
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public non-sealed interface ObjectProperty extends Property {
 
+    /**
+     * Returns the keys of the properties contained in this object property.
+     *
+     * @return the keys of the properties contained in this object property
+     */
     List<String> keys();
 
+    /**
+     * Returns the property with the given name. If the property does not exist, or cannot be represented as a
+     * {@link ValueProperty}, an empty {@link Option} is returned.
+     *
+     * @param name the name of the property to retrieve
+     * @return the property with the given name, or an empty {@link Option}
+     */
     Option<ValueProperty> get(String name);
 
+    /**
+     * Returns the property with the given name. If the property does not exist, or cannot be represented as a
+     * {@link ObjectProperty}, an empty {@link Option} is returned.
+     *
+     * @param name the name of the property to retrieve
+     * @return the property with the given name, or an empty {@link Option}
+     */
     Option<ObjectProperty> object(String name);
 
+    /**
+     * Returns the property with the given name. If the property does not exist, or cannot be represented as a
+     * {@link ListProperty}, an empty {@link Option} is returned.
+     *
+     * @param name the name of the property to retrieve
+     * @return the property with the given name, or an empty {@link Option}
+     */
     Option<ListProperty> list(String name);
 
+    /**
+     * Parses the current object property using the provided parser. If the parser is unable to parse the property,
+     * an empty {@link Option} is returned.
+     *
+     * @param parser the parser to use
+     * @param <T> the type to parse the property to
+     *
+     * @return the parsed property, or an empty {@link Option}
+     */
     <T> Option<T> parse(ObjectPropertyParser<T> parser);
 }

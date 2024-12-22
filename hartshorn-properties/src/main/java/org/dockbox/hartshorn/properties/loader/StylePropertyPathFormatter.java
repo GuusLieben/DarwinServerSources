@@ -20,9 +20,31 @@ import org.dockbox.hartshorn.properties.loader.path.PropertyFieldPathNode;
 import org.dockbox.hartshorn.properties.loader.path.PropertyIndexPathNode;
 import org.dockbox.hartshorn.properties.loader.path.PropertyPathFormatter;
 import org.dockbox.hartshorn.properties.loader.path.PropertyPathNode;
+import org.dockbox.hartshorn.properties.loader.path.PropertyPathStyle;
 import org.dockbox.hartshorn.properties.loader.path.PropertyRootPathNode;
+import org.dockbox.hartshorn.properties.loader.path.StandardPropertyPathStyle;
 
-public class StandardPropertyPathFormatter implements PropertyPathFormatter {
+/**
+ * A {@link PropertyPathFormatter} that formats a {@link PropertyPathNode} to a string representation following the
+ * style defined by a {@link PropertyPathStyle}.
+ *
+ * @see PropertyPathFormatter
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+public class StylePropertyPathFormatter implements PropertyPathFormatter {
+
+    private final PropertyPathStyle style;
+
+    public StylePropertyPathFormatter() {
+        this(StandardPropertyPathStyle.INSTANCE);
+    }
+
+    public StylePropertyPathFormatter(PropertyPathStyle style) {
+        this.style = style;
+    }
 
     @Override
     public String formatPath(PropertyPathNode pathNode) {
@@ -44,12 +66,25 @@ public class StandardPropertyPathFormatter implements PropertyPathFormatter {
         };
     }
 
+    /**
+     * Formats a field node to a string representation. If the node is a top-level node, the field name is returned
+     * as-is.
+     *
+     * @param node the field node to format
+     * @return the formatted field
+     */
     protected String formatField(PropertyFieldPathNode node) {
         boolean isTopLevel = node.parent() instanceof PropertyRootPathNode;
-        return isTopLevel ? node.name() : ".%s".formatted(node.name());
+        return isTopLevel ? node.name() : this.style.field(node.name());
     }
 
+    /**
+     * Formats an index node to a string representation.
+     *
+     * @param node the index node to format
+     * @return the formatted index
+     */
     protected String formatIndex(PropertyIndexPathNode node) {
-        return "[%d]".formatted(node.index());
+        return this.style.index(node.index());
     }
 }

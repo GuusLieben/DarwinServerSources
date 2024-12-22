@@ -16,8 +16,31 @@
 
 package org.dockbox.hartshorn.util.stream;
 
-public interface BiComparator<K, V> {
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+/**
+ * A functional interface for comparing two values of different types. This serves as a utility for
+ * comparing {@link Map.Entry} instances, typically through {@link EntryStream} instances.
+ *
+ * @param <K> the key type
+ * @param <V> the value type
+ *
+ * @see Comparator
+ * @see Map.Entry
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
+@FunctionalInterface
+public interface BiComparator<K, V> extends Comparator<Map.Entry<K, V>> {
+
+    @Override
+    default int compare(Entry<K, V> kvEntry, Entry<K, V> t1) {
+        return this.compare(kvEntry.getKey(), kvEntry.getValue(), t1.getKey(), t1.getValue());
+    }
 
     int compare(K key1, V value1, K key2, V value2);
-
 }

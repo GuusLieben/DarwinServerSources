@@ -16,26 +16,49 @@
 
 package org.dockbox.hartshorn.properties.loader.support;
 
+import org.dockbox.hartshorn.properties.PropertyRegistry;
+import org.dockbox.hartshorn.properties.loader.PredicatePropertyRegistryLoader;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.dockbox.hartshorn.properties.PropertyRegistry;
-import org.dockbox.hartshorn.properties.loader.PredicatePropertyRegistryLoader;
-
+/**
+ * A {@link PredicatePropertyRegistryLoader} that delegates to multiple other loaders. This loader will
+ * delegate the loading of a registry to all loaders that are compatible with the given path.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class CompositePredicatePropertyRegistryLoader implements PredicatePropertyRegistryLoader {
 
     private final Set<PredicatePropertyRegistryLoader> loaders = new HashSet<>();
 
+    /**
+     * Adds a loader to the list of loaders that will be used to load registries.
+     *
+     * @param loader the loader to add
+     */
     public void addLoader(PredicatePropertyRegistryLoader loader) {
         this.loaders.add(loader);
     }
 
+    /**
+     * Removes a loader from the list of loaders that will be used to load registries.
+     *
+     * @param loader the loader to remove
+     */
     public void removeLoader(PredicatePropertyRegistryLoader loader) {
         this.loaders.remove(loader);
     }
 
+    /**
+     * Returns the set of loaders that are used to load registries.
+     *
+     * @return the set of loaders
+     */
     public Set<PredicatePropertyRegistryLoader> loaders() {
         return this.loaders;
     }

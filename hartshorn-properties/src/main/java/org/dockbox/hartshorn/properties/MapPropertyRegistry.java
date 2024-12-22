@@ -16,18 +16,32 @@
 
 package org.dockbox.hartshorn.properties;
 
+import org.dockbox.hartshorn.properties.loader.path.PropertyPathStyle;
+import org.dockbox.hartshorn.properties.loader.path.StandardPropertyPathStyle;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+/**
+ * A simple implementation of a {@link PropertyRegistry} that uses a {@link Map} to store the properties.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class MapPropertyRegistry extends MapObjectProperty implements PropertyRegistry {
 
     public MapPropertyRegistry() {
-        this("");
+        this(StandardPropertyPathStyle.INSTANCE);
     }
 
-    public MapPropertyRegistry(String name) {
-        super(name, Map.of());
+    public MapPropertyRegistry(PropertyPathStyle pathStyle) {
+        this("", pathStyle);
+    }
+
+    public MapPropertyRegistry(String name, PropertyPathStyle pathStyle) {
+        super(name, Map.of(), pathStyle);
     }
 
     @Override

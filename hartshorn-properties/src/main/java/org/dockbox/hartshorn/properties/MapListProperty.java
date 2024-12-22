@@ -17,25 +17,36 @@
 package org.dockbox.hartshorn.properties;
 
 import org.dockbox.hartshorn.properties.list.ListPropertyParser;
+import org.dockbox.hartshorn.properties.loader.path.PropertyPathStyle;
 import org.dockbox.hartshorn.util.option.Option;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * A {@link MapListProperty} is a {@link AbstractMapProperty} that represents a list of properties. The keys of the
+ * properties are formatted indexes.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class MapListProperty extends AbstractMapProperty<Integer> implements ListProperty {
 
-    public MapListProperty(String name, Map<String, ConfiguredProperty> properties) {
-        super(name, properties);
+    public MapListProperty(String name, Map<String, ConfiguredProperty> properties, PropertyPathStyle pathStyle) {
+        super(name, properties, pathStyle);
     }
 
     @Override
     protected String valueAccessor(Integer key) {
-        return "[" + key + "]";
+        return this.pathStyle().index(key);
     }
 
     @Override
     protected String accessor(Integer key) {
-        return "[" + key + "]";
+        return this.pathStyle().index(key);
     }
 
     @Override
@@ -46,10 +57,10 @@ public class MapListProperty extends AbstractMapProperty<Integer> implements Lis
     @Override
     public int size() {
         return this.properties().keySet().stream()
-                .map(key -> key.split("\\[")[1].split("]")[0])
+                .map(key -> this.pathStyle().resolveIndexes(key)[0])
                 .map(Integer::parseInt)
                 .max(Integer::compareTo)
-                .map(i -> i + 1) // Add one to get the size, as the max index is zero-based
+                .map(index -> index + 1) // Add one to get the size, as the max index is zero-based
                 .orElse(0);
     }
 
@@ -59,13 +70,40 @@ public class MapListProperty extends AbstractMapProperty<Integer> implements Lis
     }
 
     @Override
+    public List<ValueProperty> values() {
+        List<ValueProperty> properties = new ArrayList<>();
+        for (int i = 0; i < this.size(); i++) {
+            this.get(i).peek(properties::add);
+        }
+        return properties;
+    }
+
+    @Override
     public Option<ObjectProperty> object(int index) {
         return this.object(Integer.valueOf(index));
     }
 
     @Override
+    public List<ObjectProperty> objects() {
+        List<ObjectProperty> properties = new ArrayList<>();
+        for (int i = 0; i < this.size(); i++) {
+            this.object(i).peek(properties::add);
+        }
+        return properties;
+    }
+
+    @Override
     public Option<ListProperty> list(int index) {
         return this.list(Integer.valueOf(index));
+    }
+
+    @Override
+    public List<ListProperty> lists() {
+        List<ListProperty> properties = new ArrayList<>();
+        for (int i = 0; i < this.size(); i++) {
+            this.list(i).peek(properties::add);
+        }
+        return properties;
     }
 
     @Override

@@ -22,7 +22,7 @@ import org.dockbox.hartshorn.properties.ObjectProperty;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
-import org.dockbox.hartshorn.properties.loader.StandardPropertyPathFormatter;
+import org.dockbox.hartshorn.properties.loader.StylePropertyPathFormatter;
 import org.dockbox.hartshorn.properties.loader.support.JacksonYamlPropertyRegistryLoader;
 import org.dockbox.hartshorn.util.option.Option;
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +35,7 @@ public class PropertyRegistryTests {
 
     @Test
     void testComplexRegistryAccessing() throws IOException {
-        PropertyRegistryLoader loader = new JacksonYamlPropertyRegistryLoader(new StandardPropertyPathFormatter());
+        PropertyRegistryLoader loader = new JacksonYamlPropertyRegistryLoader(new StylePropertyPathFormatter());
         Path path = Path.of("src/test/resources/complex-configuration.yml");
 
         PropertyRegistry registry = new MapPropertyRegistry();

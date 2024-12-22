@@ -24,6 +24,13 @@ import org.dockbox.hartshorn.util.option.Option;
 
 import java.util.Map;
 
+/**
+ * Basic implementation of {@link ObjectProperty} that uses a map to store {@link Property properties}.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class SimpleObjectProperty extends AbstractMapObjectProperty<Property> {
 
     public SimpleObjectProperty(String name, Map<String, Property> properties) {
@@ -32,16 +39,16 @@ public class SimpleObjectProperty extends AbstractMapObjectProperty<Property> {
 
     @Override
     public Option<ValueProperty> get(String name) {
-        return Option.of(this.properties().get(name)).ofType(ValueProperty.class);
+        return this.property(name).ofType(ValueProperty.class);
     }
 
     @Override
     public Option<ObjectProperty> object(String name) {
-        return Option.of(this.properties().get(name)).ofType(ObjectProperty.class);
+        return this.property(name).ofType(ObjectProperty.class);
     }
 
     @Override
     public Option<ListProperty> list(String name) {
-        return Option.of(this.properties().get(name)).ofType(ListProperty.class);
+        return this.property(name).ofType(ListProperty.class);
     }
 }
