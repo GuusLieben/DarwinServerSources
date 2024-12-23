@@ -16,18 +16,16 @@
 
 package test.org.dockbox.hartshorn.inject.populate;
 
-import java.util.List;
-import java.util.function.Function;
-
+import org.dockbox.hartshorn.context.DefaultContext;
+import org.dockbox.hartshorn.inject.annotations.Inject;
 import org.dockbox.hartshorn.inject.populate.ComponentPopulationStrategy;
 import org.dockbox.hartshorn.inject.populate.ComponentPopulator;
+import org.dockbox.hartshorn.inject.populate.InjectPopulationStrategy;
 import org.dockbox.hartshorn.inject.populate.PopulateComponentContext;
+import org.dockbox.hartshorn.inject.targets.ComponentFieldInjectionPoint;
 import org.dockbox.hartshorn.inject.targets.ComponentInjectionPoint;
 import org.dockbox.hartshorn.inject.targets.ComponentMethodInjectionPoint;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
-import org.dockbox.hartshorn.inject.targets.ComponentFieldInjectionPoint;
-import org.dockbox.hartshorn.inject.populate.InjectPopulationStrategy;
-import org.dockbox.hartshorn.context.DefaultContext;
 import org.dockbox.hartshorn.test.annotations.TestBinding;
 import org.dockbox.hartshorn.test.annotations.TestComponents;
 import org.dockbox.hartshorn.test.junit.HartshornIntegrationTest;
@@ -39,7 +37,8 @@ import org.dockbox.hartshorn.util.introspect.view.TypeView;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import org.dockbox.hartshorn.inject.annotations.Inject;
+import java.util.List;
+import java.util.function.Function;
 
 import test.org.dockbox.hartshorn.inject.provider.SampleImplementation;
 import test.org.dockbox.hartshorn.inject.provider.SampleInterface;
@@ -114,7 +113,7 @@ public class ComponentPopulationTests {
     private PopulationTestComponent createAndPopulateComponent(ComponentPopulationStrategy strategy, Function<TypeView<PopulationTestComponent>, ComponentInjectionPoint<PopulationTestComponent>> injectionPointProvider) {
         PopulationTestComponent component = new PopulationTestComponent();
         TypeView<PopulationTestComponent> typeView = this.applicationContext.environment().introspector().introspect(component);
-        PopulateComponentContext<PopulationTestComponent> componentContext = new PopulateComponentContext<>(component, component, typeView);
+        PopulateComponentContext<PopulationTestComponent> componentContext = new PopulateComponentContext<>(component, component, typeView, applicationContext);
 
         ComponentInjectionPoint<PopulationTestComponent> injectionPoint = injectionPointProvider.apply(typeView);
         Assertions.assertDoesNotThrow(() -> strategy.populate(componentContext, injectionPoint));

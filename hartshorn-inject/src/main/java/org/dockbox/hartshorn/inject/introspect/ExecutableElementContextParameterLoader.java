@@ -41,6 +41,7 @@ public class ExecutableElementContextParameterLoader extends RuleBasedParameterL
         super(ApplicationBoundParameterLoaderContext.class);
         this.application = application;
         this.add(new ContextParameterLoaderRule(application));
+        this.add(new PropertyParameterLoaderRule(application.defaultProvider()));
     }
 
     @Override

@@ -16,19 +16,12 @@
 
 package org.dockbox.hartshorn.inject.introspect;
 
-import org.dockbox.hartshorn.context.Context;
-import org.dockbox.hartshorn.inject.populate.InjectContextParameterResolver;
+import org.dockbox.hartshorn.inject.populate.InjectPropertyParameterResolver;
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 
-/**
- * TODO: #1060 Add documentation
- *
- * @since 0.4.13
- *
- * @author Guus Lieben
- */
-public class ContextParameterLoaderRule extends InjectParameterResolverParameterLoaderRule {
+public class PropertyParameterLoaderRule extends InjectParameterResolverParameterLoaderRule {
 
-    public ContextParameterLoaderRule(Context sourceContext) {
-        super(new InjectContextParameterResolver(sourceContext));
+    public PropertyParameterLoaderRule(ComponentProvider componentProvider) {
+        super(new InjectPropertyParameterResolver(componentProvider));
     }
 }

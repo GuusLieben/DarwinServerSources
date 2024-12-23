@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.dockbox.hartshorn.inject.introspect;
+package org.dockbox.hartshorn.inject.annotations;
 
-import org.dockbox.hartshorn.context.Context;
-import org.dockbox.hartshorn.inject.populate.InjectContextParameterResolver;
+import org.dockbox.hartshorn.util.introspect.annotations.Extends;
 
-/**
- * TODO: #1060 Add documentation
- *
- * @since 0.4.13
- *
- * @author Guus Lieben
- */
-public class ContextParameterLoaderRule extends InjectParameterResolverParameterLoaderRule {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public ContextParameterLoaderRule(Context sourceContext) {
-        super(new InjectContextParameterResolver(sourceContext));
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Extends(Inject.class)
+public @interface Value {
+
+    String name() default "";
+
+    String defaultValue() default "";
 }

@@ -17,6 +17,7 @@
 package org.dockbox.hartshorn.inject.populate;
 
 import org.dockbox.hartshorn.context.DefaultContext;
+import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.util.introspect.view.TypeView;
 
 /**
@@ -35,11 +36,13 @@ public final class PopulateComponentContext<T> extends DefaultContext {
     private final T originalInstance;
 
     private final TypeView<T> type;
+    private final InjectionCapableApplication application;
 
-    public PopulateComponentContext(T instance, T originalInstance, TypeView<T> type) {
+    public PopulateComponentContext(T instance, T originalInstance, TypeView<T> type, InjectionCapableApplication application) {
         this.instance = instance;
         this.originalInstance = originalInstance;
         this.type = type;
+        this.application = application;
     }
 
     /**
@@ -69,5 +72,9 @@ public final class PopulateComponentContext<T> extends DefaultContext {
      */
     public TypeView<T> type() {
         return this.type;
+    }
+
+    public InjectionCapableApplication application() {
+        return this.application;
     }
 }
