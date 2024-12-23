@@ -19,6 +19,7 @@ package org.dockbox.hartshorn.properties;
 import org.dockbox.hartshorn.properties.loader.path.PropertyPathStyle;
 import org.dockbox.hartshorn.properties.loader.path.StandardPropertyPathStyle;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -58,8 +59,10 @@ public class MapPropertyRegistry extends MapObjectProperty implements PropertyRe
     }
 
     @Override
-    public void registerAll(Map<String, ConfiguredProperty> properties) {
-        this.properties().putAll(properties);
+    public void registerAll(Collection<ConfiguredProperty> properties) {
+        for (ConfiguredProperty property : properties) {
+            this.register(property);
+        }
     }
 
     @Override

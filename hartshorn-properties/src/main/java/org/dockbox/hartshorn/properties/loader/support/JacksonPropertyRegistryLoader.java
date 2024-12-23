@@ -95,9 +95,7 @@ public abstract class JacksonPropertyRegistryLoader implements PredicateProperty
      */
     protected void loadRegistry(PropertyRegistry registry, JsonNode node) {
         List<ConfiguredProperty> properties = this.loadProperties(node);
-        for(ConfiguredProperty property : properties) {
-            registry.register(property);
-        }
+        registry.registerAll(properties);
     }
 
     /**

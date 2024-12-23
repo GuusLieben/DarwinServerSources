@@ -19,8 +19,8 @@ package org.dockbox.hartshorn.properties;
 import org.dockbox.hartshorn.properties.value.ValuePropertyParser;
 import org.dockbox.hartshorn.util.option.Option;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -91,11 +91,11 @@ public interface PropertyRegistry extends ObjectProperty {
     void register(ConfiguredProperty property);
 
     /**
-     * Registers all properties in the given map in this registry.
+     * Registers all properties in the given collection in this registry.
      *
      * @param properties the properties to register
      */
-    void registerAll(Map<String, ConfiguredProperty> properties);
+    void registerAll(Collection<ConfiguredProperty> properties);
 
     /**
      * Unregisters the property with the given name from this registry.

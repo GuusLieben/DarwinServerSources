@@ -30,18 +30,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class PropertyRegistryTests {
 
     void assertWithRegistry(Collection<ConfiguredProperty> properties, Consumer<PropertyRegistry> registryConsumer) {
         PropertyRegistry registry = new MapPropertyRegistry();
-        Map<String, ConfiguredProperty> propertyMap = properties.stream()
-                .collect(Collectors.toMap(ConfiguredProperty::name, Function.identity()));
-        registry.registerAll(propertyMap);
+        registry.registerAll(properties);
         registryConsumer.accept(registry);
     }
 
