@@ -17,9 +17,10 @@
 package test.org.dockbox.hartshorn.properties;
 
 import org.dockbox.hartshorn.inject.annotations.Inject;
-import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
+import org.dockbox.hartshorn.inject.annotations.Value;
 import org.dockbox.hartshorn.launchpad.properties.PropertiesSource;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
+import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.properties.value.StandardValuePropertyParsers;
 import org.dockbox.hartshorn.test.junit.HartshornIntegrationTest;
 import org.dockbox.hartshorn.util.option.Option;
@@ -31,12 +32,25 @@ import org.junit.jupiter.api.Test;
 public class PropertiesBootstrapTests {
 
     @Test
-    void testConfigurationWasLoaded(@Inject ApplicationEnvironment environment) {
-        PropertyRegistry propertyRegistry = environment.propertyRegistry();
+    void testConfigurationValueWasLoaded_AccessedByRegistry(@Inject PropertyRegistry propertyRegistry) {
         Option<Boolean> isAdditionalConfigPresent = propertyRegistry.value(
                 "hartshorn.test.additional-config",
                 StandardValuePropertyParsers.BOOLEAN
         );
         Assertions.assertTrue(isAdditionalConfigPresent.orElse(false));
+    }
+
+    @Test
+    void testConfigurationValueWasLoaded_AccessedByInjector(@Value(name = "hartshorn.test.additional-config") boolean additionalConfig) {
+        Assertions.assertTrue(additionalConfig);
+    }
+
+    @Test
+    void testConfigurationPropertyWasLoaded_AccessedByInjector(@Value(name = "hartshorn.test.additional-config") ValueProperty property) {
+        Assertions.assertNotNull(property);
+
+        Option<String> value = property.value();
+        Assertions.assertTrue(value.present());
+        Assertions.assertEquals("true", value.get());
     }
 }
