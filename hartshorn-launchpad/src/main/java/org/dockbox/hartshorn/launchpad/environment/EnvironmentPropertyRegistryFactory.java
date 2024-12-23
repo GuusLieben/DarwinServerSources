@@ -23,7 +23,7 @@ import org.dockbox.hartshorn.launchpad.properties.PropertySourceResolver;
 import org.dockbox.hartshorn.launchpad.resources.ResourceLookup;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.properties.loader.PredicatePropertyRegistryLoader;
-import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
+import org.dockbox.hartshorn.properties.loader.PropertyRegistryPathLoader;
 import org.dockbox.hartshorn.properties.loader.support.CompositePredicatePropertyRegistryLoader;
 import org.dockbox.hartshorn.spi.DiscoveryService;
 import org.dockbox.hartshorn.spi.ServiceDiscoveryException;
@@ -40,11 +40,11 @@ import java.util.stream.Collectors;
 
 /**
  * Factory for creating {@link PropertyRegistry} instances based on a collection of {@link PropertySourceResolver}s. The
- * sources are resolved and loaded into the registry using a {@link PropertyRegistryLoader}, which may be composed of
- * multiple loaders. The {@link PropertyRegistryLoader} instances are resolved from SPI providers, allowing for
+ * sources are resolved and loaded into the registry using a {@link PropertyRegistryPathLoader}, which may be composed of
+ * multiple loaders. The {@link PropertyRegistryPathLoader} instances are resolved from SPI providers, allowing for
  * extensibility.
  *
- * @see PropertyRegistryLoader
+ * @see PropertyRegistryPathLoader
  * @see PropertySourceResolver
  * @see ResourceLookup
  * @see PropertyRegistry
@@ -57,8 +57,8 @@ import java.util.stream.Collectors;
 public class EnvironmentPropertyRegistryFactory {
 
     public PropertyRegistry createRegistry(Collection<PropertySourceResolver> propertySourceResolvers, ResourceLookup resourceLookup) {
-        Set<PropertyRegistryLoader> propertyRegistryLoaders = this.resolveRegistryLoaders();
-        PropertyRegistryLoader propertyRegistryLoader = this.createRegistryLoader(propertyRegistryLoaders);
+        Set<PropertyRegistryPathLoader> propertyRegistryLoaders = this.resolveRegistryLoaders();
+        PropertyRegistryPathLoader propertyRegistryLoader = this.createRegistryLoader(propertyRegistryLoaders);
         PropertyRegistryFactory propertyRegistryFactory = new InstantLoadingPropertyRegistryFactory(propertyRegistryLoader);
         try {
             SequencedSet<URI> resources = this.resolveResources(propertySourceResolvers, resourceLookup);
@@ -76,10 +76,10 @@ public class EnvironmentPropertyRegistryFactory {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private Set<PropertyRegistryLoader> resolveRegistryLoaders() {
-        Set<PropertyRegistryLoader> propertyRegistryLoaders;
+    private Set<PropertyRegistryPathLoader> resolveRegistryLoaders() {
+        Set<PropertyRegistryPathLoader> propertyRegistryLoaders;
         try {
-            propertyRegistryLoaders = DiscoveryService.instance().discoverAll(PropertyRegistryLoader.class);
+            propertyRegistryLoaders = DiscoveryService.instance().discoverAll(PropertyRegistryPathLoader.class);
         }
         catch(ServiceDiscoveryException e) {
             throw new ComponentInitializationException("Failed to initialize PropertyRegistryLoaders", e);
@@ -87,14 +87,14 @@ public class EnvironmentPropertyRegistryFactory {
         return propertyRegistryLoaders;
     }
 
-    private PropertyRegistryLoader createRegistryLoader(Collection<PropertyRegistryLoader> propertyRegistryLoaders) {
-        PropertyRegistryLoader propertyRegistryLoader;
+    private PropertyRegistryPathLoader createRegistryLoader(Collection<PropertyRegistryPathLoader> propertyRegistryLoaders) {
+        PropertyRegistryPathLoader propertyRegistryLoader;
         if (propertyRegistryLoaders.size() == 1) {
             propertyRegistryLoader = CollectionUtilities.first(propertyRegistryLoaders);
         }
         else {
             CompositePredicatePropertyRegistryLoader composite = new CompositePredicatePropertyRegistryLoader();
-            for(PropertyRegistryLoader registryLoader : propertyRegistryLoaders) {
+            for(PropertyRegistryPathLoader registryLoader : propertyRegistryLoaders) {
                 if (registryLoader instanceof PredicatePropertyRegistryLoader predicateLoader) {
                     composite.addLoader(predicateLoader);
                 }

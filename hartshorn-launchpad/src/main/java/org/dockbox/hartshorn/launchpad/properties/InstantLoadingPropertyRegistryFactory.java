@@ -18,7 +18,7 @@ package org.dockbox.hartshorn.launchpad.properties;
 
 import org.dockbox.hartshorn.properties.MapPropertyRegistry;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
-import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
+import org.dockbox.hartshorn.properties.loader.PropertyRegistryPathLoader;
 
 import java.io.IOException;
 import java.net.URI;
@@ -35,9 +35,9 @@ import java.util.SequencedSet;
  */
 public class InstantLoadingPropertyRegistryFactory implements PropertyRegistryFactory {
 
-    private final PropertyRegistryLoader propertyRegistryLoader;
+    private final PropertyRegistryPathLoader propertyRegistryLoader;
 
-    public InstantLoadingPropertyRegistryFactory(PropertyRegistryLoader propertyRegistryLoader) {
+    public InstantLoadingPropertyRegistryFactory(PropertyRegistryPathLoader propertyRegistryLoader) {
         this.propertyRegistryLoader = propertyRegistryLoader;
     }
 

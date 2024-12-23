@@ -17,7 +17,7 @@
 package org.dockbox.hartshorn.profiles;
 
 import org.dockbox.hartshorn.properties.PropertyRegistry;
-import org.dockbox.hartshorn.properties.loader.PropertyRegistryLoader;
+import org.dockbox.hartshorn.properties.loader.PropertyRegistryPathLoader;
 import org.dockbox.hartshorn.util.ApplicationRuntimeException;
 
 import java.io.IOException;
@@ -44,12 +44,12 @@ public class ConfigurationProfileRegistryFactory implements ProfileRegistryFacto
     private static final String PROFILES_PROPERTY = "hartshorn.profiles";
     private static final String DEFAULT_PROFILE_NAME = "default";
 
-    private final PropertyRegistryLoader propertyRegistryLoader;
+    private final PropertyRegistryPathLoader propertyRegistryLoader;
     private final ProfileResourceResolver resourceResolver;
     private final PropertyRegistrySupplier registrySupplier;
 
     public ConfigurationProfileRegistryFactory(
-            PropertyRegistryLoader propertyRegistryLoader,
+            PropertyRegistryPathLoader propertyRegistryLoader,
             ProfileResourceResolver resourceResolver,
             PropertyRegistrySupplier registrySupplier
     ) {

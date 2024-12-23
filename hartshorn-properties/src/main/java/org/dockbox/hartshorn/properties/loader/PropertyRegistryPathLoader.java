@@ -30,7 +30,7 @@ import java.nio.file.Path;
  * @author Guus Lieben
  */
 @FunctionalInterface
-public interface PropertyRegistryLoader {
+public interface PropertyRegistryPathLoader {
 
     /**
      * Loads the given {@link PropertyRegistry} with properties from the given {@link Path}.

@@ -19,14 +19,14 @@ package org.dockbox.hartshorn.properties.loader;
 import java.nio.file.Path;
 
 /**
- * A {@link PropertyRegistryLoader} that can be tested for compatibility with a given path before loading
+ * A {@link PropertyRegistryPathLoader} that can be tested for compatibility with a given path before loading
  * the registry.
  *
  * @since 0.7.0
  *
  * @author Guus Lieben
  */
-public interface PredicatePropertyRegistryLoader extends PropertyRegistryLoader {
+public interface PredicatePropertyRegistryLoader extends PropertyRegistryPathLoader {
 
     /**
      * Tests if the given path is compatible with this loader. If this method returns {@code true}, the loader
