@@ -17,7 +17,7 @@
 package test.org.dockbox.hartshorn.properties;
 
 import org.dockbox.hartshorn.inject.annotations.Inject;
-import org.dockbox.hartshorn.inject.annotations.Value;
+import org.dockbox.hartshorn.inject.annotations.PropertyValue;
 import org.dockbox.hartshorn.launchpad.properties.PropertiesSource;
 import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.properties.ValueProperty;
@@ -41,12 +41,12 @@ public class PropertiesBootstrapTests {
     }
 
     @Test
-    void testConfigurationValueWasLoaded_AccessedByInjector(@Value(name = "hartshorn.test.additional-config") boolean additionalConfig) {
+    void testConfigurationValueWasLoaded_AccessedByInjector(@PropertyValue(name = "hartshorn.test.additional-config") boolean additionalConfig) {
         Assertions.assertTrue(additionalConfig);
     }
 
     @Test
-    void testConfigurationPropertyWasLoaded_AccessedByInjector(@Value(name = "hartshorn.test.additional-config") ValueProperty property) {
+    void testConfigurationPropertyWasLoaded_AccessedByInjector(@PropertyValue(name = "hartshorn.test.additional-config") ValueProperty property) {
         Assertions.assertNotNull(property);
 
         Option<String> value = property.value();

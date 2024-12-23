@@ -16,9 +16,20 @@
 
 package org.dockbox.hartshorn.inject.introspect;
 
+import org.dockbox.hartshorn.inject.annotations.PropertyValue;
 import org.dockbox.hartshorn.inject.populate.InjectPropertyParameterResolver;
 import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 
+/**
+ * A parameter loader rule that loads parameters annotated with {@link PropertyValue}. Values are resolved from the {@link
+ * org.dockbox.hartshorn.properties.PropertyRegistry}, or from the {@link PropertyValue#defaultValue()} if no value is found.
+ *
+ * @see InjectPropertyParameterResolver
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class PropertyParameterLoaderRule extends InjectParameterResolverParameterLoaderRule {
 
     public PropertyParameterLoaderRule(ComponentProvider componentProvider) {

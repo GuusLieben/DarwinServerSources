@@ -28,6 +28,15 @@ import org.dockbox.hartshorn.util.introspect.view.ParameterView;
 import org.dockbox.hartshorn.util.introspect.view.TypeView;
 import org.dockbox.hartshorn.util.option.Option;
 
+/**
+ * A parameter loader rule that loads parameters based on the {@link InjectParameterResolver} provided. By default,
+ * this rule also keeps track of whether the parameter is required or not, and throws a {@link ComponentRequiredException}
+ * if the parameter is required but could not be resolved.
+ *
+ * @since 0.7.0
+ *
+ * @author Guus Lieben
+ */
 public class InjectParameterResolverParameterLoaderRule implements ParameterLoaderRule<ApplicationBoundParameterLoaderContext> {
 
     private final RequireInjectionPointRule requireRule = new AnnotatedInjectionPointRequireRule();
