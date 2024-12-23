@@ -16,6 +16,8 @@
 
 package org.dockbox.hartshorn.launchpad.properties;
 
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,7 +30,16 @@ import java.lang.annotation.Target;
  * <p>Property sources do not have to be files, but can be any kind of source that can be used to load properties. Paths
  * can be absolute or relative, or an identifier that can be used to load the properties.
  *
+ * <p>For example, the following paths are valid by default:
+ * <ul>
+ *     <li>{@code classpath:application.properties}, through {@link org.dockbox.hartshorn.launchpad.resources.ClassPathResourceLookupStrategy}</li>
+ *     <li>{@code fs:/etc/application.properties}, through {@link org.dockbox.hartshorn.launchpad.resources.FileSystemLookupStrategy}</li>
+ * </ul>
+ *
  * <p>When multiple sources are specified, the order in which they are specified is the order in which they are loaded.
+ *
+ * @see ApplicationEnvironment#resourceLookup()
+ * @see TypeDiscoveryPropertySourceResolver
  *
  * @since 0.7.0
  *
