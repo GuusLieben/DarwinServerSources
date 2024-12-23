@@ -16,16 +16,14 @@
 
 package org.dockbox.hartshorn.test.junit;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Optional;
-
 import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.annotations.Inject;
 import org.dockbox.hartshorn.inject.introspect.ApplicationBoundParameterLoaderContext;
 import org.dockbox.hartshorn.inject.introspect.ExecutableElementContextParameterLoader;
 import org.dockbox.hartshorn.util.TypeUtils;
 import org.dockbox.hartshorn.util.introspect.Introspector;
+import org.dockbox.hartshorn.util.introspect.annotations.VirtualHierarchyAnnotationLookup;
+import org.dockbox.hartshorn.util.introspect.reflect.ReflectionElementAnnotationsIntrospector;
 import org.dockbox.hartshorn.util.introspect.util.ParameterLoader;
 import org.dockbox.hartshorn.util.introspect.view.MethodView;
 import org.dockbox.hartshorn.util.option.Option;
@@ -33,6 +31,10 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * A parameter resolver for JUnit 5 that resolves parameters annotated with {@link Inject}, and optionally
@@ -53,9 +55,12 @@ public class HartshornInjectParameterResolver implements ParameterResolver {
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return parameterContext.isAnnotated(Inject.class)
-                || JAVAX_INJECT.test(parameterContext::isAnnotated)
-                || JAKARTA_INJECT.test(parameterContext::isAnnotated);
+        ReflectionElementAnnotationsIntrospector introspector = new ReflectionElementAnnotationsIntrospector(
+                null, parameterContext.getParameter(), new VirtualHierarchyAnnotationLookup()
+        );
+        return introspector.has(Inject.class)
+                || JAVAX_INJECT.test(introspector::has)
+                || JAKARTA_INJECT.test(introspector::has);
     }
 
     @Override
