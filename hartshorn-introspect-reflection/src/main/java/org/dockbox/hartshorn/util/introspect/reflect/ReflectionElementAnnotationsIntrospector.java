@@ -16,6 +16,12 @@
 
 package org.dockbox.hartshorn.util.introspect.reflect;
 
+import org.dockbox.hartshorn.util.TypeUtils;
+import org.dockbox.hartshorn.util.introspect.ElementAnnotationsIntrospector;
+import org.dockbox.hartshorn.util.introspect.Introspector;
+import org.dockbox.hartshorn.util.introspect.annotations.AnnotationLookup;
+import org.dockbox.hartshorn.util.option.Option;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.AnnotatedElement;
@@ -26,12 +32,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import org.dockbox.hartshorn.util.TypeUtils;
-import org.dockbox.hartshorn.util.introspect.ElementAnnotationsIntrospector;
-import org.dockbox.hartshorn.util.introspect.Introspector;
-import org.dockbox.hartshorn.util.introspect.annotations.AnnotationLookup;
-import org.dockbox.hartshorn.util.option.Option;
 
 /**
  * TODO: #1059 Add documentation
@@ -69,14 +69,14 @@ public class ReflectionElementAnnotationsIntrospector implements ElementAnnotati
     public Set<Annotation> all() {
         return this.annotationCache().values().stream()
             .filter(Objects::nonNull)
-            .collect(Collectors.toUnmodifiableSet());
+            .collect(Collectors.toSet());
     }
 
     @Override
     public Set<Annotation> annotedWith(Class<? extends Annotation> annotation) {
         return this.all().stream()
                 .filter(presentAnnotation -> this.introspector.introspect(presentAnnotation.annotationType()).annotations().has(annotation))
-                .collect(Collectors.toUnmodifiableSet());
+                .collect(Collectors.toSet());
     }
 
     @Override
