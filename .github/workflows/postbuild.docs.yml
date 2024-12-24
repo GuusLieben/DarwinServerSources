@@ -14,7 +14,7 @@ jobs:
           java-version: 21
           distribution: temurin
       - name: Build developer documentation
-        run: mvn clean site -P ci -Dexecution.antora.skip=false -Dantora.playbook=playbook-local.yml
+        run: mvn clean install -P ci -Dexecution.antora.skip=false -Dantora.playbook=playbook-local.yml
       - name: Build Javadocs
         run: mvn site -P ci -Dexecution.javadoc.skip=false
       - name: Archive documentation artifacts

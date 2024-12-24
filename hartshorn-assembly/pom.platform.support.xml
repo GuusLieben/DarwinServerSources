@@ -448,7 +448,7 @@
                 <executions>
                     <execution>
                         <id>antora-site</id>
-                        <phase>site</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>antora</goal>
                         </goals>
