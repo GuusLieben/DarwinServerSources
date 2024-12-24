@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 the original author or authors.
+ * Copyright 2019-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class MultimapTests {
                 Arguments.of(new SynchronizedHashSetMultiMap<>())
         );
     }
-    
+
     @ParameterizedTest
     @MethodSource("multiMapImplementations")
     void testAllValuesIsNonNull(MultiMap<String, String> map) {
@@ -188,7 +188,7 @@ public class MultimapTests {
     void testRemoveRemovesAllEntries(MultiMap<String, String> map) {
         map.put("test", "test");
         Assertions.assertTrue(map.containsEntry("test", "test"));
-        
+
         map.remove("test", "test");
         Assertions.assertFalse(map.containsEntry("test", "test"));
     }
@@ -198,7 +198,7 @@ public class MultimapTests {
     void testRemoveKeyRemovesKey(MultiMap<String, String> map) {
         map.put("test", "test");
         Assertions.assertTrue(map.containsKey("test"));
-        
+
         map.remove("test");
         Assertions.assertFalse(map.containsKey("test"));
     }
@@ -208,7 +208,7 @@ public class MultimapTests {
     void testReplaceReplacesMatchingEntries(MultiMap<String, String> map) {
         map.put("test", "test");
         Assertions.assertTrue(map.containsEntry("test", "test"));
-        
+
         map.replace("test", "test", "test2");
         Assertions.assertFalse(map.containsEntry("test", "test"));
         Assertions.assertTrue(map.containsEntry("test", "test2"));

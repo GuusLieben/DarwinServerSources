@@ -16,8 +16,18 @@
 
 package org.dockbox.hartshorn.inject.binding;
 
-import java.util.ArrayList;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.dockbox.hartshorn.inject.ComponentKey;
+import org.dockbox.hartshorn.inject.CompositeQualifier;
+import org.dockbox.hartshorn.inject.provider.InstantiationStrategy;
+import org.dockbox.hartshorn.inject.provider.TypeAwareInstantiationStrategy;
+import org.dockbox.hartshorn.util.option.Option;
+import org.dockbox.hartshorn.util.stream.EntryStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -26,15 +36,6 @@ import java.util.NavigableSet;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.dockbox.hartshorn.inject.ComponentKey;
-import org.dockbox.hartshorn.inject.CompositeQualifier;
-import org.dockbox.hartshorn.inject.provider.InstantiationStrategy;
-import org.dockbox.hartshorn.inject.provider.TypeAwareInstantiationStrategy;
-import org.dockbox.hartshorn.util.option.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A base implementation of a {@link BindingHierarchy}. This implementation tracks providers by priority, and allows
@@ -157,18 +158,15 @@ public abstract class AbstractBindingHierarchy<T> implements BindingHierarchy<T>
             qualifiers = " " + qualifier;
         }
 
-        // The priorities are stored high to low, however we want to display them as low-to-high.
-        List<Entry<Integer, InstantiationStrategy<T>>> entries = new ArrayList<>(this.priorityProviders().entrySet());
-        Collections.reverse(entries);
-
-        String hierarchy = entries.stream()
-                .map(entry -> {
-                    InstantiationStrategy<T> value = entry.getValue();
-                    String target = value.toString();
-                    if (value instanceof TypeAwareInstantiationStrategy<?> typeAwareProvider) {
+        // TODO: Verify order is still correct after changes (display low-to-high)
+        String hierarchy = EntryStream.of(this.priorityProviders())
+                .sortedKeys(Comparator.reverseOrder())
+                .map((priority, strategy) -> {
+                    String target = strategy.toString();
+                    if (strategy instanceof TypeAwareInstantiationStrategy<?> typeAwareProvider) {
                         target = typeAwareProvider.type().getSimpleName();
                     }
-                    return "%s: %s".formatted(String.valueOf(entry.getKey()), target);
+                    return "%s: %s".formatted(String.valueOf(priority), target);
                 })
                 .collect(Collectors.joining(" -> "));
 

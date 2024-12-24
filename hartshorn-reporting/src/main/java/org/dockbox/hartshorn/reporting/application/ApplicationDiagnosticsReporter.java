@@ -18,8 +18,6 @@ package org.dockbox.hartshorn.reporting.application;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -31,10 +29,12 @@ import org.dockbox.hartshorn.launchpad.ApplicationContext;
 import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.lifecycle.ObservableApplicationEnvironment;
 import org.dockbox.hartshorn.launchpad.lifecycle.Observer;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.reporting.CategorizedDiagnosticsReporter;
 import org.dockbox.hartshorn.reporting.ConfigurableDiagnosticsReporter;
 import org.dockbox.hartshorn.reporting.DiagnosticsPropertyCollector;
 import org.dockbox.hartshorn.reporting.Reportable;
+import org.dockbox.hartshorn.util.CollectionUtilities;
 
 /**
  * A diagnostics reporter that reports information about the application. This includes the following information:
@@ -112,8 +112,8 @@ public class ApplicationDiagnosticsReporter implements ConfigurableDiagnosticsRe
      * @param collector the collector to write to
      */
     protected void reportApplicationProperties(DiagnosticsPropertyCollector collector) {
-        Properties properties = this.applicationContext.properties().properties();
-        Reportable reporter = new PropertiesReporter(properties);
+        PropertyRegistry registry = this.applicationContext.environment().propertyRegistry();
+        Reportable reporter = new PropertiesReporter(registry);
         collector.property("properties").writeDelegate(reporter);
     }
 
@@ -143,9 +143,9 @@ public class ApplicationDiagnosticsReporter implements ConfigurableDiagnosticsRe
                             .collect(Collectors.groupingBy(Observer::getClass));
 
             collector.property("observers").writeDelegate(observerCollector -> {
-                for (Entry<Class<? extends Observer>, List<Observer>> entry : observers.entrySet()) {
-                    observerCollector.property(entry.getKey().getSimpleName()).writeInts(entry.getValue().size());
-                }
+                CollectionUtilities.iterateEntries(observers.entrySet(), (type, instances) -> {
+                    observerCollector.property(type.getSimpleName()).writeInts(instances.size());
+                });
             });
         }
     }

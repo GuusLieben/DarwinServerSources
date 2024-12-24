@@ -16,11 +16,11 @@
 
 package org.dockbox.hartshorn.util.introspect.reflect;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-
 import org.dockbox.hartshorn.util.Tristate;
 import org.dockbox.hartshorn.util.introspect.IntrospectionEnvironment;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 /**
  * TODO: #1059 Add documentation
@@ -52,7 +52,7 @@ public class ReflectionIntrospectionEnvironment implements IntrospectionEnvironm
         return this.parameterNamesAvailable.booleanValue();
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({ "unused", "DollarSignInName" })
     private void $__hartshorn$__ignore(Object parameterCheck) {
         throw new UnsupportedOperationException("This method is a placeholder used to discover whether parameter names are available. It should never be called.");
     }

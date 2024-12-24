@@ -33,7 +33,10 @@ import org.dockbox.hartshorn.inject.provider.PostProcessingComponentProvider
 import org.dockbox.hartshorn.launchpad.ApplicationContext
 import org.dockbox.hartshorn.launchpad.DelegatingApplicationContext
 import org.dockbox.hartshorn.launchpad.SimpleApplicationContext
-import org.dockbox.hartshorn.launchpad.environment.*
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment
+import org.dockbox.hartshorn.launchpad.environment.ClasspathResourceLocator
+import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment
+import org.dockbox.hartshorn.launchpad.environment.FileSystemProvider
 import org.dockbox.hartshorn.launchpad.launch.ApplicationContextFactory
 import org.dockbox.hartshorn.launchpad.launch.StandardApplicationBuilder
 import org.dockbox.hartshorn.launchpad.launch.StandardApplicationContextFactory
@@ -109,9 +112,6 @@ class BootstrapConfigurationContractTests {
 
         assertDeferred(instance) { configurer, deferred: ExceptionHandler? -> configurer.exceptionHandler(deferred) }
         assertContextInitializer(instance) { configurer, initializer -> configurer.exceptionHandler(initializer) }
-
-        assertDeferred(instance) { configurer, deferred: ApplicationArgumentParser? -> configurer.applicationArgumentParser(deferred) }
-        assertContextInitializer(instance) { configurer, initializer -> configurer.applicationArgumentParser(initializer) }
 
         assertDeferred(instance) { configurer, deferred: ClasspathResourceLocator? -> configurer.classpathResourceLocator(deferred) }
         assertContextInitializer(instance) { configurer, initializer -> configurer.classpathResourceLocator(initializer) }

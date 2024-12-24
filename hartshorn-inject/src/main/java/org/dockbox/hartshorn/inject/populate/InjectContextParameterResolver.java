@@ -65,7 +65,7 @@ public class InjectContextParameterResolver implements InjectParameterResolver {
     private static ContextIdentity<? extends ContextView> getContextKey(InjectionPoint injectionPoint) {
         String name = injectionPoint.injectionPoint().annotations()
                 // Unlike components, contexts only support named qualifiers, so we don't
-                // need to include MetaQualifier annotated annotations here.
+                // need to include Qualifier annotated annotations here.
                 .get(Named.class)
                 .map(Named::value)
                 .orNull();

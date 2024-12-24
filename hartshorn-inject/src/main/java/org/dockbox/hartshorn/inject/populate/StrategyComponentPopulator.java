@@ -50,14 +50,16 @@ import java.util.Set;
 public class StrategyComponentPopulator implements ComponentPopulator {
 
     private final List<ComponentPopulationStrategy> strategies;
+    private final InjectionCapableApplication application;
     private final ProxyOrchestrator proxyOrchestrator;
     private final ComponentInjectionPointsResolver injectionPointsResolver;
 
     public StrategyComponentPopulator(
-            ProxyOrchestrator proxyOrchestrator,
+            InjectionCapableApplication application, ProxyOrchestrator proxyOrchestrator,
             ComponentInjectionPointsResolver injectionPointsResolver,
             List<ComponentPopulationStrategy> strategies
     ) {
+        this.application = application;
         this.proxyOrchestrator = proxyOrchestrator;
         this.injectionPointsResolver = injectionPointsResolver;
         this.strategies = strategies;
@@ -77,7 +79,8 @@ public class StrategyComponentPopulator implements ComponentPopulator {
             PopulateComponentContext<T> context = new PopulateComponentContext<>(
                     modifiableInstance,
                     instance,
-                    typeView
+                    typeView,
+                    this.application
             );
             this.populate(context);
             return instance;
@@ -111,6 +114,7 @@ public class StrategyComponentPopulator implements ComponentPopulator {
             InjectionCapableApplication application = context.input();
             InjectorEnvironment environment = application.environment();
             return new StrategyComponentPopulator(
+                    application,
                     environment.proxyOrchestrator(),
                     environment.injectionPointsResolver(),
                     List.copyOf(populationStrategies)

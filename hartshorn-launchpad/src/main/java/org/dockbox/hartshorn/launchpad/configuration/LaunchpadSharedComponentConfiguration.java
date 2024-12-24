@@ -16,6 +16,7 @@
 
 package org.dockbox.hartshorn.launchpad.configuration;
 
+import org.dockbox.hartshorn.inject.annotations.CompositeMember;
 import org.dockbox.hartshorn.inject.annotations.InfrastructurePriority;
 import org.dockbox.hartshorn.inject.annotations.Strict;
 import org.dockbox.hartshorn.inject.annotations.configuration.Configuration;
@@ -27,10 +28,13 @@ import org.dockbox.hartshorn.inject.component.ComponentRegistry;
 import org.dockbox.hartshorn.inject.targets.InjectionPoint;
 import org.dockbox.hartshorn.launchpad.annotations.UseLaunchpad;
 import org.dockbox.hartshorn.launchpad.condition.RequiresActivator;
+import org.dockbox.hartshorn.properties.ValueProperty;
+import org.dockbox.hartshorn.properties.convert.ValuePropertyToObjectConverterFactory;
 import org.dockbox.hartshorn.util.introspect.Introspector;
 import org.dockbox.hartshorn.util.introspect.convert.ConversionService;
 import org.dockbox.hartshorn.util.introspect.convert.Converter;
 import org.dockbox.hartshorn.util.introspect.convert.ConverterFactory;
+import org.dockbox.hartshorn.util.introspect.convert.ConvertersCustomizer;
 import org.dockbox.hartshorn.util.introspect.convert.GenericConverter;
 import org.dockbox.hartshorn.util.introspect.convert.StandardConversionService;
 import org.dockbox.hartshorn.util.introspect.view.ExecutableElementView;
@@ -73,7 +77,8 @@ public class LaunchpadSharedComponentConfiguration {
             Introspector introspector,
             @Strict(false) ComponentCollection<GenericConverter> genericConverters,
             @Strict(false) ComponentCollection<ConverterFactory<?, ?>> converterFactories,
-            @Strict(false) ComponentCollection<Converter<?, ?>> converters
+            @Strict(false) ComponentCollection<Converter<?, ?>> converters,
+            @Strict(false) ComponentCollection<ConvertersCustomizer> customizers
     ) {
         StandardConversionService service = new StandardConversionService(introspector).withDefaults();
 
@@ -81,6 +86,17 @@ public class LaunchpadSharedComponentConfiguration {
         converterFactories.forEach(service::addConverterFactory);
         converters.forEach(service::addConverter);
 
+        customizers.forEach(customizer -> customizer.configure(service, service));
+
         return service;
+    }
+
+    @Singleton
+    @CompositeMember
+    public ConvertersCustomizer additionalInternalConvertersCustomizer() {
+        return (conversionService, converterRegistry) -> {
+            // From Hartshorn Properties
+            converterRegistry.addConverterFactory(ValueProperty.class, new ValuePropertyToObjectConverterFactory(conversionService));
+        };
     }
 }

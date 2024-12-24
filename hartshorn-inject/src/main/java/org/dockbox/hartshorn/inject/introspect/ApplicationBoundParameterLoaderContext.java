@@ -16,21 +16,21 @@
 
 package org.dockbox.hartshorn.inject.introspect;
 
-import java.util.List;
-
-import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.context.Context;
 import org.dockbox.hartshorn.context.ContextIdentity;
 import org.dockbox.hartshorn.context.ContextView;
-import org.dockbox.hartshorn.inject.DefaultFallbackCompatibleContext;
-import org.dockbox.hartshorn.inject.InjectionCapableApplication;
-import org.dockbox.hartshorn.inject.FallbackCompatibleContext;
+import org.dockbox.hartshorn.inject.ComponentKey;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
+import org.dockbox.hartshorn.inject.DefaultFallbackCompatibleContext;
+import org.dockbox.hartshorn.inject.FallbackCompatibleContext;
+import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.scope.Scope;
 import org.dockbox.hartshorn.util.introspect.util.ParameterLoaderContext;
 import org.dockbox.hartshorn.util.introspect.view.ExecutableElementView;
 import org.dockbox.hartshorn.util.option.Option;
+
+import java.util.List;
 
 /**
  * TODO: #1060 Add documentation
@@ -60,6 +60,18 @@ public class ApplicationBoundParameterLoaderContext extends ParameterLoaderConte
         this.application = application;
         this.provider = provider;
         this.scope = scope;
+    }
+
+    public InjectionCapableApplication application() {
+        return this.application;
+    }
+
+    public Scope scope() {
+        return this.scope;
+    }
+
+    public Context context() {
+        return this.context;
     }
 
     public ComponentProvider provider() {

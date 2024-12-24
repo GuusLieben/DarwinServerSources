@@ -16,13 +16,12 @@
 
 package org.dockbox.hartshorn.launchpad.environment;
 
-import java.util.Properties;
-import org.dockbox.hartshorn.inject.ExceptionHandler;
 import org.dockbox.hartshorn.inject.ComponentKey;
+import org.dockbox.hartshorn.inject.ExceptionHandler;
 import org.dockbox.hartshorn.inject.ManagedComponentEnvironment;
 import org.dockbox.hartshorn.launchpad.ApplicationContext;
-import org.dockbox.hartshorn.launchpad.HartshornApplication;
 import org.dockbox.hartshorn.launchpad.context.ApplicationContextCarrier;
+import org.dockbox.hartshorn.launchpad.resources.ResourceLookup;
 
 /**
  * The environment of an active application. The environment can only be responsible for one {@link ApplicationContext},
@@ -61,9 +60,17 @@ public interface ApplicationEnvironment extends ApplicationContextCarrier, Excep
     EnvironmentTypeResolver typeResolver();
 
     /**
-     * Indicates whether the current environment exists within a Continuous Integration environment. If this returns
-     * {@code true} this indicates the application is not active in a production environment. For example, the
-     * default test suite for the framework will indicate the environment acts as a CI environment.
+     * Gets the {@link ResourceLookup} for the current environment. The lookup is responsible for locating resources
+     * within the environment, and is typically used for loading configuration files and similar resources.
+     *
+     * @return The resource lookup
+     */
+    ResourceLookup resourceLookup();
+
+    /**
+     * Indicates whether the current environment exists within a build environment. If this returns {@code true}
+     * this indicates the application is not active in a production environment. For example, the default test suite
+     * for the framework will indicate the environment acts as a CI environment.
      *
      * @return {@code true} if the environment is a CI environment, {@code false} otherwise.
      */
@@ -86,16 +93,4 @@ public interface ApplicationEnvironment extends ApplicationContextCarrier, Excep
      */
     boolean isStrictMode();
 
-    /**
-     * Gets the raw arguments passed to the application. This is typically the arguments passed to the main method, or
-     * indirectly set in {@link HartshornApplication#create(String...)}. The
-     * arguments are returned as a {@link Properties} object, where the key is the argument name, and the value is the
-     * argument value. The key/value pair is parsed by the active {@link ApplicationArgumentParser}.
-     *
-     * @return The raw arguments
-     *
-     * @see StandardApplicationArgumentParser
-     * @see ApplicationArgumentParser
-     */
-    Properties rawArguments();
 }

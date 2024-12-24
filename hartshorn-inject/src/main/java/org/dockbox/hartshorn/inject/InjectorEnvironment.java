@@ -18,6 +18,7 @@ package org.dockbox.hartshorn.inject;
 
 import org.dockbox.hartshorn.inject.targets.ComponentInjectionPoint;
 import org.dockbox.hartshorn.inject.targets.ComponentInjectionPointsResolver;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.proxy.ProxyOrchestrator;
 import org.dockbox.hartshorn.util.introspect.Introspector;
 
@@ -68,6 +69,8 @@ public interface InjectorEnvironment {
     ProxyOrchestrator proxyOrchestrator();
 
     InjectorConfiguration configuration();
+
+    PropertyRegistry propertyRegistry();
 
     ExceptionHandler exceptionHandler();
 }

@@ -16,19 +16,17 @@
 
 package org.dockbox.hartshorn.inject.populate;
 
-import java.util.Set;
-
 import org.dockbox.hartshorn.inject.ComponentKey;
-import org.dockbox.hartshorn.inject.InjectionCapableApplication;
-import org.dockbox.hartshorn.inject.provider.ComponentProvider;
+import org.dockbox.hartshorn.inject.ComponentKeyResolver;
 import org.dockbox.hartshorn.inject.ComponentRequestContext;
 import org.dockbox.hartshorn.inject.ComponentResolutionException;
+import org.dockbox.hartshorn.inject.InjectionCapableApplication;
 import org.dockbox.hartshorn.inject.InjectorEnvironment;
 import org.dockbox.hartshorn.inject.annotations.Inject;
+import org.dockbox.hartshorn.inject.provider.ComponentProvider;
 import org.dockbox.hartshorn.inject.targets.AnnotatedInjectionPointRequireRule;
 import org.dockbox.hartshorn.inject.targets.ComponentInjectionPoint;
 import org.dockbox.hartshorn.inject.targets.ComponentInjectionPointsResolver;
-import org.dockbox.hartshorn.inject.ComponentKeyResolver;
 import org.dockbox.hartshorn.inject.targets.InjectionPoint;
 import org.dockbox.hartshorn.inject.targets.RequireInjectionPointRule;
 import org.dockbox.hartshorn.util.ContextualInitializer;
@@ -36,6 +34,8 @@ import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.LazyStreamableConfigurer;
 import org.dockbox.hartshorn.util.StreamableConfigurer;
 import org.dockbox.hartshorn.util.introspect.convert.ConversionService;
+
+import java.util.Set;
 
 /**
  * A {@link ComponentPopulationStrategy} which populates components with other components. This provides basic support for
@@ -59,7 +59,7 @@ import org.dockbox.hartshorn.util.introspect.convert.ConversionService;
  *    private MyOtherComponent otherComponent;
  *
  *    @Inject
- *    public void doSomething(@Context SampleContext context) { ... }
+ *    public void doSomething(SampleContext context) { ... }
  * }
  * }</pre>
  *
@@ -157,7 +157,10 @@ public class InjectPopulationStrategy extends AbstractComponentPopulationStrateg
     public static class Configurer {
 
         private final LazyStreamableConfigurer<InjectionCapableApplication, RequireInjectionPointRule> requiresComponentRules = LazyStreamableConfigurer.of(new AnnotatedInjectionPointRequireRule());
-        private final LazyStreamableConfigurer<InjectionCapableApplication, InjectParameterResolver> parameterResolvers = LazyStreamableConfigurer.ofInitializer(context -> new InjectContextParameterResolver(context.input()));
+        private final LazyStreamableConfigurer<InjectionCapableApplication, InjectParameterResolver> parameterResolvers = LazyStreamableConfigurer.of(configurer -> {
+            configurer.add(ContextualInitializer.of(InjectContextParameterResolver::new));
+            configurer.add(ContextualInitializer.of(application -> new InjectPropertyParameterResolver(application.defaultProvider())));
+        });
 
         public Configurer requiresComponentRules(RequireInjectionPointRule... requiresComponentRules) {
             this.requiresComponentRules.customizer(collection -> collection.addAll(requiresComponentRules));

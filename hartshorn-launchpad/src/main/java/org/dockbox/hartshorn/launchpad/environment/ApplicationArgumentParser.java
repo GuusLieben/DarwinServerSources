@@ -28,6 +28,7 @@ import java.util.Properties;
  * @since 0.4.9
  * @author Guus Lieben
  */
+@FunctionalInterface
 public interface ApplicationArgumentParser {
 
     /**

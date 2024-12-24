@@ -16,12 +16,10 @@
 
 package org.dockbox.hartshorn.util.introspect.convert;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import org.dockbox.hartshorn.util.TypeUtils;
 import org.dockbox.hartshorn.util.introspect.Introspector;
 import org.dockbox.hartshorn.util.introspect.TypeParameterList;
+import org.dockbox.hartshorn.util.introspect.convert.support.ArrayDefaultValueProviderFactory;
 import org.dockbox.hartshorn.util.introspect.convert.support.ArrayToCollectionConverterFactory;
 import org.dockbox.hartshorn.util.introspect.convert.support.ArrayToObjectConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.CollectionDefaultValueProviderFactory;
@@ -41,6 +39,7 @@ import org.dockbox.hartshorn.util.introspect.convert.support.OptionalToCollectio
 import org.dockbox.hartshorn.util.introspect.convert.support.OptionalToObjectConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.OptionalToOptionConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.PrimitiveWrapperConverter;
+import org.dockbox.hartshorn.util.introspect.convert.support.StringToArrayConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.StringToBooleanConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.StringToCharacterConverter;
 import org.dockbox.hartshorn.util.introspect.convert.support.StringToEnumConverterFactory;
@@ -50,6 +49,9 @@ import org.dockbox.hartshorn.util.introspect.convert.support.StringToUUIDConvert
 import org.dockbox.hartshorn.util.introspect.view.TypeParameterView;
 import org.dockbox.hartshorn.util.introspect.view.TypeView;
 import org.dockbox.hartshorn.util.option.Option;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Standard implementation of {@link ConversionService} and {@link ConverterRegistry}. The registry implementation
@@ -280,6 +282,7 @@ public class StandardConversionService implements ConversionService, ConverterRe
      * @param registry The registry to register the converters to
      */
     public static void registerStringConverters(ConverterRegistry registry) {
+        registry.addConverter(new StringToArrayConverter());
         registry.addConverter(String.class, Character.class, new StringToCharacterConverter());
         registry.addConverter(String.class, UUID.class,new StringToUUIDConverter());
         registry.addConverter(String.class, Boolean.class, new StringToBooleanConverter());
@@ -316,5 +319,6 @@ public class StandardConversionService implements ConversionService, ConverterRe
         registry.addDefaultValueProvider(Optional.class, Optional::empty);
 
         registry.addDefaultValueProviderFactory(new CollectionDefaultValueProviderFactory(introspector).withDefaults());
+        registry.addDefaultValueProviderFactory(new ArrayDefaultValueProviderFactory());
     }
 }

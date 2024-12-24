@@ -16,12 +16,12 @@
 
 package org.dockbox.hartshorn.inject.annotations;
 
+import org.dockbox.hartshorn.inject.QualifierKey;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.dockbox.hartshorn.inject.QualifierKey;
 
 /**
  * Meta annotation to mark annotations as qualifiers. Qualifier annotations allow for the creation of
@@ -32,7 +32,7 @@ import org.dockbox.hartshorn.inject.QualifierKey;
  * that allows you to bind different implementations for each version:
  *
  * <pre>{@code
- * @MetaQualifier
+ * @Qualifier
  * @Retention(RetentionPolicy.RUNTIME)
  * @Target(...)
  * public @interface VersionQualifier {

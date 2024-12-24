@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,6 +42,7 @@ import org.dockbox.hartshorn.launchpad.ProcessableApplicationContext;
 import org.dockbox.hartshorn.launchpad.activation.ServiceActivator;
 import org.dockbox.hartshorn.launchpad.banner.HartshornLogoBanner;
 import org.dockbox.hartshorn.launchpad.environment.ContextualApplicationEnvironment;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.util.Customizer;
 import org.dockbox.hartshorn.util.TypeUtils;
 import org.dockbox.hartshorn.util.collections.MultiMap;
@@ -72,9 +72,11 @@ public class ApplicationConfigurerTests {
                 arguments.add("--sample.x.y=z");
             });
         });
-        Properties properties = applicationContext.environment().rawArguments();
-        assertTrue(properties.containsKey("sample.x.y"));
-        assertEquals("z", properties.getProperty("sample.x.y"));
+        PropertyRegistry propertyRegistry = applicationContext.environment().propertyRegistry();
+        assertTrue(propertyRegistry.contains("sample.x.y"));
+        String value = propertyRegistry.value("sample.x.y")
+                .orElseThrow(() -> new AssertionError("Property not found"));
+        assertEquals("z", value);
     }
 
     @Test

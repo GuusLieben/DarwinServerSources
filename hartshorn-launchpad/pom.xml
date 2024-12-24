@@ -23,7 +23,6 @@
             <groupId>org.dockbox.hartshorn</groupId>
             <artifactId>hartshorn-inject-configurations</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.dockbox.hartshorn</groupId>
             <artifactId>hartshorn-introspect-reflection</artifactId>

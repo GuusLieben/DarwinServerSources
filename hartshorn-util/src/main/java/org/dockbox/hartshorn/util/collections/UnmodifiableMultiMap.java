@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiConsumer;
-
 import org.dockbox.hartshorn.util.CollectionUtilities;
 
 /**

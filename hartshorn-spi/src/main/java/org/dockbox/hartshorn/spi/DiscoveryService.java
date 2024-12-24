@@ -17,17 +17,18 @@
 package org.dockbox.hartshorn.spi;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.dockbox.hartshorn.util.CollectionUtilities;
+import org.dockbox.hartshorn.util.collections.ConcurrentSetMultiMap;
+import org.dockbox.hartshorn.util.collections.MultiMap;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -60,8 +61,8 @@ public final class DiscoveryService {
 
     private static DiscoveryService DISCOVERY_SERVICE = new DiscoveryService();
 
-    private final Map<Class<?>, Class<?>> types = new ConcurrentHashMap<>();
-    private final Map<String, String> overrideDiscoveryFiles = new ConcurrentHashMap<>();
+    private final MultiMap<Class<?>, Class<?>> types = new ConcurrentSetMultiMap<>();
+    private final MultiMap<String, String> overrideDiscoveryFiles = new ConcurrentSetMultiMap<>();
     private final Set<ClassLoader> classLoaders = new HashSet<>(List.of( // List, as context class loader may be same as service's class loader
             Thread.currentThread().getContextClassLoader(),
             DiscoveryService.class.getClassLoader()
@@ -130,7 +131,11 @@ public final class DiscoveryService {
     @NonNull
     public <T> T discover(Class<T> type) throws ServiceDiscoveryException {
         try {
-            T object = this.tryLoadDiscoveryFile(type);
+            Set<T> objects = this.tryLoadDiscoveryFile(type);
+            if (objects.size() > 1) {
+                throw new ServiceDiscoveryException("Multiple implementations found for type " + type.getCanonicalName());
+            }
+            T object = CollectionUtilities.first(objects);
             if (object != null) {
                 return object;
             }
@@ -139,6 +144,15 @@ public final class DiscoveryService {
             throw new ServiceDiscoveryException(e.getMessage(), e);
         }
         throw new ServiceDiscoveryException("No implementation found for type " + type.getCanonicalName());
+    }
+
+    public <T> Set<T> discoverAll(Class<T> type) throws ServiceDiscoveryException {
+        try {
+            return this.tryLoadDiscoveryFile(type);
+        }
+        catch(NoAvailableImplementationException e) {
+            throw new ServiceDiscoveryException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -182,33 +196,45 @@ public final class DiscoveryService {
         this.classLoaders.add(classLoader);
     }
 
-    private <T> T tryLoadDiscoveryFile(Class<T> type) throws ServiceDiscoveryException {
-        Class<?> implementationClass = this.tryLoadImplementationClass(type);
-        if (implementationClass != null) {
-            if (type.isAssignableFrom(implementationClass)) {
-                this.verifyAndStoreType(type, implementationClass);
-                return this.loadServiceInstance(type, implementationClass);
+    private <T> Set<T> tryLoadDiscoveryFile(Class<T> type) throws ServiceDiscoveryException {
+        Collection<Class<?>> implementationClasses = this.tryLoadImplementationClass(type);
+        if (!implementationClasses.isEmpty()) {
+            Set<T> instances = new HashSet<>();
+            for(Class<?> implementationClass : implementationClasses) {
+                instances.add(this.tryCreateFromImplementationClass(type, implementationClass));
             }
-            else {
-                throw new ServiceDiscoveryException("Implementation " + implementationClass.getName() + " is not assignable from type " + type.getName());
-            }
+            return instances;
         }
         else {
             return this.tryLoadFromSPI(type);
         }
     }
 
-    @Nullable
-    private <T> Class<?> tryLoadImplementationClass(Class<T> type) throws NoAvailableImplementationException {
+    private <T> T tryCreateFromImplementationClass(Class<T> type, Class<?> implementationClass) throws ServiceDiscoveryException {
+        if (type.isAssignableFrom(implementationClass)) {
+            this.verifyAndStoreType(type, implementationClass);
+            return this.loadServiceInstance(type, implementationClass);
+        }
+        else {
+            throw new ServiceDiscoveryException("Implementation " + implementationClass.getName() + " is not assignable from type " + type.getName());
+        }
+    }
+
+    private <T> Collection<Class<?>> tryLoadImplementationClass(Class<T> type) throws NoAvailableImplementationException {
         if (this.types.containsKey(type)) {
             return this.types.get(type);
         }
         else if (this.overrideDiscoveryFiles.containsKey(type.getName())) {
-            String resourceString = this.overrideDiscoveryFiles.get(type.getName());
-            return this.tryLoadClassFromName(resourceString);
+            Collection<String> resourceStrings = this.overrideDiscoveryFiles.get(type.getName());
+            Set<Class<?>> classes = new HashSet<>();
+            for(String resourceString : resourceStrings) {
+                classes.add(this.tryLoadClassFromName(resourceString));
+            }
+            this.types.putAll(type, classes);
+            return classes;
         }
         else {
-            return null;
+            return Set.of();
         }
     }
 
@@ -229,18 +255,13 @@ public final class DiscoveryService {
         throw new NoAvailableImplementationException("No implementation found for type " + qualifiedName);
     }
 
-    private <T> T tryLoadFromSPI(Class<T> type) throws NoAvailableImplementationException {
+    private <T> Set<T> tryLoadFromSPI(Class<T> type) throws NoAvailableImplementationException {
         for(ClassLoader classLoader : this.classLoaders) {
             ServiceLoader<T> serviceLoader = this.getServiceLoader(type, classLoader);
             Set<? extends ServiceLoader.Provider<T>> providers = serviceLoader.stream().collect(Collectors.toSet());
-            for(ServiceLoader.Provider<T> provider : providers) {
-                try {
-                    return provider.get();
-                }
-                catch(ServiceConfigurationError e) {
-                    // Ignore, may be in another class loader or provider
-                }
-            }
+            return providers.stream()
+                    .map(ServiceLoader.Provider::get)
+                    .collect(Collectors.toSet());
         }
         throw new NoAvailableImplementationException("No implementation found for type " + type.getName());
     }

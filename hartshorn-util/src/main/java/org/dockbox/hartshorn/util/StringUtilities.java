@@ -16,6 +16,9 @@
 
 package org.dockbox.hartshorn.util;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.dockbox.hartshorn.util.option.Option;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Locale;
@@ -24,8 +27,6 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.dockbox.hartshorn.util.option.Option;
 
 /**
  * A collection of utility methods for working with strings.

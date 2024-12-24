@@ -37,6 +37,7 @@ import org.dockbox.hartshorn.launchpad.environment.ClasspathResourceLocator;
 import org.dockbox.hartshorn.launchpad.environment.FileSystemProvider;
 import org.dockbox.hartshorn.launchpad.lifecycle.LifecycleObservable;
 import org.dockbox.hartshorn.launchpad.lifecycle.ObservableApplicationEnvironment;
+import org.dockbox.hartshorn.properties.PropertyRegistry;
 import org.dockbox.hartshorn.proxy.ProxyOrchestrator;
 import org.dockbox.hartshorn.util.introspect.Introspector;
 import org.dockbox.hartshorn.util.introspect.ProxyLookup;
@@ -69,6 +70,7 @@ public class DefaultConfigurationBinderPostProcessor implements HierarchicalBind
         binder.bind(AnnotationLookup.class).singleton(application.environment().introspector().annotations());
         binder.bind(ProxyLookup.class).singleton(application.environment().proxyOrchestrator());
         binder.bind(ProxyOrchestrator.class).singleton(application.environment().proxyOrchestrator());
+        binder.bind(PropertyRegistry.class).singleton(application.environment().propertyRegistry());
 
         if (application instanceof ObservableApplicationEnvironment observableEnvironment) {
             binder.bind(LifecycleObservable.class).singleton(observableEnvironment);

@@ -35,6 +35,4 @@ public interface InjectionCapableApplication extends Context {
     ComponentProvider defaultProvider();
 
     HierarchicalBinder defaultBinder();
-
-    ApplicationPropertyHolder properties();
 }

@@ -1,0 +1,16 @@
+sample:
+  complex:
+    configuration:
+      - name: "name1"
+        value: "value1"
+      - name: "name2"
+        value: "value2"
+      - name: "name3"
+        value: "value3"
+    values: value1,value2,value3
+
+sample.complex.flat: value1
+sample.complex.list[0].name: name1
+sample.complex.list[0].value: value1
+sample.complex.list[1].name: name2
+sample.complex.list[1].value: value2

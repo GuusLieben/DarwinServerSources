@@ -16,7 +16,7 @@
 
 package org.dockbox.hartshorn.launchpad.resources;
 
-import org.dockbox.hartshorn.launchpad.ApplicationContext;
+import org.dockbox.hartshorn.launchpad.environment.ApplicationEnvironment;
 
 import java.net.URI;
 import java.util.Set;
@@ -47,18 +47,18 @@ public interface ResourceLookupStrategy {
     /**
      * Looks up all compatible resources for the given path. The returned {@link URI URIs} are expected to be absolute.
      *
-     * @param context the application context
+     * @param environment the application environment
      * @param path the path to the resource
      * @return a set of {@link URI URIs} pointing to the resource
      */
-    Set<URI> lookup(ApplicationContext context, String path);
+    Set<URI> lookup(ApplicationEnvironment environment, String path);
 
     /**
      * Returns the base URL for this strategy, from where all relative resources are resolved. This URL is expected to
      * be absolute.
      *
-     * @param context the application context
+     * @param environment the application environment
      * @return the base URL for this strategy
      */
-    URI baseUrl(ApplicationContext context);
+    URI baseUrl(ApplicationEnvironment environment);
 }

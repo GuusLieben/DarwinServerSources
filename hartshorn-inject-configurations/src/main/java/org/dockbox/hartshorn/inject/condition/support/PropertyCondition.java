@@ -19,6 +19,7 @@ package org.dockbox.hartshorn.inject.condition.support;
 import org.dockbox.hartshorn.inject.condition.Condition;
 import org.dockbox.hartshorn.inject.condition.ConditionContext;
 import org.dockbox.hartshorn.inject.condition.ConditionResult;
+import org.dockbox.hartshorn.properties.ValueProperty;
 import org.dockbox.hartshorn.util.option.Option;
 
 /**
@@ -39,7 +40,10 @@ public class PropertyCondition implements Condition {
     public ConditionResult matches(ConditionContext context) {
         return context.annotatedElement().annotations().get(RequiresProperty.class).map(condition -> {
             String name = condition.name();
-            Option<String> result = context.application().properties().property(name);
+            Option<ValueProperty> result = context.application()
+                    .environment()
+                    .propertyRegistry()
+                    .get(name);
             if (result.absent()) {
                 if (condition.matchIfMissing()) {
                     return ConditionResult.matched();
@@ -47,15 +51,24 @@ public class PropertyCondition implements Condition {
                 return ConditionResult.notFound("property", name);
             }
 
-            String value = result.get();
-            if (condition.matchIfMissing()) {
-                return ConditionResult.found("property", name, value);
+            ValueProperty property = result.get();
+            Option<String> value = property.value();
+            if (condition.matchIfMissing() && value.present()) {
+                return ConditionResult.found("property", name, value.get());
             }
 
             if (condition.withValue().isEmpty()) {
                 return ConditionResult.matched();
             }
-            return condition.withValue().equals(value) ? ConditionResult.matched() : ConditionResult.notEqual("property", condition.withValue(), value);
+            else if (value.absent()) {
+                return ConditionResult.notFound("property", name);
+            }
+            else {
+                String actualValue = value.get();
+                return condition.withValue().equals(actualValue)
+                        ? ConditionResult.matched()
+                        : ConditionResult.notEqual("property", condition.withValue(), actualValue);
+            }
         }).orCompute(() -> ConditionResult.invalidCondition("property")).get();
     }
 }

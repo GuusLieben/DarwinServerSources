@@ -45,8 +45,11 @@ public class ScopeAdapterKey implements ScopeKey {
         if (adapterType.parameters().isEmpty()) {
             throw new IllegalArgumentException("The given type is not a parameterized ScopeAdapter");
         }
+        if (adapterType.parameters().size() > 1) {
+            throw new IllegalArgumentException("The given type is a ScopeAdapter with too many parameters");
+        }
         this.adapterType = adapterType;
-        this.adapteeType = adapterType.parameters().get(0);
+        this.adapteeType = adapterType.parameters().getFirst();
     }
 
     /**

@@ -16,11 +16,6 @@
 
 package org.dockbox.hartshorn.inject;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.dockbox.hartshorn.inject.annotations.Initialize;
 import org.dockbox.hartshorn.inject.annotations.Priority;
 import org.dockbox.hartshorn.inject.annotations.Qualifier;
@@ -37,6 +32,10 @@ import org.dockbox.hartshorn.util.introspect.view.ParameterView;
 import org.dockbox.hartshorn.util.introspect.view.TypeParameterView;
 import org.dockbox.hartshorn.util.introspect.view.TypeView;
 import org.dockbox.hartshorn.util.option.Option;
+
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A {@link ComponentKeyResolver} that resolves the {@link ComponentKey} of a component based on the
@@ -114,8 +113,7 @@ public class StandardAnnotationComponentKeyResolver implements ComponentKeyResol
      * @return the resolved qualifiers
      */
     protected Set<QualifierKey<?>> resolveQualifiers(ElementAnnotationsIntrospector annotations) {
-        Set<Annotation> metaQualifiers = annotations.annotedWith(Qualifier.class);
-        return metaQualifiers.stream()
+        return annotations.annotedWith(Qualifier.class).stream()
                 .map(QualifierKey::of)
                 .collect(Collectors.toSet());
     }

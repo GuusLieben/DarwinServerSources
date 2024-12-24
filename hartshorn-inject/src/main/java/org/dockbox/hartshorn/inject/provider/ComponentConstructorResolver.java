@@ -112,7 +112,7 @@ public final class ComponentConstructorResolver {
 
         // An optimal constructor is the one with the highest amount of injectable parameters, so as many dependencies
         // can be satiated at once.
-        optimalConstructor = constructors.get(0);
+        optimalConstructor = constructors.getFirst();
         for (ConstructorView<? extends C> constructor : constructors) {
             if (optimalConstructor.parameters().count() < constructor.parameters().count()) {
                 optimalConstructor = constructor;
@@ -132,7 +132,7 @@ public final class ComponentConstructorResolver {
                 return List.of(defaultConstructor.get());
             }
             else if(type.constructors().count() == 1) {
-                return List.of(type.constructors().all().get(0));
+                return List.of(type.constructors().all().getFirst());
             }
         }
         return constructors;
