@@ -122,6 +122,7 @@ public final class ContextualApplicationEnvironment implements ObservableApplica
         this.typeResolver = this.configure(environmentInitializerContext, configurer.typeResolver);
         this.componentRegistry = this.configure(environmentInitializerContext, configurer.componentRegistry);
         this.resourceLookup = this.configure(environmentInitializerContext, configurer.resourceLookup);
+        // TODO: #1121 Include application arguments
         this.propertyRegistry = this.initializePropertyRegistry(configurer, environmentInitializerContext);
 
         SingleElementContext<PropertyRegistry> argumentsInitializerContext = context.transform(this.propertyRegistry);
