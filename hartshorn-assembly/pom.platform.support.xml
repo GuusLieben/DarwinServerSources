@@ -33,11 +33,9 @@
         <execution.license.format.skip>false</execution.license.format.skip>
         <execution.errorprone.skip>false</execution.errorprone.skip>
         <execution.coverage.skip>false</execution.coverage.skip>
-        <execution.antora.skip>false</execution.antora.skip>
         <execution.updates.skip>true</execution.updates.skip> <!-- Only for manual execution -->
 
         <!-- Maven plugin versions, in alphabetical order -->
-        <plugin.antora.version>1.0.0-alpha.4</plugin.antora.version>
         <plugin.checkstyle.version>3.6.0</plugin.checkstyle.version>
         <plugin.versions.version>2.18.0</plugin.versions.version>
         <plugin.jacoco.version>0.8.12</plugin.jacoco.version>
@@ -47,9 +45,6 @@
 
         <!-- Maven plugin dependency versions, in alphabetical order -->
         <checkstyle.version>10.21.0</checkstyle.version>
-
-        <!-- Antora playbook for documentation build. Set to playbook-local.yml for local builds -->
-        <antora.playbook>playbook-release.yml</antora.playbook>
 
         <argLine.errorprone>
             -Xplugin:ErrorProne \
@@ -207,7 +202,6 @@
                 <execution.license.format.skip>true</execution.license.format.skip>
                 <execution.errorprone.skip>true</execution.errorprone.skip>
                 <execution.coverage.skip>true</execution.coverage.skip>
-                <execution.antora.skip>true</execution.antora.skip>
                 <execution.updates.skip>true</execution.updates.skip>
             </properties>
         </profile>
@@ -310,11 +304,6 @@
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
                     <version>${plugin.owasp.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.antora</groupId>
-                    <artifactId>antora-maven-plugin</artifactId>
-                    <version>${plugin.antora.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -432,30 +421,6 @@
                 </executions>
             </plugin>
 
-            <!-- Antora documentation -->
-            <plugin>
-                <groupId>org.antora</groupId>
-                <artifactId>antora-maven-plugin</artifactId>
-                <configuration>
-                    <skip>${execution.antora.skip}</skip>
-                    <playbookFile>${path.assembly}/antora/${antora.playbook}</playbookFile>
-                    <packages>
-                        <package>@antora/lunr-extension</package>
-                        <package>@asciidoctor/tabs</package>
-                        <package>asciidoctor-interdoc-reftext</package>
-                    </packages>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>antora-site</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>antora</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Standard build configurations -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -538,7 +503,7 @@
                 <executions>
                     <execution>
                         <id>javadoc-site</id>
-                        <phase>site</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>javadoc</goal>
                         </goals>

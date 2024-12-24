@@ -18,10 +18,34 @@
     <packaging>pom</packaging>
 
     <properties>
+        <path.assembly>${maven.multiModuleProjectDirectory}/hartshorn-assembly</path.assembly>
+        
+        <!-- Antora playbook for documentation build. Set to playbook-local.yml for local builds -->
+        <antora.playbook>playbook-release.yml</antora.playbook>
+
         <maven.deploy.skip>true</maven.deploy.skip>
+        <execution.antora.skip>false</execution.antora.skip>
         <execution.jacoco.skip>false</execution.jacoco.skip>
+
+        <plugin.antora.version>1.0.0-alpha.4</plugin.antora.version>
         <plugin.jacoco.version>0.8.12</plugin.jacoco.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>ci</id>
+            <properties>
+                <execution.antora.skip>true</execution.antora.skip>
+                <execution.jacoco.skip>true</execution.jacoco.skip>
+            </properties>
+        </profile>
+        <profile>
+            <id>local</id>
+            <properties>
+                <antora.playbook>playbook-local.yml</antora.playbook>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -104,6 +128,32 @@
 
     <build>
         <plugins>
+            <!-- Antora documentation -->
+            <plugin>
+                <groupId>org.antora</groupId>
+                <artifactId>antora-maven-plugin</artifactId>
+                <version>${plugin.antora.version}</version>
+                <configuration>
+                    <skip>${execution.antora.skip}</skip>
+                    <playbookFile>${path.assembly}/antora/${antora.playbook}</playbookFile>
+                    <packages>
+                        <package>@antora/lunr-extension</package>
+                        <package>@asciidoctor/tabs</package>
+                        <package>asciidoctor-interdoc-reftext</package>
+                    </packages>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>antora-site</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>antora</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Jacoco test coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
