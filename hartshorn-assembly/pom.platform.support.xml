@@ -497,16 +497,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <!-- Remaining configuration present in Platform Build POM, this is purely for the CI toggle -->
                     <skip>${execution.javadoc.skip}</skip>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>javadoc-site</id>
-                        <phase>install</phase>
+                        <id>javadoc</id>
                         <goals>
                             <goal>javadoc</goal>
+                            <goal>jar</goal>
                         </goals>
+                        <phase>install</phase>
                     </execution>
                 </executions>
             </plugin>

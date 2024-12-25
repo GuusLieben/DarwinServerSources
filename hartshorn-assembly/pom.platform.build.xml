@@ -33,6 +33,7 @@
         <plugin.javadoc.version>3.8.0</plugin.javadoc.version>
         <plugin.kotlin.version>${kotlin.version}</plugin.kotlin.version>
         <plugin.scala.version>4.9.2</plugin.scala.version>
+        <plugin.source.version>3.3.1</plugin.source.version>
     </properties>
 
     <build>
@@ -74,6 +75,11 @@
                     <artifactId>scala-maven-plugin</artifactId>
                     <version>${plugin.scala.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${plugin.source.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -108,18 +114,17 @@
                         </tag>
                     </tags>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>aggregate</id>
+                        <id>bundle-sources</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>aggregate</goal>
-                        </goals>
-                        <phase>site</phase>
-                    </execution>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
+                            <goal>test-jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
